@@ -1,0 +1,56 @@
+diff --git a/src/content.js b/src/content.js
+--- a/src/content.js
++++ b/src/content.js
+@@ -43,8 +43,7 @@
+     contacts: {
+-      kicker: "04 / КОНТАКТЫ",
+-      title: "Открыт к профессиональному общению и backend-задачам.",
+-      note: "Контактные ссылки вынесены в конфигурацию проекта — их можно добавить перед публикацией.",
+-      email: "Email",
+-      github: "GitHub",
+-      cv: "CV"
++      kicker: "04 /",
++      title: "КОНТАКТЫ",
++      email: "Email · hello@maxzolotoy.com",
++      telegram: "Telegram · @max_zolotoy",
++      github: "GitHub · github.com/Officialsayp"
+     },
+@@ -94,8 +93,7 @@
+     contacts: {
+-      kicker: "04 / CONTACTS",
+-      title: "Open to professional conversations and backend opportunities.",
+-      note: "Contact links live in the project configuration and can be added before publishing.",
+-      email: "Email",
+-      github: "GitHub",
+-      cv: "CV"
++      kicker: "04 /",
++      title: "CONTACT",
++      email: "Email · hello@maxzolotoy.com",
++      telegram: "Telegram · @max_zolotoy",
++      github: "GitHub · github.com/Officialsayp"
+     },
+@@ -106,5 +104,5 @@
+ export const contactLinks = {
+-  email: "",
+-  github: "",
+-  cv: ""
++  email: "hello@maxzolotoy.com",
++  telegram: "https://t.me/max_zolotoy",
++  github: "https://github.com/Officialsayp"
+ };
+diff --git a/src/app.js b/src/app.js
+--- a/src/app.js
++++ b/src/app.js
+@@ -115,11 +115,10 @@
+         <section class="section" id="contacts-${lang}">
+           <div class="container">
+             <div class="section__head"><div class="kicker">${c.contacts.kicker}</div><h2>${c.contacts.title}</h2></div>
+             <div class="contacts__links">
+               ${linkOrDisabled(c.contacts.email, contactLinks.email ? `mailto:${contactLinks.email}` : '')}
++              ${linkOrDisabled(c.contacts.telegram, contactLinks.telegram)}
+               ${linkOrDisabled(c.contacts.github, contactLinks.github)}
+-              ${linkOrDisabled(c.contacts.cv, contactLinks.cv)}
+             </div>
+-            <p class="contact-note">${c.contacts.note}</p>
+           </div>
+         </section>

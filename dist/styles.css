@@ -104,9 +104,8 @@ html[data-initial-lang="en"] .language-layer--en {
   display: flex;
   align-items: center;
   border-bottom: 1px solid var(--line);
-  /* This header lives inside both full-page language layers. An opaque fill is
-     considerably cheaper than backdrop sampling while either layer moves. */
-  background: rgba(11, 12, 16, .90);
+  background: rgba(11, 12, 16, .72);
+  backdrop-filter: blur(16px);
 }
 .header__inner {
   display: flex;
@@ -207,7 +206,8 @@ html[data-initial-lang="en"] .language-layer--en {
   padding: 18px;
   border-radius: 18px;
   border: 1px solid var(--line);
-  background: rgba(8,9,12,.74);
+  background: rgba(8,9,12,.56);
+  backdrop-filter: blur(14px);
   color: #cbd6f3;
   font: 12px/1.65 ui-monospace, SFMono-Regular, Menlo, monospace;
 }
@@ -315,7 +315,6 @@ html[data-initial-lang="en"] .language-layer--en {
   letter-spacing: .08em;
   opacity: 0;
   transform: translate3d(0, 0, 0);
-  will-change: transform, opacity;
   pointer-events: none;
   box-shadow: 0 12px 40px rgba(0,0,0,.32);
 }
@@ -331,7 +330,7 @@ html[data-initial-lang="en"] .language-layer--en {
   background: rgba(255,255,255,.5);
   opacity: 0;
   pointer-events: none;
-  will-change: transform, opacity;
+  box-shadow: -12px 0 36px rgba(0,0,0,.28), 12px 0 36px rgba(47,107,255,.12);
 }
 .curtain-divider.is-visible { opacity: 1; }
 
@@ -349,7 +348,21 @@ html[data-initial-lang="en"] .language-layer--en {
 body[data-lang="en"] .drag-hint { right: auto; left: 75px; }
 body.has-used-curtain .drag-hint { opacity: 0; }
 
+/* Warm the drag layers before the first visible pixel moves in WebKit. */
+body.is-curtain-prepared .language-reveal,
+body.is-curtain-prepared .language-layer--en,
+body.is-curtain-prepared .language-ghost,
+body.is-curtain-prepared .curtain-divider {
+  will-change: transform, opacity;
+}
 body.is-curtain-moving .language-reveal { pointer-events: none; }
+body.is-curtain-prepared .ambient { filter: blur(42px); opacity: .08; }
+body.is-curtain-prepared .header,
+body.is-curtain-prepared .hero__visual-code,
+body.is-curtain-prepared .language-edge {
+  backdrop-filter: none;
+}
+body.is-curtain-prepared .curtain-divider { box-shadow: none; }
 
 .noscript { position: fixed; bottom: 12px; left: 12px; right: 12px; z-index: 100; padding: 12px; background: #fff; color: #111; border-radius: 12px; text-align: center; }
 

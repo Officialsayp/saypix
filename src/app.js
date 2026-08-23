@@ -14,32 +14,44 @@ const enButton = document.querySelector('[data-lang-target="en"]');
 const ghost = document.querySelector('.language-ghost');
 const divider = document.querySelector('.curtain-divider');
 
-const DRAG_START_PX = 4;
-const MIN_FLING_TRAVEL_PX = 64;
-const MIN_FLING_TRAVEL_RATIO = .12;
-const FLING_VELOCITY = 1.1;
-const VELOCITY_WINDOW_MS = 80;
-const GHOST_WIDTH = 48;
-const GHOST_HALF_WIDTH = GHOST_WIDTH / 2;
+const DRAG_START_PX = 8;
+const MIN_FLING_TRAVEL_PX = 12;
+const FLING_VELOCITY = 0.45;
+const VELOCITY_WINDOW_MS = 96;
+const GHOST_HALF_WIDTH = 24;
+const MOUSE_FALLBACK_GUARD_MS = 32;
+const INPUT_JUMP_PX = 48;
+const INPUT_CATCHUP_SPEED_PX_PER_MS = 1.6;
 
 let activeLang = root.dataset.initialLang === 'en' ? 'en' : 'ru';
 let progress = activeLang === 'en' ? 1 : 0; // 0 = RU, 1 = EN
+let pendingProgress = progress;
+let pendingGhostX = null;
 let dragging = false;
 let dragTarget = null;
 let pointerId = null;
 let dragSource = null;
 let dragSamples = [];
+let moveFrame = 0;
 let settleFrame = 0;
 let geometryFrame = 0;
 let dragOriginX = 0;
 let dragOriginY = 0;
+let dragStartProgress = progress;
 let dragMoved = false;
-let dragGrabOffset = GHOST_HALF_WIDTH;
+let dragPreviewed = false;
+let dragPointerType = '';
+let lastPointerMoveAt = -Infinity;
+let lostCaptureFrame = 0;
+let inputCatchUpFrame = 0;
+let inputCatchUpLastTime = 0;
+let dragVisualGhostX = null;
+let lastDragInputX = null;
 let stageWidth = 1;
-let stageLeft = 0;
+let ruDragAnchorX = null;
+let enDragAnchorX = null;
 let lastViewportWidth = 0;
 let suppressNextClick = false;
-let suppressClickTimer = 0;
 
 function linkOrDisabled(label, href, className = 'button button--ghost contact-link') {
   if (!href) {
@@ -117,10 +129,9 @@ function renderPage(lang) {
             <div class="section__head"><div class="kicker">${c.contacts.kicker}</div><h2>${c.contacts.title}</h2></div>
             <div class="contacts__links">
               ${linkOrDisabled(c.contacts.email, contactLinks.email ? `mailto:${contactLinks.email}` : '')}
+              ${linkOrDisabled(c.contacts.telegram, contactLinks.telegram)}
               ${linkOrDisabled(c.contacts.github, contactLinks.github)}
-              ${linkOrDisabled(c.contacts.cv, contactLinks.cv)}
             </div>
-            <p class="contact-note">${c.contacts.note}</p>
           </div>
         </section>
       </main>
@@ -201,13 +212,19 @@ function updateStageWidth() {
   const stageRect = shell.getBoundingClientRect();
   const width = stageRect.width || document.documentElement.clientWidth || window.innerWidth;
   stageWidth = Math.max(1, width);
-  stageLeft = stageRect.left;
+  // The curtain should begin where the user grips the inner side of the
+  // language control, not one control-width beyond it at the viewport edge.
+  const ruRect = ruButton.getBoundingClientRect();
+  const enRect = enButton.getBoundingClientRect();
+  ruDragAnchorX = clamp(ruRect.right - stageRect.left, 0, stageWidth);
+  enDragAnchorX = clamp(enRect.left - stageRect.left, 0, stageWidth);
   return stageWidth;
 }
 
-function progressAtClientX(clientX) {
-  const localX = clamp(clientX - stageLeft, 0, stageWidth);
-  return clamp(1 - (localX / stageWidth), 0, 1);
+function dragAnchorProgress(targetLang) {
+  const anchorX = targetLang === 'en' ? enDragAnchorX : ruDragAnchorX;
+  if (!Number.isFinite(anchorX)) return targetLang === 'en' ? 0 : 1;
+  return clamp(1 - (anchorX / stageWidth), 0, 1);
 }
 
 function progressToDividerX(p) {
@@ -215,33 +232,33 @@ function progressToDividerX(p) {
 }
 
 function paintGhostAt(clientX) {
-  // Preserve the point at which the user grabbed the language pill. This
-  // avoids the old visual jump where the pill was re-centred under the cursor.
-  const maxLeft = Math.max(0, stageWidth - GHOST_WIDTH);
-  const left = clamp(clientX - stageLeft - dragGrabOffset, 0, maxLeft);
-  ghost.style.transform = `translate3d(${left.toFixed(3)}px, 0, 0)`;
+  const maxX = Math.max(GHOST_HALF_WIDTH, stageWidth - GHOST_HALF_WIDTH);
+  const x = clamp(clientX, GHOST_HALF_WIDTH, maxX);
+  ghost.style.transform = `translate3d(${(x - GHOST_HALF_WIDTH).toFixed(3)}px, 0, 0)`;
 }
 
-function paintCurtain(p) {
+function paintCurtain(p, { ghostX = null, retainPending = false } = {}) {
   progress = clamp(p, 0, 1);
+  if (!retainPending) pendingProgress = progress;
   const x = progressToDividerX(progress);
   const xValue = `${x.toFixed(3)}px`;
   const inverseXValue = `${(-x).toFixed(3)}px`;
+  // Keep a visible divider inside the viewport at the fully closed endpoints.
+  // The reveal itself still uses the exact edge coordinate above.
+  const dividerX = clamp(x, .5, Math.max(.5, stageWidth - .5));
 
   // These are local compositor transforms. Do not update an inherited CSS custom
   // property here: that invalidates both full language trees on every pointer frame.
   enReveal.style.transform = `translate3d(${xValue}, 0, 0)`;
   enLayer.style.transform = `translate3d(${inverseXValue}, 0, 0)`;
-  divider.style.transform = `translate3d(${xValue}, 0, 0)`;
-}
-
-function paintCurtainAt(clientX) {
-  paintCurtain(progressAtClientX(clientX));
+  divider.style.transform = `translate3d(${dividerX.toFixed(3)}px, 0, 0)`;
+  if (Number.isFinite(ghostX)) paintGhostAt(ghostX);
 }
 
 function prepareCurtain(targetLang) {
   const label = targetLang.toUpperCase();
   if (ghost.textContent !== label) ghost.textContent = label;
+  body.classList.add('is-curtain-prepared');
 }
 
 function showCurtain(targetLang, { showGhost = true } = {}) {
@@ -254,7 +271,7 @@ function showCurtain(targetLang, { showGhost = true } = {}) {
 function hideCurtain() {
   ghost.classList.remove('is-visible');
   divider.classList.remove('is-visible');
-  body.classList.remove('is-curtain-moving');
+  body.classList.remove('is-curtain-moving', 'is-curtain-prepared');
 }
 
 function canonicalPath(lang) { return lang === 'en' ? '/en/' : '/ru/'; }
@@ -288,20 +305,135 @@ function commitLanguage(lang, { replace = true } = {}) {
   }
 }
 
-function easeOutCubic(t) {
-  return 1 - Math.pow(1 - t, 3);
+function easeOutCubic(t) { return 1 - Math.pow(1 - t, 3); }
+
+function cancelMoveFrame({ flush = false } = {}) {
+  if (!moveFrame) return;
+  cancelAnimationFrame(moveFrame);
+  moveFrame = 0;
+  if (flush) paintCurtain(pendingProgress, { ghostX: pendingGhostX });
 }
 
-function latestPointerSample(event) {
-  const samples = event.getCoalescedEvents?.();
-  return samples?.at(-1) ?? event;
+function cancelInputCatchUp() {
+  if (!inputCatchUpFrame) return;
+  cancelAnimationFrame(inputCatchUpFrame);
+  inputCatchUpFrame = 0;
+  inputCatchUpLastTime = 0;
+}
+
+function startInputCatchUp() {
+  if (inputCatchUpFrame) return;
+  inputCatchUpLastTime = performance.now();
+
+  const tick = now => {
+    inputCatchUpFrame = 0;
+    const elapsed = clamp(now - inputCatchUpLastTime, 8, 48);
+    inputCatchUpLastTime = now;
+
+    const currentDividerX = progressToDividerX(progress);
+    const targetDividerX = progressToDividerX(pendingProgress);
+    const maxStep = elapsed * INPUT_CATCHUP_SPEED_PX_PER_MS;
+    const nextDividerX = currentDividerX + clamp(targetDividerX - currentDividerX, -maxStep, maxStep);
+    const nextProgress = clamp(1 - (nextDividerX / stageWidth), 0, 1);
+
+    const currentGhostX = Number.isFinite(dragVisualGhostX) ? dragVisualGhostX : dragOriginX;
+    const targetGhostX = Number.isFinite(pendingGhostX) ? pendingGhostX : currentGhostX;
+    const nextGhostX = currentGhostX + clamp(targetGhostX - currentGhostX, -maxStep, maxStep);
+
+    paintCurtain(nextProgress, { ghostX: nextGhostX, retainPending: true });
+    dragVisualGhostX = nextGhostX;
+
+    const dividerSettled = Math.abs(targetDividerX - nextDividerX) < .5;
+    const ghostSettled = Math.abs(targetGhostX - nextGhostX) < .5;
+    if (dragging && (!dividerSettled || !ghostSettled)) {
+      inputCatchUpFrame = requestAnimationFrame(tick);
+      return;
+    }
+
+    paintCurtain(pendingProgress, { ghostX: pendingGhostX });
+    dragVisualGhostX = pendingGhostX;
+  };
+
+  inputCatchUpFrame = requestAnimationFrame(tick);
+}
+
+function detachPointerListeners() {
+  window.removeEventListener('pointermove', moveDrag);
+  window.removeEventListener('pointerup', endPointerSession);
+  window.removeEventListener('pointercancel', cancelDrag);
+  window.removeEventListener('mousemove', moveMouseFallback);
+  window.removeEventListener('mouseup', endMouseSession);
+}
+
+function finishPointerSession() {
+  detachPointerListeners();
+  cancelInputCatchUp();
+  if (lostCaptureFrame) {
+    cancelAnimationFrame(lostCaptureFrame);
+    lostCaptureFrame = 0;
+  }
+  const source = dragSource;
+  const capturedPointerId = pointerId;
+  dragging = false;
+  pointerId = null;
+  dragSource = null;
+  dragSamples = [];
+  dragPointerType = '';
+  lastPointerMoveAt = -Infinity;
+  dragVisualGhostX = null;
+  lastDragInputX = null;
+  ruButton.classList.remove('is-drag-source');
+  enButton.classList.remove('is-drag-source');
+  if (source?.hasPointerCapture?.(capturedPointerId)) {
+    source.releasePointerCapture(capturedPointerId);
+  }
+}
+
+function cleanupCurtain() {
+  cancelMoveFrame();
+  finishPointerSession();
+  hideCurtain();
+  dragTarget = null;
+}
+
+function animateTo(target, { duration, showGhost = false } = {}) {
+  cancelAnimationFrame(settleFrame);
+  settleFrame = 0;
+  const start = progress;
+  const distance = Math.abs(target - start);
+  const targetLang = target >= .5 ? 'en' : 'ru';
+  showCurtain(dragTarget ?? targetLang, { showGhost });
+
+  if (reducedMotion.matches || distance < 0.002) {
+    paintCurtain(target);
+    commitLanguage(targetLang);
+    cleanupCurtain();
+    return;
+  }
+
+  const startTime = performance.now();
+  const ms = duration ?? clamp(160 + distance * 200, 180, 360);
+
+  const tick = now => {
+    const t = clamp((now - startTime) / ms, 0, 1);
+    const p = start + (target - start) * easeOutCubic(t);
+    paintCurtain(p);
+    if (t < 1) {
+      settleFrame = requestAnimationFrame(tick);
+      return;
+    }
+    settleFrame = 0;
+    commitLanguage(targetLang);
+    cleanupCurtain();
+  };
+  settleFrame = requestAnimationFrame(tick);
 }
 
 function recordPointerSamples(event) {
-  const samples = event.getCoalescedEvents?.() || [event];
-  for (const sample of samples) {
+  const events = event.getCoalescedEvents?.() || [event];
+  for (const sample of events) {
     const time = Number.isFinite(sample.timeStamp) ? sample.timeStamp : performance.now();
-    dragSamples.push({ x: clamp(sample.clientX - stageLeft, 0, stageWidth), time });
+    dragSamples.push({ x: clamp(sample.clientX, 0, stageWidth), time });
   }
   const lastTime = dragSamples.at(-1)?.time ?? performance.now();
   dragSamples = dragSamples.filter(sample => lastTime - sample.time <= VELOCITY_WINDOW_MS);
@@ -315,145 +447,174 @@ function currentVelocity() {
   return (last.x - first.x) / elapsed;
 }
 
-function finishPointerSession() {
-  const source = dragSource;
-  const capturedPointerId = pointerId;
-  dragging = false;
-  pointerId = null;
-  dragSource = null;
-  dragSamples = [];
-  dragGrabOffset = GHOST_HALF_WIDTH;
-  ruButton.classList.remove('is-drag-source');
-  enButton.classList.remove('is-drag-source');
-  if (source?.hasPointerCapture?.(capturedPointerId)) {
-    source.releasePointerCapture(capturedPointerId);
-  }
-}
-
-function cleanupCurtain() {
-  finishPointerSession();
-  hideCurtain();
-  dragTarget = null;
-}
-
-function animateTo(target, { duration } = {}) {
-  cancelAnimationFrame(settleFrame);
-  settleFrame = 0;
-  const start = progress;
-  const distance = Math.abs(target - start);
-  const targetLang = target >= .5 ? 'en' : 'ru';
-  showCurtain(dragTarget ?? targetLang, { showGhost: false });
-
-  if (reducedMotion.matches || distance < 0.002) {
-    paintCurtain(target);
-    commitLanguage(targetLang);
-    cleanupCurtain();
-    return;
-  }
-
-  const startTime = performance.now();
-  const ms = duration ?? clamp(120 + distance * 180, 140, 300);
-  const tick = now => {
-    const t = clamp((now - startTime) / ms, 0, 1);
-    paintCurtain(start + (target - start) * easeOutCubic(t));
-    if (t < 1) {
-      settleFrame = requestAnimationFrame(tick);
-      return;
-    }
-    settleFrame = 0;
-    commitLanguage(targetLang);
-    cleanupCurtain();
-  };
-  settleFrame = requestAnimationFrame(tick);
-}
-
-function isActiveDragEvent(event) {
-  return dragging && event.pointerId === pointerId;
-}
-
 function startDrag(event, targetLang) {
   if (targetLang === activeLang) return;
   if (event.isPrimary === false) return;
   if (event.pointerType === 'mouse' && event.button !== 0) return;
-
-  const source = event.currentTarget;
-  if (!source) return;
-
   cancelAnimationFrame(settleFrame);
   settleFrame = 0;
+  cancelMoveFrame();
   hideCurtain();
-  updateStageWidth();
-
   dragging = true;
   dragTarget = targetLang;
-  pointerId = event.pointerId;
-  dragSource = source;
   dragOriginX = event.clientX;
   dragOriginY = event.clientY;
+  dragStartProgress = dragAnchorProgress(targetLang);
   dragMoved = false;
-  const sourceRect = source.getBoundingClientRect();
-  dragGrabOffset = clamp(event.clientX - sourceRect.left, 0, sourceRect.width);
-  dragSamples = [];
-  recordPointerSamples(event);
-  source.classList.add('is-drag-source');
+  dragPreviewed = false;
+  dragPointerType = event.pointerType || '';
+  lastPointerMoveAt = -Infinity;
+  pointerId = event.pointerId;
+  pendingProgress = dragStartProgress;
+  pendingGhostX = event.clientX;
+  dragVisualGhostX = event.clientX;
+  lastDragInputX = event.clientX;
+  paintGhostAt(pendingGhostX);
+  dragSamples = [{ x: clamp(event.clientX, 0, stageWidth), time: performance.now() }];
+  dragSource = targetLang === 'en' ? enButton : ruButton;
+  dragSource.classList.add('is-drag-source');
+  // Promote the transform layers before the first visible pixel moves. This
+  // keeps Safari from doing its expensive layer/filter switch on that frame.
+  prepareCurtain(targetLang);
+  // Start at the grip edge, so the divider is visible immediately under the
+  // language control instead of appearing only after it enters the viewport.
+  paintCurtain(dragStartProgress, { ghostX: pendingGhostX });
+  // The ghost still waits for movement; the divider confirms capture now.
+  divider.classList.toggle('is-visible', !reducedMotion.matches);
+  dragSource.setPointerCapture?.(pointerId);
+  window.addEventListener('pointermove', moveDrag, { passive: false });
+  window.addEventListener('pointerup', endPointerSession);
+  window.addEventListener('pointercancel', cancelDrag);
+  if (dragPointerType === 'mouse') {
+    window.addEventListener('mousemove', moveMouseFallback, { passive: false });
+    window.addEventListener('mouseup', endMouseSession);
+  }
+}
 
-  // A direct-manipulation slider must be under the pointer immediately. There
-  // is intentionally no rAF queue, speed cap, or "catch up from the edge".
-  showCurtain(targetLang, { showGhost: true });
-  paintCurtainAt(event.clientX);
-  paintGhostAt(event.clientX);
-  source.setPointerCapture?.(pointerId);
+function queueDragPosition(event, { immediate = false } = {}) {
+  const travel = event.clientX - dragOriginX;
+  pendingProgress = clamp(dragStartProgress - (travel / stageWidth), 0, 1);
+  pendingGhostX = event.clientX;
+  const inputJump = Number.isFinite(lastDragInputX)
+    && Math.abs(event.clientX - lastDragInputX) >= INPUT_JUMP_PX;
+  lastDragInputX = event.clientX;
+
+  if (inputJump) {
+    cancelMoveFrame();
+    startInputCatchUp();
+    return;
+  }
+  if (inputCatchUpFrame) return;
+
+  if (immediate) {
+    cancelMoveFrame();
+    paintCurtain(pendingProgress, { ghostX: pendingGhostX });
+    dragVisualGhostX = pendingGhostX;
+    return;
+  }
+  if (moveFrame) return;
+  moveFrame = requestAnimationFrame(() => {
+    moveFrame = 0;
+    paintCurtain(pendingProgress, { ghostX: pendingGhostX });
+    dragVisualGhostX = pendingGhostX;
+  });
+}
+
+function isActiveDragEvent(event) {
+  if (!dragging) return false;
+  return event.type.startsWith('pointer')
+    ? event.pointerId === pointerId
+    : dragPointerType === 'mouse';
 }
 
 function moveDrag(event) {
   if (!isActiveDragEvent(event)) return;
-  const point = latestPointerSample(event);
-  const horizontalDistance = Math.abs(point.clientX - dragOriginX);
-  const verticalDistance = Math.abs(point.clientY - dragOriginY);
+  if (event.type === 'pointermove') lastPointerMoveAt = performance.now();
+  const deltaX = event.clientX - dragOriginX;
+  const deltaY = event.clientY - dragOriginY;
+  const horizontalDistance = Math.abs(deltaX);
+  const verticalDistance = Math.abs(deltaY);
 
-  if (!dragMoved && verticalDistance > horizontalDistance && verticalDistance >= DRAG_START_PX) {
-    cancelDrag(event);
+  if (!dragMoved) {
+    const isHorizontal = horizontalDistance > 0 && horizontalDistance >= verticalDistance;
+    let queuedPreview = false;
+
+    // Give immediate visual feedback from the first horizontal pixel, but keep
+    // the 8px threshold for deciding whether this is a drag or a normal click.
+    if (isHorizontal) {
+      const firstPreview = !dragPreviewed;
+      if (firstPreview) {
+        dragPreviewed = true;
+        showCurtain(dragTarget);
+      }
+      recordPointerSamples(event);
+      queueDragPosition(event, { immediate: firstPreview });
+      queuedPreview = true;
+    }
+
+    if (horizontalDistance < DRAG_START_PX && verticalDistance < DRAG_START_PX) return;
+    if (verticalDistance > horizontalDistance) {
+      cancelMoveFrame();
+      paintCurtain(activeLang === 'en' ? 1 : 0);
+      cleanupCurtain();
+      suppressOneClick();
+      return;
+    }
+    dragMoved = true;
+    if (!dragPreviewed) {
+      dragPreviewed = true;
+      showCurtain(dragTarget);
+    }
+    if (!queuedPreview) {
+      recordPointerSamples(event);
+      queueDragPosition(event, { immediate: true });
+    }
+    event.preventDefault();
     return;
   }
 
-  // Render synchronously inside the input task. Only transform writes occur
-  // here, with no layout reads and no interpolation between pointer samples.
   recordPointerSamples(event);
-  paintCurtainAt(point.clientX);
-  paintGhostAt(point.clientX);
-  if (horizontalDistance >= DRAG_START_PX && horizontalDistance >= verticalDistance) {
-    dragMoved = true;
-    if (event.cancelable) event.preventDefault();
-  }
+  queueDragPosition(event);
+  event.preventDefault();
+}
+
+function moveMouseFallback(event) {
+  if (!dragging || dragPointerType !== 'mouse') return;
+  // Pointer Events remain the preferred channel. Only use mouse events after
+  // Safari has stopped delivering them for more than roughly two frames.
+  if (performance.now() - lastPointerMoveAt <= MOUSE_FALLBACK_GUARD_MS) return;
+  moveDrag(event);
+}
+
+function recoverTerminalDrag(event) {
+  if (dragMoved) return false;
+  const deltaX = event.clientX - dragOriginX;
+  const deltaY = event.clientY - dragOriginY;
+  if (Math.abs(deltaX) < DRAG_START_PX || Math.abs(deltaX) < Math.abs(deltaY)) return false;
+  moveDrag(event);
+  return dragMoved;
 }
 
 function endPointerSession(event) {
   if (!isActiveDragEvent(event)) return;
-  const point = latestPointerSample(event);
-  const horizontalDistance = Math.abs(point.clientX - dragOriginX);
-  const verticalDistance = Math.abs(point.clientY - dragOriginY);
-  if (!dragMoved && horizontalDistance >= DRAG_START_PX && horizontalDistance >= verticalDistance) {
-    dragMoved = true;
-  }
-
-  const targetLang = dragTarget;
+  recoverTerminalDrag(event);
   if (!dragMoved) {
-    ghost.classList.remove('is-visible');
+    cancelMoveFrame();
     finishPointerSession();
-    suppressOneClick();
-    animateTo(targetLang === 'en' ? 1 : 0);
+    paintCurtain(activeLang === 'en' ? 1 : 0);
+    hideCurtain();
+    dragTarget = null;
     return;
   }
 
+  const wasCatchingUp = Boolean(inputCatchUpFrame);
   recordPointerSamples(event);
-  paintCurtainAt(point.clientX);
-  paintGhostAt(point.clientX);
+  if (!wasCatchingUp) queueDragPosition(event, { immediate: true });
   const velocity = currentVelocity();
-  const travelled = Math.abs(point.clientX - dragOriginX);
-  const minFlingTravel = Math.max(MIN_FLING_TRAVEL_PX, stageWidth * MIN_FLING_TRAVEL_RATIO);
-  const target = Math.abs(velocity) >= FLING_VELOCITY && travelled >= minFlingTravel
+  const travelled = Math.abs(event.clientX - dragOriginX);
+  const target = Math.abs(velocity) >= FLING_VELOCITY && travelled >= MIN_FLING_TRAVEL_PX
     ? (velocity < 0 ? 1 : 0)
-    : (progress >= .5 ? 1 : 0);
+    : ((wasCatchingUp ? pendingProgress : progress) >= .5 ? 1 : 0);
 
   ghost.classList.remove('is-visible');
   finishPointerSession();
@@ -461,26 +622,33 @@ function endPointerSession(event) {
   animateTo(target);
 }
 
+function endMouseSession(event) {
+  if (!dragging || dragPointerType !== 'mouse') return;
+  endPointerSession(event);
+}
+
 function cancelDrag(event) {
-  if (!isActiveDragEvent(event)) return;
-  ghost.classList.remove('is-visible');
+  if (!dragging || (event && event.pointerId !== pointerId)) return;
+  cancelMoveFrame({ flush: true });
   finishPointerSession();
   dragTarget = null;
-  suppressOneClick();
   animateTo(activeLang === 'en' ? 1 : 0);
 }
 
 function handleLostPointerCapture(event) {
-  if (isActiveDragEvent(event)) cancelDrag(event);
+  if (!dragging || event.pointerId !== pointerId) return;
+  // WebKit can dispatch lostpointercapture beside pointerup. Let the terminal
+  // event win when both arrive in the same frame; otherwise safely cancel.
+  cancelAnimationFrame(lostCaptureFrame);
+  lostCaptureFrame = requestAnimationFrame(() => {
+    lostCaptureFrame = 0;
+    if (dragging && event.pointerId === pointerId) cancelDrag(event);
+  });
 }
 
 function suppressOneClick() {
   suppressNextClick = true;
-  window.clearTimeout(suppressClickTimer);
-  suppressClickTimer = window.setTimeout(() => {
-    suppressNextClick = false;
-    suppressClickTimer = 0;
-  }, 700);
+  window.setTimeout(() => { suppressNextClick = false; }, 0);
 }
 
 function switchByClick(targetLang) {
@@ -492,15 +660,9 @@ function switchByClick(targetLang) {
 for (const button of [ruButton, enButton]) {
   const targetLang = button.dataset.langTarget;
   button.addEventListener('pointerdown', event => startDrag(event, targetLang));
-  button.addEventListener('pointermove', moveDrag, { passive: false });
-  button.addEventListener('pointerup', endPointerSession);
-  button.addEventListener('pointercancel', cancelDrag);
   button.addEventListener('lostpointercapture', handleLostPointerCapture);
   button.addEventListener('click', event => {
     if (suppressNextClick) {
-      suppressNextClick = false;
-      window.clearTimeout(suppressClickTimer);
-      suppressClickTimer = 0;
       event.preventDefault();
       return;
     }
@@ -513,6 +675,7 @@ window.addEventListener('resize', () => {
   if (Math.abs(viewportWidth - lastViewportWidth) < 1) return;
   lastViewportWidth = viewportWidth;
   if (dragging || settleFrame) {
+    cancelMoveFrame();
     cancelAnimationFrame(settleFrame);
     settleFrame = 0;
     finishPointerSession();
@@ -522,6 +685,7 @@ window.addEventListener('resize', () => {
   scheduleGeometry();
 });
 window.addEventListener('popstate', () => {
+  cancelMoveFrame();
   cancelAnimationFrame(settleFrame);
   settleFrame = 0;
   cleanupCurtain();
@@ -536,6 +700,7 @@ const routeLang = location.pathname.startsWith('/en') ? 'en' : location.pathname
 const saved = readStoredLanguage();
 activeLang = routeLang ?? saved ?? activeLang;
 progress = activeLang === 'en' ? 1 : 0;
+pendingProgress = progress;
 lastViewportWidth = document.documentElement.clientWidth || window.innerWidth;
 
 render();
