@@ -7,11 +7,4 @@
   "assets": {
     "directory": "./dist"
   }
-}{
-  "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "saypix",
-  "compatibility_date": "2026-08-23",
-  "assets": {
-    "directory": "./dist"
-  }
 }
