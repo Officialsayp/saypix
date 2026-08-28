@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { readFile } from 'node:fs/promises';
+import { access, readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { siteContent } from '../src/content.js';
 
@@ -76,7 +76,7 @@ async function checkPage(file, { lang, canonicalPath }) {
   assert.match(html, /<a class="language-edge language-edge--en" href="\/en\/"/, `${file}: missing crawlable EN link`);
   assert.match(html, /<link rel="alternate" hreflang="ru" href="https:\/\/maxzolotoy\.com\/ru\/">/, `${file}: missing RU hreflang`);
   assert.match(html, /<link rel="alternate" hreflang="en" href="https:\/\/maxzolotoy\.com\/en\/">/, `${file}: missing EN hreflang`);
-  assert.match(html, /<link rel="alternate" hreflang="x-default" href="https:\/\/maxzolotoy\.com\/">/, `${file}: missing x-default hreflang`);
+  assert.match(html, /<link rel="alternate" hreflang="x-default" href="https:\/\/maxzolotoy\.com\/en\/">/, `${file}: missing x-default hreflang`);
   assert.match(html, new RegExp(`<a class="skip-link" href="#main-${lang}">`), `${file}: broken skip link`);
   assert.ok(ids.includes(`main-${lang}`), `${file}: skip-link target does not exist`);
   assert.match(html, /data-layer="primary">\s*<div class="page"/, `${file}: primary content was not prerendered`);
@@ -106,18 +106,73 @@ async function checkPage(file, { lang, canonicalPath }) {
 }
 
 await Promise.all([
-  checkPage('index.html', { lang: 'ru', canonicalPath: '' }),
   checkPage(path.join('ru', 'index.html'), { lang: 'ru', canonicalPath: 'ru/' }),
   checkPage(path.join('en', 'index.html'), { lang: 'en', canonicalPath: 'en/' }),
 ]);
 
-const [robots, sitemap] = await Promise.all([
+await assert.rejects(
+  () => access(path.join(dist, 'index.html')),
+  error => error?.code === 'ENOENT',
+  'dist/index.html must not expose a third, duplicate canonical page',
+);
+
+const [robots, sitemap, redirects, sourceRedirects, headers, wranglerSource] = await Promise.all([
   readFile(path.join(dist, 'robots.txt'), 'utf8'),
   readFile(path.join(dist, 'sitemap.xml'), 'utf8'),
+  readFile(path.join(dist, '_redirects'), 'utf8'),
+  readFile(path.join(root, 'src', '_redirects'), 'utf8'),
+  readFile(path.join(dist, '_headers'), 'utf8'),
+  readFile(path.join(root, 'wrangler.jsonc'), 'utf8'),
 ]);
 assert.match(robots, /Sitemap: https:\/\/maxzolotoy\.com\/sitemap\.xml/, 'robots.txt: missing sitemap URL');
 assert.match(sitemap, /<loc>https:\/\/maxzolotoy\.com\/ru\/<\/loc>/, 'sitemap.xml: missing RU URL');
 assert.match(sitemap, /<loc>https:\/\/maxzolotoy\.com\/en\/<\/loc>/, 'sitemap.xml: missing EN URL');
+assert.equal(occurrences(sitemap, /<loc>/g), 2, 'sitemap.xml: expected exactly two canonical URLs');
+assert.doesNotMatch(sitemap, /<loc>https:\/\/maxzolotoy\.com\/<\/loc>/, 'sitemap.xml: redirecting root must not be listed');
+assert.equal(redirects, sourceRedirects, 'dist/_redirects must match src/_redirects');
+
+const parsedRedirectRules = redirects
+  .split(/\r?\n/)
+  .map(line => line.trim())
+  .filter(line => line && !line.startsWith('#'))
+  .map(line => {
+    const [source, destination, status, ...extra] = line.split(/\s+/);
+    assert.equal(extra.length, 0, `_redirects: malformed rule ${line}`);
+    assert.ok(['301', '308'].includes(status), `_redirects: ${source} must use a permanent redirect`);
+    return [source, { destination, status }];
+  });
+const redirectRules = new Map(parsedRedirectRules);
+assert.equal(redirectRules.size, parsedRedirectRules.length, '_redirects: duplicate source rule');
+
+for (const [source, destination] of Object.entries({
+  '/': '/en/',
+  '/index': '/en/',
+  '/index.html': '/en/',
+  '/ru': '/ru/',
+  '/ru.html': '/ru/',
+  '/ru/index': '/ru/',
+  '/ru/index.html': '/ru/',
+  '/en': '/en/',
+  '/en.html': '/en/',
+  '/en/index': '/en/',
+  '/en/index.html': '/en/',
+})) {
+  assert.equal(redirectRules.get(source)?.destination, destination, `_redirects: ${source} must lead directly to ${destination}`);
+}
+assert.equal(parsedRedirectRules.length, 11, '_redirects: unexpected rule count');
+assert.doesNotMatch(headers, /immutable/, '_headers: immutable caching requires fingerprinted asset names');
+assert.match(
+  headers,
+  /https:\/\/:version\.:subdomain\.workers\.dev\/\*[\s\S]*?X-Robots-Tag: noindex/,
+  '_headers: workers.dev duplicate must be excluded from search results',
+);
+
+assert.match(wranglerSource, /"preview_urls"\s*:\s*false/, 'wrangler.jsonc: public preview URLs must be disabled');
+assert.match(
+  wranglerSource,
+  /"html_handling"\s*:\s*"force-trailing-slash"/,
+  'wrangler.jsonc: localized HTML must use the trailing-slash URL policy',
+);
 
 for (const image of ['og-ru.png', 'og-en.png']) {
   const png = await readFile(path.join(dist, image));

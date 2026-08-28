@@ -13,7 +13,6 @@ await mkdir(path.join(dist, 'en'), { recursive: true });
 
 const template = await readFile(path.join(src, 'template.html'), 'utf8');
 const variants = {
-  root: { lang: 'ru', path: '' },
   ru: { lang: 'ru', path: 'ru/' },
   en: { lang: 'en', path: 'en/' }
 };
@@ -36,11 +35,10 @@ function page(v) {
     .replaceAll('__PAGE_HTML__', renderPage(v.lang));
 }
 
-await writeFile(path.join(dist, 'index.html'), page(variants.root));
 await writeFile(path.join(dist, 'ru', 'index.html'), page(variants.ru));
 await writeFile(path.join(dist, 'en', 'index.html'), page(variants.en));
 
-for (const file of ['styles.css', 'app.js', 'content.js', 'render.js', 'curtain-math.js', 'favicon.svg', 'og-ru.png', 'og-en.png', '_headers', 'robots.txt', 'sitemap.xml']) {
+for (const file of ['styles.css', 'app.js', 'content.js', 'render.js', 'curtain-math.js', 'favicon.svg', 'og-ru.png', 'og-en.png', '_headers', '_redirects', 'robots.txt', 'sitemap.xml']) {
   await copyFile(path.join(src, file), path.join(dist, file));
 }
 
