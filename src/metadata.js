@@ -41,6 +41,18 @@ export function buildStructuredData({ lang, canonicalPath }) {
   const canonicalUrl = pageUrl(canonicalPath);
   const profileId = `${canonicalUrl}#profile`;
   const sameAs = [contactLinks.github, contactLinks.telegram].filter(Boolean);
+  const projectNodes = content.projects.cards.map(project => ({
+    '@type': 'SoftwareSourceCode',
+    '@id': `${project.url}#software-source-code`,
+    name: project.name,
+    description: project.description,
+    url: project.url,
+    codeRepository: project.url,
+    programmingLanguage: project.programmingLanguages,
+    inLanguage: lang,
+    author: { '@id': PERSON_ID },
+  }));
+  const projectReferences = projectNodes.map(project => ({ '@id': project['@id'] }));
 
   return {
     '@context': 'https://schema.org',
@@ -62,6 +74,7 @@ export function buildStructuredData({ lang, canonicalPath }) {
         inLanguage: lang,
         isPartOf: { '@id': WEBSITE_ID },
         mainEntity: { '@id': PERSON_ID },
+        hasPart: projectReferences,
       },
       {
         '@type': 'Person',
@@ -74,7 +87,9 @@ export function buildStructuredData({ lang, canonicalPath }) {
         knowsAbout: KNOWS_ABOUT,
         sameAs,
         email: contactLinks.email,
+        subjectOf: projectReferences,
       },
+      ...projectNodes,
     ],
   };
 }

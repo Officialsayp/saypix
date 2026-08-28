@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { access, readFile } from 'node:fs/promises';
 import path from 'node:path';
-import { siteContent } from '../src/content.js';
+import { projectLinks, siteContent } from '../src/content.js';
 
 const root = process.cwd();
 const dist = path.join(root, 'dist');
@@ -72,6 +72,19 @@ async function checkPage(file, { lang, canonicalPath }) {
   );
   assert.ok(html.includes(lang === 'ru' ? 'Макс Золотой' : 'Max Zolotoy'), `${file}: missing visible name variant`);
   assert.ok(html.includes('Golang'), `${file}: missing visible Golang terminology`);
+  assert.doesNotMatch(html, /Repository link coming soon|Репозиторий будет добавлен/i, `${file}: project placeholder leaked into production`);
+  for (const project of siteContent[lang].projects.cards) {
+    assert.match(project.url, /^https:\/\//, `${file}: project URL must be absolute HTTPS`);
+    assert.ok(html.includes(`<h3>${project.name}</h3>`), `${file}: missing visible project ${project.id}`);
+    assert.ok(
+      html.includes(`<a class="project-card__link" href="${project.url}" target="_blank" rel="noreferrer">${project.linkLabel}`),
+      `${file}: missing crawlable project link ${project.id}`,
+    );
+    assert.ok(!/^https?:\/\//.test(project.linkLabel), `${file}: project link needs descriptive anchor text`);
+    for (const highlight of project.highlights) {
+      assert.ok(html.includes(`<li>${highlight}</li>`), `${file}: missing project evidence for ${project.id}`);
+    }
+  }
   assert.match(html, /<a class="language-edge language-edge--ru" href="\/ru\/"/, `${file}: missing crawlable RU link`);
   assert.match(html, /<a class="language-edge language-edge--en" href="\/en\/"/, `${file}: missing crawlable EN link`);
   assert.match(html, /<link rel="alternate" hreflang="ru" href="https:\/\/maxzolotoy\.com\/ru\/">/, `${file}: missing RU hreflang`);
@@ -89,6 +102,7 @@ async function checkPage(file, { lang, canonicalPath }) {
   const website = structuredData['@graph'].find(item => item['@type'] === 'WebSite');
   const profile = structuredData['@graph'].find(item => item['@type'] === 'ProfilePage');
   const person = structuredData['@graph'].find(item => item['@type'] === 'Person');
+  const softwareProjects = structuredData['@graph'].filter(item => item['@type'] === 'SoftwareSourceCode');
   assert.equal(website?.url, 'https://maxzolotoy.com/', `${file}: wrong WebSite URL`);
   assert.equal(profile?.url, canonicalUrl, `${file}: wrong ProfilePage URL`);
   assert.equal(profile?.inLanguage, lang, `${file}: wrong ProfilePage language`);
@@ -102,8 +116,29 @@ async function checkPage(file, { lang, canonicalPath }) {
   assert.ok(person?.knowsAbout?.includes('Go'), `${file}: missing Go expertise`);
   assert.ok(person?.knowsAbout?.includes('Golang'), `${file}: missing Golang expertise`);
   assert.ok(person?.sameAs?.includes('https://github.com/Officialsayp'), `${file}: missing GitHub identity`);
+  assert.equal(softwareProjects.length, siteContent[lang].projects.cards.length, `${file}: wrong SoftwareSourceCode count`);
+  for (const project of siteContent[lang].projects.cards) {
+    const projectId = `${project.url}#software-source-code`;
+    const softwareProject = softwareProjects.find(item => item['@id'] === projectId);
+    assert.equal(softwareProject?.name, project.name, `${file}: wrong project name in JSON-LD`);
+    assert.equal(softwareProject?.description, project.description, `${file}: wrong project description in JSON-LD`);
+    assert.equal(softwareProject?.codeRepository, project.url, `${file}: wrong codeRepository in JSON-LD`);
+    assert.deepEqual(softwareProject?.programmingLanguage, project.programmingLanguages, `${file}: wrong project languages in JSON-LD`);
+    assert.equal(softwareProject?.author?.['@id'], 'https://maxzolotoy.com/#maxim-zolotoy', `${file}: project author is not linked`);
+    assert.ok(profile?.hasPart?.some(item => item['@id'] === projectId), `${file}: ProfilePage is not linked to ${project.id}`);
+    assert.ok(person?.subjectOf?.some(item => item['@id'] === projectId), `${file}: Person is not linked to ${project.id}`);
+  }
   assert.doesNotMatch(html, /__[A-Z][A-Z0-9_]+__/, `${file}: unresolved template placeholder`);
 }
+
+const ruProjectIdentity = siteContent.ru.projects.cards.map(({ id, url }) => ({ id, url }));
+const enProjectIdentity = siteContent.en.projects.cards.map(({ id, url }) => ({ id, url }));
+assert.deepEqual(ruProjectIdentity, enProjectIdentity, 'RU and EN project identities must stay aligned');
+assert.deepEqual(
+  ruProjectIdentity.map(project => project.url).sort(),
+  Object.values(projectLinks).sort(),
+  'projectLinks must be the single URL source for visible projects',
+);
 
 await Promise.all([
   checkPage(path.join('ru', 'index.html'), { lang: 'ru', canonicalPath: 'ru/' }),

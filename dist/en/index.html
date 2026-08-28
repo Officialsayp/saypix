@@ -26,7 +26,7 @@
   <meta name="twitter:description" content="Portfolio of Maxim (Max) Zolotoy, a Go (Golang) backend developer: projects, PostgreSQL, REST, Docker, DDD and direct contact details.">
   <meta name="twitter:image" content="https://maxzolotoy.com/og-en.png">
   <meta name="twitter:image:alt" content="Maxim Zolotoy — Go and Golang Backend Developer">
-  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://maxzolotoy.com/#website","url":"https://maxzolotoy.com/","name":"Maxim Zolotoy","alternateName":["Максим Золотой","Max Zolotoy","maxzolotoy.com"],"inLanguage":["ru","en"]},{"@type":"ProfilePage","@id":"https://maxzolotoy.com/en/#profile","url":"https://maxzolotoy.com/en/","name":"Maxim Zolotoy — Go (Golang) Backend Developer","description":"Portfolio of Maxim (Max) Zolotoy, a Go (Golang) backend developer: projects, PostgreSQL, REST, Docker, DDD and direct contact details.","inLanguage":"en","isPartOf":{"@id":"https://maxzolotoy.com/#website"},"mainEntity":{"@id":"https://maxzolotoy.com/#maxim-zolotoy"}},{"@type":"Person","@id":"https://maxzolotoy.com/#maxim-zolotoy","name":"Maxim Zolotoy","alternateName":["Максим Золотой","Макс Золотой","Max Zolotoy","maxzolotoy","@max_zolotoy","Officialsayp"],"url":"https://maxzolotoy.com/","jobTitle":"Go Backend Developer","description":"I am Maxim Zolotoy (Max Zolotoy), a Go (Golang) backend developer focused on domain logic, APIs and data, with explicit invariants and reliable systems.","knowsAbout":["Go","Golang","Backend development","PostgreSQL","REST APIs","Docker","Domain-driven design"],"sameAs":["https://github.com/Officialsayp","https://t.me/max_zolotoy"],"email":"hello@maxzolotoy.com"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://maxzolotoy.com/#website","url":"https://maxzolotoy.com/","name":"Maxim Zolotoy","alternateName":["Максим Золотой","Max Zolotoy","maxzolotoy.com"],"inLanguage":["ru","en"]},{"@type":"ProfilePage","@id":"https://maxzolotoy.com/en/#profile","url":"https://maxzolotoy.com/en/","name":"Maxim Zolotoy — Go (Golang) Backend Developer","description":"Portfolio of Maxim (Max) Zolotoy, a Go (Golang) backend developer: projects, PostgreSQL, REST, Docker, DDD and direct contact details.","inLanguage":"en","isPartOf":{"@id":"https://maxzolotoy.com/#website"},"mainEntity":{"@id":"https://maxzolotoy.com/#maxim-zolotoy"},"hasPart":[{"@id":"https://github.com/Officialsayp/stockflow#software-source-code"},{"@id":"https://github.com/Officialsayp/saypix#software-source-code"}]},{"@type":"Person","@id":"https://maxzolotoy.com/#maxim-zolotoy","name":"Maxim Zolotoy","alternateName":["Максим Золотой","Макс Золотой","Max Zolotoy","maxzolotoy","@max_zolotoy","Officialsayp"],"url":"https://maxzolotoy.com/","jobTitle":"Go Backend Developer","description":"I am Maxim Zolotoy (Max Zolotoy), a Go (Golang) backend developer focused on domain logic, APIs and data, with explicit invariants and reliable systems.","knowsAbout":["Go","Golang","Backend development","PostgreSQL","REST APIs","Docker","Domain-driven design"],"sameAs":["https://github.com/Officialsayp","https://t.me/max_zolotoy"],"email":"hello@maxzolotoy.com","subjectOf":[{"@id":"https://github.com/Officialsayp/stockflow#software-source-code"},{"@id":"https://github.com/Officialsayp/saypix#software-source-code"}]},{"@type":"SoftwareSourceCode","@id":"https://github.com/Officialsayp/stockflow#software-source-code","name":"StockFlow — order and payment domain","description":"A work-in-progress educational Go project where I practice order and payment domain modelling, state transitions, and basic HTTP handlers.","url":"https://github.com/Officialsayp/stockflow","codeRepository":"https://github.com/Officialsayp/stockflow","programmingLanguage":["Go"],"inLanguage":"en","author":{"@id":"https://maxzolotoy.com/#maxim-zolotoy"}},{"@type":"SoftwareSourceCode","@id":"https://github.com/Officialsayp/saypix#software-source-code","name":"maxzolotoy.com — bilingual website","description":"A static RU/EN website built with HTML, CSS, and JavaScript without runtime dependencies, featuring a custom drag interaction and SEO markup for two indexable URLs.","url":"https://github.com/Officialsayp/saypix","codeRepository":"https://github.com/Officialsayp/saypix","programmingLanguage":["HTML","CSS","JavaScript"],"inLanguage":"en","author":{"@id":"https://maxzolotoy.com/#maxim-zolotoy"}}]}</script>
   <link rel="canonical" href="https://maxzolotoy.com/en/">
   <link rel="alternate" hreflang="ru" href="https://maxzolotoy.com/ru/">
   <link rel="alternate" hreflang="en" href="https://maxzolotoy.com/en/">
@@ -94,16 +94,37 @@
 
         <section class="section" id="projects-en">
           <div class="container">
-            <div class="section__head"><div class="kicker">03 / PROJECTS</div><h2>Learning through realistic engineering scenarios.</h2></div>
+            <div class="section__head"><div class="kicker">03 / PROJECTS</div><h2>Go backend projects and verifiable engineering work.</h2></div>
             <div class="project-list">
     <article class="project-card">
       <div class="project-card__num">01</div>
-      <div>
-        <h3>Order Domain</h3>
-        <p>A learning order-domain model covering items, money, order states, online payments, cancellation and state transitions.</p>
-        <div class="project-card__tags"><span class="project-card__tag">#Go</span><span class="project-card__tag">#DDD</span><span class="project-card__tag">#Domain-Logic</span></div>
+      <div class="project-card__content">
+        <h3>StockFlow — order and payment domain</h3>
+        <p>A work-in-progress educational Go project where I practice order and payment domain modelling, state transitions, and basic HTTP handlers.</p>
+        <ul class="project-card__highlights">
+          <li>Value objects for money and order items, order states, and validated state transitions.</li><li>Online payment, cancellation, and refund scenarios encoded in the domain model.</li><li>Basic net/http handlers for creating orders, retrieving them by ID, and health checks.</li>
+        </ul>
+        <div class="project-card__tags"><span class="project-card__tag">#Go</span><span class="project-card__tag">#net/http</span><span class="project-card__tag">#DDD</span><span class="project-card__tag">#WIP</span></div>
       </div>
-      <div class="project-card__status">Repository link coming soon</div>
+      <div class="project-card__meta">
+        <span class="project-card__status">Educational project · WIP</span>
+        <a class="project-card__link" href="https://github.com/Officialsayp/stockflow" target="_blank" rel="noreferrer">View the StockFlow source code on GitHub<span aria-hidden="true"> ↗</span></a>
+      </div>
+    </article>
+    <article class="project-card">
+      <div class="project-card__num">02</div>
+      <div class="project-card__content">
+        <h3>maxzolotoy.com — bilingual website</h3>
+        <p>A static RU/EN website built with HTML, CSS, and JavaScript without runtime dependencies, featuring a custom drag interaction and SEO markup for two indexable URLs.</p>
+        <ul class="project-card__highlights">
+          <li>The /ru/ and /en/ content is prerendered to static HTML with canonical, hreflang, sitemap, and JSON-LD.</li><li>The language switcher supports Pointer Events, keyboard controls, ordinary links, and prefers-reduced-motion.</li><li>CI rebuilds the site and verifies SEO, accessibility, and curtain invariants before publishing.</li>
+        </ul>
+        <div class="project-card__tags"><span class="project-card__tag">#JavaScript</span><span class="project-card__tag">#Accessibility</span><span class="project-card__tag">#Technical-SEO</span><span class="project-card__tag">#Cloudflare</span></div>
+      </div>
+      <div class="project-card__meta">
+        <span class="project-card__status">Published</span>
+        <a class="project-card__link" href="https://github.com/Officialsayp/saypix" target="_blank" rel="noreferrer">View the maxzolotoy.com source code on GitHub<span aria-hidden="true"> ↗</span></a>
+      </div>
     </article></div>
           </div>
         </section>
