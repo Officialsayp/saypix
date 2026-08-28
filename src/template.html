@@ -15,32 +15,25 @@
   <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-  <a class="skip-link" href="#main">Skip to content</a>
+  <a class="skip-link" href="#main-__INITIAL_LANG__">__SKIP_LABEL__</a>
 
   <div class="ambient ambient-a" aria-hidden="true"></div>
   <div class="ambient ambient-b" aria-hidden="true"></div>
 
-  <div class="language-ui" aria-label="Language switcher">
-    <button class="language-edge language-edge--ru" type="button" data-lang-target="ru" aria-label="Русский язык">RU</button>
-    <button class="language-edge language-edge--en" type="button" data-lang-target="en" aria-label="English language">EN</button>
+  <nav class="language-ui" aria-label="__LANGUAGE_UI_LABEL__">
+    <a class="language-edge language-edge--ru" href="/ru/" hreflang="ru" lang="ru" data-lang-target="ru" aria-label="Русский язык"__RU_CURRENT__>RU</a>
+    <a class="language-edge language-edge--en" href="/en/" hreflang="en" lang="en" data-lang-target="en" aria-label="English language"__EN_CURRENT__>EN</a>
     <div class="language-ghost" aria-hidden="true">EN</div>
     <div class="curtain-divider" aria-hidden="true"></div>
-    <div class="drag-hint" aria-hidden="true">drag</div>
-  </div>
+    <div class="drag-hint" aria-hidden="true">__DRAG_LABEL__</div>
+  </nav>
 
   <div class="site-shell" id="site-shell">
-    <div class="language-layer language-layer--ru" data-layer="ru"></div>
-    <div class="language-reveal" data-reveal="en">
-      <div class="language-layer language-layer--en" data-layer="en"></div>
+    <div class="language-layer language-layer--primary" data-layer="primary">__PAGE_HTML__</div>
+    <div class="language-reveal" data-reveal aria-hidden="true" inert>
+      <div class="language-layer language-layer--curtain" data-layer="curtain"></div>
     </div>
   </div>
-
-  <noscript>
-    <div class="noscript">
-      JavaScript is required for the interactive language curtain. Use
-      <a href="/ru/">RU</a> or <a href="/en/">EN</a>.
-    </div>
-  </noscript>
 
 <script type="module" src="/app.js"></script>
 </body>

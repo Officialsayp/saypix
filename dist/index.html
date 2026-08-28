@@ -15,32 +15,97 @@
   <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-  <a class="skip-link" href="#main">Skip to content</a>
+  <a class="skip-link" href="#main-ru">Перейти к содержимому</a>
 
   <div class="ambient ambient-a" aria-hidden="true"></div>
   <div class="ambient ambient-b" aria-hidden="true"></div>
 
-  <div class="language-ui" aria-label="Language switcher">
-    <button class="language-edge language-edge--ru" type="button" data-lang-target="ru" aria-label="Русский язык">RU</button>
-    <button class="language-edge language-edge--en" type="button" data-lang-target="en" aria-label="English language">EN</button>
+  <nav class="language-ui" aria-label="Выбор языка">
+    <a class="language-edge language-edge--ru" href="/ru/" hreflang="ru" lang="ru" data-lang-target="ru" aria-label="Русский язык" aria-current="page">RU</a>
+    <a class="language-edge language-edge--en" href="/en/" hreflang="en" lang="en" data-lang-target="en" aria-label="English language">EN</a>
     <div class="language-ghost" aria-hidden="true">EN</div>
     <div class="curtain-divider" aria-hidden="true"></div>
-    <div class="drag-hint" aria-hidden="true">drag</div>
-  </div>
+    <div class="drag-hint" aria-hidden="true">тянуть</div>
+  </nav>
 
   <div class="site-shell" id="site-shell">
-    <div class="language-layer language-layer--ru" data-layer="ru"></div>
-    <div class="language-reveal" data-reveal="en">
-      <div class="language-layer language-layer--en" data-layer="en"></div>
+    <div class="language-layer language-layer--primary" data-layer="primary">
+    <div class="page" lang="ru">
+      <header class="header">
+        <div class="container header__inner">
+          <a class="brand" href="#top-ru" aria-label="Максим Золотой — главная">MZ.</a>
+          <nav class="nav" aria-label="Основная навигация">
+            <a href="#about-ru">Обо мне</a><a href="#stack-ru">Стек</a><a href="#projects-ru">Проекты</a><a href="#contacts-ru">Контакты</a>
+          </nav>
+        </div>
+      </header>
+
+      <main id="main-ru">
+        <section class="hero" id="top-ru">
+          <div class="container hero__grid">
+            <div>
+              <div class="eyebrow">GO BACKEND DEVELOPER</div>
+              <h1>Максим Золотой</h1>
+              <p class="hero__lead">Развиваюсь в backend-разработке на Go: проектирую доменную логику, API и работу с данными, уделяя внимание понятным инвариантам и надежности.</p>
+              <div class="hero__actions">
+                <a class="button button--primary" href="#projects-ru">Посмотреть проекты</a>
+                <a class="button button--ghost" href="#contacts-ru">Связаться</a>
+              </div>
+            </div>
+            <div class="hero__visual" aria-hidden="true">
+              <div class="hero__visual-code"><strong>package</strong> portfolio<br><br><strong>func</strong> main() {<br>&nbsp;&nbsp;focus := "Go backend"<br>&nbsp;&nbsp;build(focus)<br>}</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section" id="about-ru">
+          <div class="container">
+            <div class="section__head"><div class="kicker">01 / ОБО МНЕ</div><h2>Инженерный подход без лишнего шума.</h2></div>
+            <p class="section__body">Мой основной фокус — Go backend. В учебных проектах прорабатываю доменную модель, жизненный цикл заказа и оплаты, архитектурные границы и хранение данных. Сайт построен как статический frontend и одновременно служит площадкой для экспериментов с интерфейсами и deployment-процессом.</p>
+          </div>
+        </section>
+
+        <section class="section" id="stack-ru">
+          <div class="container">
+            <div class="section__head"><div class="kicker">02 / СТЕК</div><h2>Технологии, с которыми работаю и которые изучаю.</h2></div>
+            <div class="chips"><span class="chip">Go</span><span class="chip">PostgreSQL</span><span class="chip">SQL</span><span class="chip">Docker</span><span class="chip">REST</span><span class="chip">Git</span><span class="chip">DDD</span><span class="chip">Linux</span></div>
+          </div>
+        </section>
+
+        <section class="section" id="projects-ru">
+          <div class="container">
+            <div class="section__head"><div class="kicker">03 / ПРОЕКТЫ</div><h2>Практика через реальные инженерные сценарии.</h2></div>
+            <div class="project-list">
+    <article class="project-card">
+      <div class="project-card__num">01</div>
+      <div>
+        <h3>Order Domain</h3>
+        <p>Учебная доменная модель заказа: позиции, деньги, статусы заказа, онлайн-оплата, отмена и переходы состояния.</p>
+        <div class="project-card__tags"><span class="project-card__tag">#Go</span><span class="project-card__tag">#DDD</span><span class="project-card__tag">#Domain-Logic</span></div>
+      </div>
+      <div class="project-card__status">Репозиторий будет добавлен</div>
+    </article></div>
+          </div>
+        </section>
+
+        <section class="section" id="contacts-ru">
+          <div class="container">
+            <div class="section__head"><div class="kicker">04 /</div><h2>КОНТАКТЫ</h2></div>
+            <div class="contacts__links">
+              <a class="button button--ghost contact-link" href="mailto:hello@maxzolotoy.com">Email · hello@maxzolotoy.com</a>
+              <a class="button button--ghost contact-link" href="https://t.me/max_zolotoy" target="_blank" rel="noreferrer">Telegram · @max_zolotoy</a>
+              <a class="button button--ghost contact-link" href="https://github.com/Officialsayp" target="_blank" rel="noreferrer">GitHub · github.com/Officialsayp</a>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer class="footer"><div class="container">Сделано без frontend-фреймворков — HTML, CSS и JavaScript.</div></footer>
+    </div></div>
+    <div class="language-reveal" data-reveal aria-hidden="true" inert>
+      <div class="language-layer language-layer--curtain" data-layer="curtain"></div>
     </div>
   </div>
-
-  <noscript>
-    <div class="noscript">
-      JavaScript is required for the interactive language curtain. Use
-      <a href="/ru/">RU</a> or <a href="/en/">EN</a>.
-    </div>
-  </noscript>
 
 <script type="module" src="/app.js"></script>
 </body>
