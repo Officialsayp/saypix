@@ -11,6 +11,14 @@
   --header-h: 76px;
   --content-w: 1180px;
   --page-pad: clamp(20px, 4vw, 54px);
+  --language-control-size: 48px;
+  --language-edge-offset: 18px;
+  --header-control-gap: 16px;
+  --header-edge-clearance: max(
+    calc(var(--language-edge-offset) + var(--language-control-size) + var(--header-control-gap)),
+    calc(env(safe-area-inset-left, 0px) + var(--language-control-size) + var(--header-control-gap)),
+    calc(env(safe-area-inset-right, 0px) + var(--language-control-size) + var(--header-control-gap))
+  );
   --radius: 22px;
 }
 
@@ -103,21 +111,32 @@ button { font: inherit; }
   backdrop-filter: blur(16px);
 }
 .header__inner {
+  width: min(
+    var(--content-w),
+    calc(100% - var(--header-edge-clearance) - var(--header-edge-clearance))
+  );
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 28px;
 }
 .brand {
+  flex: 0 0 auto;
   font-weight: 760;
   letter-spacing: -.03em;
   text-decoration: none;
 }
-.nav { display: flex; gap: clamp(14px, 2.5vw, 34px); }
+.nav {
+  min-width: 0;
+  display: flex;
+  justify-content: flex-end;
+  gap: clamp(14px, 2.5vw, 34px);
+}
 .nav a {
   color: var(--muted);
   text-decoration: none;
   font-size: 14px;
+  white-space: nowrap;
   transition: color 160ms ease;
 }
 .nav a:hover, .nav a:focus-visible { color: var(--text); }
@@ -297,7 +316,7 @@ button { font: inherit; }
   position: fixed;
   top: max(18px, env(safe-area-inset-top));
   z-index: 53;
-  width: 48px;
+  width: var(--language-control-size);
   min-height: 44px;
   border: 1px solid rgba(255,255,255,.18);
   border-radius: 999px;
@@ -325,15 +344,15 @@ button { font: inherit; }
 }
 .language-edge.is-active { background: rgba(255,255,255,.10); cursor: default; }
 .language-edge.is-drag-source { opacity: .28; }
-.language-edge--ru { left: max(18px, env(safe-area-inset-left)); }
-.language-edge--en { right: max(18px, env(safe-area-inset-right)); }
+.language-edge--ru { left: max(var(--language-edge-offset), env(safe-area-inset-left)); }
+.language-edge--en { right: max(var(--language-edge-offset), env(safe-area-inset-right)); }
 
 .language-ghost {
   position: fixed;
   top: max(18px, env(safe-area-inset-top));
   left: 0;
   z-index: 55;
-  width: 48px;
+  width: var(--language-control-size);
   min-height: 44px;
   display: grid;
   place-items: center;
@@ -378,6 +397,12 @@ button { font: inherit; }
 body[data-lang="en"] .drag-hint { right: auto; left: 75px; }
 body.has-used-curtain .drag-hint { opacity: 0; }
 
+/* The hint is decorative. Keep it out of the header until both side gutters
+   are wider than the fixed language control and the adjacent navigation. */
+@media (max-width: 1450px) {
+  .drag-hint { display: none; }
+}
+
 /* Warm the drag layers before the first visible pixel moves in WebKit. */
 body.is-curtain-prepared .language-reveal,
 body.is-curtain-prepared .language-layer--curtain,
@@ -407,7 +432,10 @@ body.is-curtain-prepared .curtain-divider { box-shadow: none; }
 }
 
 @media (max-width: 560px) {
-  :root { --page-pad: 20px; }
+  :root {
+    --page-pad: 20px;
+    --language-edge-offset: 14px;
+  }
   .hero { padding-top: 92px; }
   .hero h1 { font-size: clamp(52px, 17vw, 78px); }
   .hero__lead { font-size: 17px; }
@@ -416,8 +444,6 @@ body.is-curtain-prepared .curtain-divider { box-shadow: none; }
   .section h2 { font-size: 38px; }
   .section__body { font-size: 17px; margin-top: 28px; }
   .project-card { padding: 28px 0; gap: 14px; }
-  .language-edge--ru { left: max(14px, env(safe-area-inset-left)); }
-  .language-edge--en { right: max(14px, env(safe-area-inset-right)); }
   .drag-hint { display: none; }
 }
 
