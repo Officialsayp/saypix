@@ -15,12 +15,18 @@ export function renderPage(lang) {
   const projects = c.projects.cards.map(card => `
     <article class="project-card">
       <div class="project-card__num">${card.number}</div>
-      <div>
+      <div class="project-card__content">
         <h3>${card.name}</h3>
         <p>${card.description}</p>
+        <ul class="project-card__highlights">
+          ${card.highlights.map(highlight => `<li>${highlight}</li>`).join('')}
+        </ul>
         <div class="project-card__tags">${card.tags.map(tag => `<span class="project-card__tag">#${tag.replaceAll(' ', '-')}</span>`).join('')}</div>
       </div>
-      <div class="project-card__status">${card.linkLabel}</div>
+      <div class="project-card__meta">
+        <span class="project-card__status">${card.status}</span>
+        <a class="project-card__link" href="${card.url}" target="_blank" rel="noreferrer">${card.linkLabel}<span aria-hidden="true"> ↗</span></a>
+      </div>
     </article>`).join('');
 
   return `

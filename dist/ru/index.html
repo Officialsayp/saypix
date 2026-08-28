@@ -26,7 +26,7 @@
   <meta name="twitter:description" content="Портфолио Максима (Макса) Золотого, backend-разработчика на Go (Golang): проекты, PostgreSQL, REST, Docker, DDD и прямые контакты.">
   <meta name="twitter:image" content="https://maxzolotoy.com/og-ru.png">
   <meta name="twitter:image:alt" content="Максим Золотой — Go и Golang backend-разработчик">
-  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://maxzolotoy.com/#website","url":"https://maxzolotoy.com/","name":"Maxim Zolotoy","alternateName":["Максим Золотой","Max Zolotoy","maxzolotoy.com"],"inLanguage":["ru","en"]},{"@type":"ProfilePage","@id":"https://maxzolotoy.com/ru/#profile","url":"https://maxzolotoy.com/ru/","name":"Максим Золотой — Go (Golang) backend-разработчик","description":"Портфолио Максима (Макса) Золотого, backend-разработчика на Go (Golang): проекты, PostgreSQL, REST, Docker, DDD и прямые контакты.","inLanguage":"ru","isPartOf":{"@id":"https://maxzolotoy.com/#website"},"mainEntity":{"@id":"https://maxzolotoy.com/#maxim-zolotoy"}},{"@type":"Person","@id":"https://maxzolotoy.com/#maxim-zolotoy","name":"Максим Золотой","alternateName":["Макс Золотой","Maxim Zolotoy","Max Zolotoy","maxzolotoy","@max_zolotoy","Officialsayp"],"url":"https://maxzolotoy.com/","jobTitle":"Go Backend Developer","description":"Я — Максим Золотой (Макс Золотой), backend-разработчик на Go (Golang). Проектирую доменную логику, API и работу с данными, уделяя внимание понятным инвариантам и надежности.","knowsAbout":["Go","Golang","Backend development","PostgreSQL","REST APIs","Docker","Domain-driven design"],"sameAs":["https://github.com/Officialsayp","https://t.me/max_zolotoy"],"email":"hello@maxzolotoy.com"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://maxzolotoy.com/#website","url":"https://maxzolotoy.com/","name":"Maxim Zolotoy","alternateName":["Максим Золотой","Max Zolotoy","maxzolotoy.com"],"inLanguage":["ru","en"]},{"@type":"ProfilePage","@id":"https://maxzolotoy.com/ru/#profile","url":"https://maxzolotoy.com/ru/","name":"Максим Золотой — Go (Golang) backend-разработчик","description":"Портфолио Максима (Макса) Золотого, backend-разработчика на Go (Golang): проекты, PostgreSQL, REST, Docker, DDD и прямые контакты.","inLanguage":"ru","isPartOf":{"@id":"https://maxzolotoy.com/#website"},"mainEntity":{"@id":"https://maxzolotoy.com/#maxim-zolotoy"},"hasPart":[{"@id":"https://github.com/Officialsayp/stockflow#software-source-code"},{"@id":"https://github.com/Officialsayp/saypix#software-source-code"}]},{"@type":"Person","@id":"https://maxzolotoy.com/#maxim-zolotoy","name":"Максим Золотой","alternateName":["Макс Золотой","Maxim Zolotoy","Max Zolotoy","maxzolotoy","@max_zolotoy","Officialsayp"],"url":"https://maxzolotoy.com/","jobTitle":"Go Backend Developer","description":"Я — Максим Золотой (Макс Золотой), backend-разработчик на Go (Golang). Проектирую доменную логику, API и работу с данными, уделяя внимание понятным инвариантам и надежности.","knowsAbout":["Go","Golang","Backend development","PostgreSQL","REST APIs","Docker","Domain-driven design"],"sameAs":["https://github.com/Officialsayp","https://t.me/max_zolotoy"],"email":"hello@maxzolotoy.com","subjectOf":[{"@id":"https://github.com/Officialsayp/stockflow#software-source-code"},{"@id":"https://github.com/Officialsayp/saypix#software-source-code"}]},{"@type":"SoftwareSourceCode","@id":"https://github.com/Officialsayp/stockflow#software-source-code","name":"StockFlow — домен заказа и оплаты","description":"Учебный Go-проект в статусе WIP, где я прорабатываю доменную модель заказа и оплаты, переходы состояний и базовые HTTP-обработчики.","url":"https://github.com/Officialsayp/stockflow","codeRepository":"https://github.com/Officialsayp/stockflow","programmingLanguage":["Go"],"inLanguage":"ru","author":{"@id":"https://maxzolotoy.com/#maxim-zolotoy"}},{"@type":"SoftwareSourceCode","@id":"https://github.com/Officialsayp/saypix#software-source-code","name":"maxzolotoy.com — двуязычный сайт","description":"Статический RU/EN-сайт на HTML, CSS и JavaScript без runtime-зависимостей — с собственной drag-механикой и SEO-разметкой для двух индексируемых URL.","url":"https://github.com/Officialsayp/saypix","codeRepository":"https://github.com/Officialsayp/saypix","programmingLanguage":["HTML","CSS","JavaScript"],"inLanguage":"ru","author":{"@id":"https://maxzolotoy.com/#maxim-zolotoy"}}]}</script>
   <link rel="canonical" href="https://maxzolotoy.com/ru/">
   <link rel="alternate" hreflang="ru" href="https://maxzolotoy.com/ru/">
   <link rel="alternate" hreflang="en" href="https://maxzolotoy.com/en/">
@@ -94,16 +94,37 @@
 
         <section class="section" id="projects-ru">
           <div class="container">
-            <div class="section__head"><div class="kicker">03 / ПРОЕКТЫ</div><h2>Практика через реальные инженерные сценарии.</h2></div>
+            <div class="section__head"><div class="kicker">03 / ПРОЕКТЫ</div><h2>Go backend-проекты и проверяемые инженерные кейсы.</h2></div>
             <div class="project-list">
     <article class="project-card">
       <div class="project-card__num">01</div>
-      <div>
-        <h3>Order Domain</h3>
-        <p>Учебная доменная модель заказа: позиции, деньги, статусы заказа, онлайн-оплата, отмена и переходы состояния.</p>
-        <div class="project-card__tags"><span class="project-card__tag">#Go</span><span class="project-card__tag">#DDD</span><span class="project-card__tag">#Domain-Logic</span></div>
+      <div class="project-card__content">
+        <h3>StockFlow — домен заказа и оплаты</h3>
+        <p>Учебный Go-проект в статусе WIP, где я прорабатываю доменную модель заказа и оплаты, переходы состояний и базовые HTTP-обработчики.</p>
+        <ul class="project-card__highlights">
+          <li>Value objects для денег и позиций заказа, статусы и проверяемые переходы состояния.</li><li>Сценарии онлайн-оплаты, отмены и возврата средств закреплены в доменной модели.</li><li>Базовые net/http-обработчики: создание заказа, получение по ID и health check.</li>
+        </ul>
+        <div class="project-card__tags"><span class="project-card__tag">#Go</span><span class="project-card__tag">#net/http</span><span class="project-card__tag">#DDD</span><span class="project-card__tag">#WIP</span></div>
       </div>
-      <div class="project-card__status">Репозиторий будет добавлен</div>
+      <div class="project-card__meta">
+        <span class="project-card__status">Учебный проект · WIP</span>
+        <a class="project-card__link" href="https://github.com/Officialsayp/stockflow" target="_blank" rel="noreferrer">Исходный код StockFlow на GitHub<span aria-hidden="true"> ↗</span></a>
+      </div>
+    </article>
+    <article class="project-card">
+      <div class="project-card__num">02</div>
+      <div class="project-card__content">
+        <h3>maxzolotoy.com — двуязычный сайт</h3>
+        <p>Статический RU/EN-сайт на HTML, CSS и JavaScript без runtime-зависимостей — с собственной drag-механикой и SEO-разметкой для двух индексируемых URL.</p>
+        <ul class="project-card__highlights">
+          <li>Контент /ru/ и /en/ предрендерится в статический HTML с canonical, hreflang, sitemap и JSON-LD.</li><li>Переключатель языка поддерживает Pointer Events, клавиатуру, обычные ссылки и prefers-reduced-motion.</li><li>CI пересобирает сайт и проверяет SEO-, accessibility- и curtain-инварианты перед публикацией.</li>
+        </ul>
+        <div class="project-card__tags"><span class="project-card__tag">#JavaScript</span><span class="project-card__tag">#Accessibility</span><span class="project-card__tag">#Technical-SEO</span><span class="project-card__tag">#Cloudflare</span></div>
+      </div>
+      <div class="project-card__meta">
+        <span class="project-card__status">Опубликован</span>
+        <a class="project-card__link" href="https://github.com/Officialsayp/saypix" target="_blank" rel="noreferrer">Исходный код maxzolotoy.com на GitHub<span aria-hidden="true"> ↗</span></a>
+      </div>
     </article></div>
           </div>
         </section>
