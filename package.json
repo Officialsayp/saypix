@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "node scripts/build.mjs",
-    "check": "node --check src/app.js && node --check src/content.js && node --check src/render.js && node --check src/curtain-math.js && node --check scripts/build.mjs && node --check scripts/check-build.mjs && node --check scripts/check-curtain.mjs && node scripts/check-build.mjs && node scripts/check-curtain.mjs",
+    "check": "node --check src/app.js && node --check src/content.js && node --check src/render.js && node --check src/metadata.js && node --check src/curtain-math.js && node --check scripts/build.mjs && node --check scripts/check-build.mjs && node --check scripts/check-curtain.mjs && node scripts/check-build.mjs && node scripts/check-curtain.mjs",
     "test": "npm run build && npm run check",
     "preview": "npm run build && python3 -m http.server 4173 -d dist"
   }

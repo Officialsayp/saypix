@@ -27,7 +27,7 @@ export function renderPage(lang) {
     <div class="page" lang="${lang}">
       <header class="header">
         <div class="container header__inner">
-          <a class="brand" href="#top-${lang}" aria-label="${lang === 'ru' ? 'Максим Золотой — главная' : 'Max Zolotoy — home'}">MZ.</a>
+          <a class="brand" href="#top-${lang}" aria-label="${lang === 'ru' ? 'Максим Золотой — главная' : 'Maxim Zolotoy — home'}">MZ.</a>
           <nav class="nav" aria-label="${lang === 'ru' ? 'Основная навигация' : 'Main navigation'}">
             ${c.nav.map(([label, id]) => `<a href="#${id}-${lang}">${label}</a>`).join('')}
           </nav>

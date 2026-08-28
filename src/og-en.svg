@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#11131a"/>
+      <stop offset="1" stop-color="#090a0e"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#2f6bff" stop-opacity=".62"/>
+      <stop offset="1" stop-color="#2f6bff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <circle cx="1040" cy="75" r="360" fill="url(#glow)"/>
+  <circle cx="1045" cy="92" r="215" fill="none" stroke="#ffffff" stroke-opacity=".12" stroke-width="2"/>
+  <circle cx="1090" cy="500" r="118" fill="none" stroke="#2f6bff" stroke-opacity=".35" stroke-width="2"/>
+  <rect x="72" y="66" width="80" height="80" rx="24" fill="#f5f7fb"/>
+  <path d="M91 124V88h10l11 18 12-18h10v36h-10v-20l-12 18-11-18v20z" fill="#0b0c10"/>
+  <circle cx="142" cy="78" r="10" fill="#2f6bff"/>
+  <text x="72" y="300" fill="#f5f7fb" font-family="Arial, Helvetica, sans-serif" font-size="82" font-weight="700" letter-spacing="-2">Maxim Zolotoy</text>
+  <text x="76" y="374" fill="#aeb6c7" font-family="Arial, Helvetica, sans-serif" font-size="37" font-weight="500">Go / Golang Backend Developer</text>
+  <line x1="76" y1="454" x2="630" y2="454" stroke="#ffffff" stroke-opacity=".16" stroke-width="2"/>
+  <text x="76" y="540" fill="#83a5ff" font-family="Arial, Helvetica, sans-serif" font-size="27" font-weight="700" letter-spacing="3">MAXZOLOTOY.COM</text>
+  <text x="970" y="390" fill="#f5f7fb" fill-opacity=".9" font-family="Menlo, Consolas, monospace" font-size="88" font-weight="700">{}</text>
+</svg>

@@ -1,8 +1,11 @@
 export const siteContent = {
   ru: {
     meta: {
-      title: "Максим Золотой — Go Backend Developer",
-      description: "Персональный сайт Максима Золотого: Go backend, проекты, стек и контакты."
+      title: "Максим Золотой — Go (Golang) backend-разработчик",
+      description: "Портфолио Максима (Макса) Золотого, backend-разработчика на Go (Golang): проекты, PostgreSQL, REST, Docker, DDD и прямые контакты.",
+      locale: "ru_RU",
+      socialImage: "/og-ru.png",
+      socialImageAlt: "Максим Золотой — Go и Golang backend-разработчик"
     },
     nav: [
       ["Обо мне", "about"],
@@ -13,7 +16,7 @@ export const siteContent = {
     hero: {
       eyebrow: "GO BACKEND DEVELOPER",
       title: "Максим Золотой",
-      lead: "Развиваюсь в backend-разработке на Go: проектирую доменную логику, API и работу с данными, уделяя внимание понятным инвариантам и надежности.",
+      lead: "Я — Максим Золотой (Макс Золотой), backend-разработчик на Go (Golang). Проектирую доменную логику, API и работу с данными, уделяя внимание понятным инвариантам и надежности.",
       primary: "Посмотреть проекты",
       secondary: "Связаться"
     },
@@ -51,8 +54,11 @@ export const siteContent = {
   },
   en: {
     meta: {
-      title: "Max Zolotoy — Go Backend Developer",
-      description: "Max Zolotoy's personal website: Go backend, projects, stack and contacts."
+      title: "Maxim Zolotoy — Go (Golang) Backend Developer",
+      description: "Portfolio of Maxim (Max) Zolotoy, a Go (Golang) backend developer: projects, PostgreSQL, REST, Docker, DDD and direct contact details.",
+      locale: "en_US",
+      socialImage: "/og-en.png",
+      socialImageAlt: "Maxim Zolotoy — Go and Golang Backend Developer"
     },
     nav: [
       ["About", "about"],
@@ -62,8 +68,8 @@ export const siteContent = {
     ],
     hero: {
       eyebrow: "GO BACKEND DEVELOPER",
-      title: "Max Zolotoy",
-      lead: "I am developing as a Go backend engineer, focusing on domain logic, APIs and data while keeping invariants explicit and systems reliable.",
+      title: "Maxim Zolotoy",
+      lead: "I am Maxim Zolotoy (Max Zolotoy), a Go (Golang) backend developer focused on domain logic, APIs and data, with explicit invariants and reliable systems.",
       primary: "View projects",
       secondary: "Contact me"
     },

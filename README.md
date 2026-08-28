@@ -15,6 +15,8 @@
 - `prefers-reduced-motion`;
 - запоминание выбранного языка в `localStorage`;
 - маршруты `/ru/` и `/en/` + `hreflang`, sitemap и robots.txt;
+- локализованные title/description, Open Graph и Twitter Card;
+- JSON-LD граф `WebSite` → `ProfilePage` → `Person` с публичными вариантами имени;
 - адаптивная верстка;
 - нет runtime-зависимостей и frontend-фреймворков;
 - готово к Cloudflare Pages.
@@ -64,6 +66,10 @@ export const contactLinks = {
   github: "https://github.com/username"
 };
 ```
+
+Поисковые и social-метаданные собираются из того же контента в
+`src/metadata.js`. Исходники карточек находятся в `src/og-ru.svg` и
+`src/og-en.svg`, а опубликованные PNG имеют размер 1200×630.
 
 ## Как работает шторка
 

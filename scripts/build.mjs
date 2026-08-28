@@ -1,6 +1,7 @@
 import { mkdir, readFile, writeFile, copyFile, rm } from 'node:fs/promises';
 import path from 'node:path';
 import { siteContent } from '../src/content.js';
+import { renderSeoMetadata } from '../src/metadata.js';
 import { renderPage } from '../src/render.js';
 
 const root = process.cwd();
@@ -25,6 +26,7 @@ function page(v) {
     .replaceAll('__INITIAL_LANG__', v.lang)
     .replaceAll('__TITLE__', content.meta.title)
     .replaceAll('__DESCRIPTION__', content.meta.description)
+    .replaceAll('__SEO_METADATA__', renderSeoMetadata({ lang: v.lang, canonicalPath: v.path }))
     .replaceAll('__CANONICAL_PATH__', v.path)
     .replaceAll('__SKIP_LABEL__', isRu ? 'Перейти к содержимому' : 'Skip to content')
     .replaceAll('__LANGUAGE_UI_LABEL__', isRu ? 'Выбор языка' : 'Language switcher')
@@ -38,7 +40,7 @@ await writeFile(path.join(dist, 'index.html'), page(variants.root));
 await writeFile(path.join(dist, 'ru', 'index.html'), page(variants.ru));
 await writeFile(path.join(dist, 'en', 'index.html'), page(variants.en));
 
-for (const file of ['styles.css', 'app.js', 'content.js', 'render.js', 'curtain-math.js', 'favicon.svg', '_headers', 'robots.txt', 'sitemap.xml']) {
+for (const file of ['styles.css', 'app.js', 'content.js', 'render.js', 'curtain-math.js', 'favicon.svg', 'og-ru.png', 'og-en.png', '_headers', 'robots.txt', 'sitemap.xml']) {
   await copyFile(path.join(src, file), path.join(dist, file));
 }
 
