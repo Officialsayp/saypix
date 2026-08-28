@@ -1,14 +1,13 @@
-import { siteContent, contactLinks } from './content.js';
+import { renderPage } from './render.js';
+import { clamp, curtainFrame, snapProgress } from './curtain-math.js';
 
-const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 const root = document.documentElement;
 const body = document.body;
 const shell = document.querySelector('#site-shell');
-const skipLink = document.querySelector('.skip-link');
-const ruLayer = document.querySelector('[data-layer="ru"]');
-const enLayer = document.querySelector('[data-layer="en"]');
-const enReveal = document.querySelector('[data-reveal="en"]');
+const primaryLayer = document.querySelector('[data-layer="primary"]');
+const curtainLayer = document.querySelector('[data-layer="curtain"]');
+const curtainReveal = document.querySelector('[data-reveal]');
 const ruButton = document.querySelector('[data-lang-target="ru"]');
 const enButton = document.querySelector('[data-lang-target="en"]');
 const ghost = document.querySelector('.language-ghost');
@@ -24,6 +23,9 @@ const INPUT_JUMP_PX = 48;
 const INPUT_CATCHUP_SPEED_PX_PER_MS = 1.6;
 
 let activeLang = root.dataset.initialLang === 'en' ? 'en' : 'ru';
+let curtainLang = activeLang === 'en' ? 'ru' : 'en';
+const curtainTemplate = document.createElement('template');
+curtainTemplate.innerHTML = renderPage(curtainLang);
 let progress = activeLang === 'en' ? 1 : 0; // 0 = RU, 1 = EN
 let pendingProgress = progress;
 let pendingGhostX = null;
@@ -35,6 +37,7 @@ let dragSamples = [];
 let moveFrame = 0;
 let settleFrame = 0;
 let geometryFrame = 0;
+let geometryLang = null;
 let dragOriginX = 0;
 let dragOriginY = 0;
 let dragStartProgress = progress;
@@ -53,159 +56,79 @@ let enDragAnchorX = null;
 let lastViewportWidth = 0;
 let suppressNextClick = false;
 
-function linkOrDisabled(label, href, className = 'button button--ghost contact-link') {
-  if (!href) {
-    return `<span class="${className}" aria-disabled="true">${label}</span>`;
-  }
-  const external = href.startsWith('http');
-  return `<a class="${className}" href="${href}"${external ? ' target="_blank" rel="noreferrer"' : ''}>${label}</a>`;
-}
-
-function renderPage(lang) {
-  const c = siteContent[lang];
-  const projects = c.projects.cards.map(card => `
-    <article class="project-card">
-      <div class="project-card__num">${card.number}</div>
-      <div>
-        <h3>${card.name}</h3>
-        <p>${card.description}</p>
-        <div class="project-card__tags">${card.tags.map(tag => `<span class="project-card__tag">#${tag.replaceAll(' ', '-')}</span>`).join('')}</div>
-      </div>
-      <div class="project-card__status">${card.linkLabel}</div>
-    </article>`).join('');
-
-  return `
-    <div class="page" lang="${lang}">
-      <header class="header">
-        <div class="container header__inner">
-          <a class="brand" href="#top-${lang}" aria-label="Max Zolotoy — home">MZ.</a>
-          <nav class="nav" aria-label="${lang === 'ru' ? 'Основная навигация' : 'Main navigation'}">
-            ${c.nav.map(([label, id]) => `<a href="#${id}-${lang}">${label}</a>`).join('')}
-          </nav>
-        </div>
-      </header>
-
-      <main id="main-${lang}">
-        <section class="hero" id="top-${lang}">
-          <div class="container hero__grid">
-            <div>
-              <div class="eyebrow">${c.hero.eyebrow}</div>
-              <h1>${c.hero.title}</h1>
-              <p class="hero__lead">${c.hero.lead}</p>
-              <div class="hero__actions">
-                <a class="button button--primary" href="#projects-${lang}">${c.hero.primary}</a>
-                <a class="button button--ghost" href="#contacts-${lang}">${c.hero.secondary}</a>
-              </div>
-            </div>
-            <div class="hero__visual" aria-hidden="true">
-              <div class="hero__visual-code"><strong>package</strong> portfolio<br><br><strong>func</strong> main() {<br>&nbsp;&nbsp;focus := "Go backend"<br>&nbsp;&nbsp;build(focus)<br>}</div>
-            </div>
-          </div>
-        </section>
-
-        <section class="section" id="about-${lang}">
-          <div class="container">
-            <div class="section__head"><div class="kicker">${c.about.kicker}</div><h2>${c.about.title}</h2></div>
-            <p class="section__body">${c.about.body}</p>
-          </div>
-        </section>
-
-        <section class="section" id="stack-${lang}">
-          <div class="container">
-            <div class="section__head"><div class="kicker">${c.stack.kicker}</div><h2>${c.stack.title}</h2></div>
-            <div class="chips">${c.stack.items.map(item => `<span class="chip">${item}</span>`).join('')}</div>
-          </div>
-        </section>
-
-        <section class="section" id="projects-${lang}">
-          <div class="container">
-            <div class="section__head"><div class="kicker">${c.projects.kicker}</div><h2>${c.projects.title}</h2></div>
-            <div class="project-list">${projects}</div>
-          </div>
-        </section>
-
-        <section class="section" id="contacts-${lang}">
-          <div class="container">
-            <div class="section__head"><div class="kicker">${c.contacts.kicker}</div><h2>${c.contacts.title}</h2></div>
-            <div class="contacts__links">
-              ${linkOrDisabled(c.contacts.email, contactLinks.email ? `mailto:${contactLinks.email}` : '')}
-              ${linkOrDisabled(c.contacts.telegram, contactLinks.telegram)}
-              ${linkOrDisabled(c.contacts.github, contactLinks.github)}
-            </div>
-          </div>
-        </section>
-      </main>
-
-      <footer class="footer"><div class="container">${c.footer}</div></footer>
-    </div>`;
-}
-
 function syncGeometry() {
   const pairs = [
     ['.header', '.header'],
     ['.hero', '.hero'],
-    ['#about-ru', '#about-en'],
-    ['#stack-ru', '#stack-en'],
-    ['#projects-ru', '#projects-en'],
-    ['#contacts-ru', '#contacts-en'],
+    [`#about-${activeLang}`, `#about-${curtainLang}`],
+    [`#stack-${activeLang}`, `#stack-${curtainLang}`],
+    [`#projects-${activeLang}`, `#projects-${curtainLang}`],
+    [`#contacts-${activeLang}`, `#contacts-${curtainLang}`],
     ['.footer', '.footer']
   ];
 
   const elements = pairs
-    .map(([ruSelector, enSelector]) => [ruLayer.querySelector(ruSelector), enLayer.querySelector(enSelector)])
-    .filter(([ru, en]) => ru && en);
+    .map(([primarySelector, curtainSelector]) => [
+      primaryLayer.querySelector(primarySelector),
+      curtainLayer.querySelector(curtainSelector),
+    ])
+    .filter(([primary, curtain]) => primary && curtain);
 
   // Batch writes, reads, and final writes. Interleaving those operations forces
   // repeated layout passes in Safari, especially after its browser chrome resizes.
   elements.flat().forEach(element => { element.style.minHeight = ''; });
-  const heights = elements.map(([ru, en]) => Math.ceil(Math.max(
-    ru.getBoundingClientRect().height,
-    en.getBoundingClientRect().height,
+  const heights = elements.map(([primary, curtain]) => Math.ceil(Math.max(
+    primary.getBoundingClientRect().height,
+    curtain.getBoundingClientRect().height,
   )));
-  elements.forEach(([ru, en], index) => {
+  elements.forEach(([primary, curtain], index) => {
     const height = `${heights[index]}px`;
-    ru.style.minHeight = height;
-    en.style.minHeight = height;
+    primary.style.minHeight = height;
+    curtain.style.minHeight = height;
   });
 
   updateStageWidth();
   paintCurtain(progress);
+  geometryLang = curtainLayer.dataset.lang || null;
 }
 
 function scheduleGeometry() {
   if (geometryFrame || dragging) return;
   geometryFrame = requestAnimationFrame(() => {
     geometryFrame = 0;
+    if (dragging) return;
     syncGeometry();
   });
 }
 
-function render() {
-  ruLayer.innerHTML = renderPage('ru');
-  enLayer.innerHTML = renderPage('en');
-  scheduleGeometry();
-}
-
-function updateMeta(lang) {
-  const meta = siteContent[lang].meta;
-  document.title = meta.title;
-  document.querySelector('meta[name="description"]')?.setAttribute('content', meta.description);
-  root.lang = lang;
+function ensureCurtainContent(targetLang) {
+  if (curtainLayer.dataset.lang === targetLang) return false;
+  curtainLang = targetLang;
+  if (curtainTemplate.content.firstElementChild?.lang !== targetLang) {
+    curtainTemplate.innerHTML = renderPage(targetLang);
+  }
+  curtainLayer.replaceChildren(curtainTemplate.content.cloneNode(true));
+  // `inert` is the primary guard. Removing the cloned controls from the tab
+  // order also protects older Safari versions where inert support is partial.
+  curtainLayer.querySelectorAll('a, button, input, select, textarea, [tabindex]')
+    .forEach(element => element.setAttribute('tabindex', '-1'));
+  curtainLayer.dataset.lang = targetLang;
+  geometryLang = null;
+  return true;
 }
 
 function updateA11y() {
   const ruActive = activeLang === 'ru';
-  ruLayer.toggleAttribute('inert', !ruActive);
-  enLayer.toggleAttribute('inert', ruActive);
-  ruLayer.setAttribute('aria-hidden', String(!ruActive));
-  enLayer.setAttribute('aria-hidden', String(ruActive));
   ruButton.classList.toggle('is-active', ruActive);
   enButton.classList.toggle('is-active', !ruActive);
-  ruButton.setAttribute('aria-pressed', String(ruActive));
-  enButton.setAttribute('aria-pressed', String(!ruActive));
-  enReveal.classList.toggle('is-interactive', !ruActive);
+  if (ruActive) {
+    ruButton.setAttribute('aria-current', 'page');
+    enButton.removeAttribute('aria-current');
+  } else {
+    enButton.setAttribute('aria-current', 'page');
+    ruButton.removeAttribute('aria-current');
+  }
   body.dataset.lang = activeLang;
-  skipLink.setAttribute('href', `#main-${activeLang}`);
 }
 
 function updateStageWidth() {
@@ -238,24 +161,25 @@ function paintGhostAt(clientX) {
 }
 
 function paintCurtain(p, { ghostX = null, retainPending = false } = {}) {
-  progress = clamp(p, 0, 1);
+  const frame = curtainFrame(p, stageWidth, curtainLang);
+  progress = frame.progress;
   if (!retainPending) pendingProgress = progress;
-  const x = progressToDividerX(progress);
-  const xValue = `${x.toFixed(3)}px`;
-  const inverseXValue = `${(-x).toFixed(3)}px`;
   // Keep a visible divider inside the viewport at the fully closed endpoints.
   // The reveal itself still uses the exact edge coordinate above.
-  const dividerX = clamp(x, .5, Math.max(.5, stageWidth - .5));
+  const dividerX = clamp(frame.dividerPosition, .5, Math.max(.5, stageWidth - .5));
 
   // These are local compositor transforms. Do not update an inherited CSS custom
   // property here: that invalidates both full language trees on every pointer frame.
-  enReveal.style.transform = `translate3d(${xValue}, 0, 0)`;
-  enLayer.style.transform = `translate3d(${inverseXValue}, 0, 0)`;
+  curtainReveal.style.transform = `translate3d(${frame.revealX.toFixed(3)}px, 0, 0)`;
+  curtainLayer.style.transform = `translate3d(${frame.layerX.toFixed(3)}px, 0, 0)`;
   divider.style.transform = `translate3d(${dividerX.toFixed(3)}px, 0, 0)`;
   if (Number.isFinite(ghostX)) paintGhostAt(ghostX);
 }
 
 function prepareCurtain(targetLang) {
+  curtainLang = targetLang;
+  ensureCurtainContent(targetLang);
+  if (geometryLang !== targetLang) syncGeometry();
   const label = targetLang.toUpperCase();
   if (ghost.textContent !== label) ghost.textContent = label;
   body.classList.add('is-curtain-prepared');
@@ -276,15 +200,6 @@ function hideCurtain() {
 
 function canonicalPath(lang) { return lang === 'en' ? '/en/' : '/ru/'; }
 
-function readStoredLanguage() {
-  try {
-    const value = localStorage.getItem('preferred-language');
-    return value === 'ru' || value === 'en' ? value : null;
-  } catch {
-    return null;
-  }
-}
-
 function storeLanguage(lang) {
   try {
     localStorage.setItem('preferred-language', lang);
@@ -293,16 +208,18 @@ function storeLanguage(lang) {
   }
 }
 
-function commitLanguage(lang, { replace = true } = {}) {
-  activeLang = lang;
-  paintCurtain(lang === 'en' ? 1 : 0);
-  updateMeta(lang);
-  updateA11y();
-  storeLanguage(lang);
-  const path = canonicalPath(lang);
-  if (location.pathname !== path) {
-    history[replace ? 'replaceState' : 'pushState']({ lang }, '', path + location.hash);
+function localizedHash(lang) {
+  if (!location.hash) return '';
+  return location.hash.replace(/-(?:ru|en)$/, `-${lang}`);
+}
+
+function completeLanguageChange(lang) {
+  if (lang === activeLang) {
+    cleanupCurtain();
+    return;
   }
+  storeLanguage(lang);
+  location.assign(canonicalPath(lang) + localizedHash(lang));
 }
 
 function easeOutCubic(t) { return 1 - Math.pow(1 - t, 3); }
@@ -406,8 +323,7 @@ function animateTo(target, { duration, showGhost = false } = {}) {
 
   if (reducedMotion.matches || distance < 0.002) {
     paintCurtain(target);
-    commitLanguage(targetLang);
-    cleanupCurtain();
+    completeLanguageChange(targetLang);
     return;
   }
 
@@ -423,8 +339,7 @@ function animateTo(target, { duration, showGhost = false } = {}) {
       return;
     }
     settleFrame = 0;
-    commitLanguage(targetLang);
-    cleanupCurtain();
+    completeLanguageChange(targetLang);
   };
   settleFrame = requestAnimationFrame(tick);
 }
@@ -449,6 +364,7 @@ function currentVelocity() {
 
 function startDrag(event, targetLang) {
   if (targetLang === activeLang) return;
+  if (reducedMotion.matches) return;
   if (event.isPrimary === false) return;
   if (event.pointerType === 'mouse' && event.button !== 0) return;
   cancelAnimationFrame(settleFrame);
@@ -612,9 +528,14 @@ function endPointerSession(event) {
   if (!wasCatchingUp) queueDragPosition(event, { immediate: true });
   const velocity = currentVelocity();
   const travelled = Math.abs(event.clientX - dragOriginX);
-  const target = Math.abs(velocity) >= FLING_VELOCITY && travelled >= MIN_FLING_TRAVEL_PX
-    ? (velocity < 0 ? 1 : 0)
-    : ((wasCatchingUp ? pendingProgress : progress) >= .5 ? 1 : 0);
+  const target = snapProgress({
+    progress: wasCatchingUp ? pendingProgress : progress,
+    targetLang: dragTarget,
+    velocity,
+    travelled,
+    flingVelocity: FLING_VELOCITY,
+    minimumFlingTravel: MIN_FLING_TRAVEL_PX,
+  });
 
   ghost.classList.remove('is-visible');
   finishPointerSession();
@@ -659,6 +580,13 @@ function switchByClick(targetLang) {
 
 for (const button of [ruButton, enButton]) {
   const targetLang = button.dataset.langTarget;
+  const warmCurtain = () => {
+    if (targetLang === activeLang || dragging || reducedMotion.matches) return;
+    curtainLang = targetLang;
+    if (ensureCurtainContent(targetLang)) scheduleGeometry();
+  };
+  button.addEventListener('pointerenter', warmCurtain);
+  button.addEventListener('focus', warmCurtain);
   button.addEventListener('pointerdown', event => startDrag(event, targetLang));
   button.addEventListener('lostpointercapture', handleLostPointerCapture);
   button.addEventListener('click', event => {
@@ -666,6 +594,15 @@ for (const button of [ruButton, enButton]) {
       event.preventDefault();
       return;
     }
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    if (targetLang === activeLang) {
+      event.preventDefault();
+      return;
+    }
+    // With reduced motion the semantic link is already the ideal fallback:
+    // navigate immediately, without constructing or animating a curtain.
+    if (reducedMotion.matches) return;
+    event.preventDefault();
     switchByClick(targetLang);
   });
 }
@@ -684,33 +621,13 @@ window.addEventListener('resize', () => {
   }
   scheduleGeometry();
 });
-window.addEventListener('popstate', () => {
-  cancelMoveFrame();
-  cancelAnimationFrame(settleFrame);
-  settleFrame = 0;
-  cleanupCurtain();
-  const lang = location.pathname.startsWith('/en') ? 'en' : 'ru';
-  activeLang = lang;
-  paintCurtain(lang === 'en' ? 1 : 0);
-  updateMeta(lang);
-  updateA11y();
-});
-
-const routeLang = location.pathname.startsWith('/en') ? 'en' : location.pathname.startsWith('/ru') ? 'ru' : null;
-const saved = readStoredLanguage();
-activeLang = routeLang ?? saved ?? activeLang;
 progress = activeLang === 'en' ? 1 : 0;
 pendingProgress = progress;
 lastViewportWidth = document.documentElement.clientWidth || window.innerWidth;
 
-render();
 updateStageWidth();
 paintCurtain(progress);
-updateMeta(activeLang);
 updateA11y();
-if (!routeLang && location.pathname === '/') {
-  history.replaceState({ lang: activeLang }, '', canonicalPath(activeLang) + location.hash);
-}
 if (document.fonts?.ready) {
   document.fonts.ready.then(scheduleGeometry).catch(() => {});
 }

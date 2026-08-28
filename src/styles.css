@@ -67,7 +67,7 @@ button { font: inherit; }
   width: 100%;
   min-height: 100vh;
 }
-.language-layer--ru { position: relative; z-index: 1; }
+.language-layer--primary { position: relative; z-index: 1; }
 .language-reveal {
   position: absolute;
   inset: 0;
@@ -77,14 +77,9 @@ button { font: inherit; }
   pointer-events: none;
   transform: translate3d(100%, 0, 0);
 }
-.language-reveal.is-interactive { pointer-events: auto; }
-.language-layer--en {
+.language-layer--curtain {
   min-height: 100%;
   transform: translate3d(-100%, 0, 0);
-}
-html[data-initial-lang="en"] .language-reveal,
-html[data-initial-lang="en"] .language-layer--en {
-  transform: translate3d(0, 0, 0);
 }
 
 .page {
@@ -282,6 +277,9 @@ html[data-initial-lang="en"] .language-layer--en {
   background: rgba(11,12,16,.70);
   color: var(--text);
   backdrop-filter: blur(14px);
+  display: grid;
+  place-items: center;
+  text-decoration: none;
   pointer-events: auto;
   cursor: grab;
   user-select: none;
@@ -292,7 +290,12 @@ html[data-initial-lang="en"] .language-layer--en {
   transition: opacity 160ms ease, border-color 160ms ease, background 160ms ease;
 }
 .language-edge:active { cursor: grabbing; }
-.language-edge:hover, .language-edge:focus-visible { border-color: rgba(255,255,255,.46); outline: none; }
+.language-edge:hover { border-color: rgba(255,255,255,.46); }
+.language-edge:focus-visible {
+  border-color: rgba(255,255,255,.72);
+  outline: 2px solid #83a5ff;
+  outline-offset: 3px;
+}
 .language-edge.is-active { background: rgba(255,255,255,.10); cursor: default; }
 .language-edge.is-drag-source { opacity: .28; }
 .language-edge--ru { left: max(18px, env(safe-area-inset-left)); }
@@ -350,7 +353,7 @@ body.has-used-curtain .drag-hint { opacity: 0; }
 
 /* Warm the drag layers before the first visible pixel moves in WebKit. */
 body.is-curtain-prepared .language-reveal,
-body.is-curtain-prepared .language-layer--en,
+body.is-curtain-prepared .language-layer--curtain,
 body.is-curtain-prepared .language-ghost,
 body.is-curtain-prepared .curtain-divider {
   will-change: transform, opacity;
@@ -363,8 +366,6 @@ body.is-curtain-prepared .language-edge {
   backdrop-filter: none;
 }
 body.is-curtain-prepared .curtain-divider { box-shadow: none; }
-
-.noscript { position: fixed; bottom: 12px; left: 12px; right: 12px; z-index: 100; padding: 12px; background: #fff; color: #111; border-radius: 12px; text-align: center; }
 
 @media (max-width: 860px) {
   :root { --header-h: 68px; }

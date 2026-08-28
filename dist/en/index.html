@@ -15,32 +15,97 @@
   <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-  <a class="skip-link" href="#main">Skip to content</a>
+  <a class="skip-link" href="#main-en">Skip to content</a>
 
   <div class="ambient ambient-a" aria-hidden="true"></div>
   <div class="ambient ambient-b" aria-hidden="true"></div>
 
-  <div class="language-ui" aria-label="Language switcher">
-    <button class="language-edge language-edge--ru" type="button" data-lang-target="ru" aria-label="Русский язык">RU</button>
-    <button class="language-edge language-edge--en" type="button" data-lang-target="en" aria-label="English language">EN</button>
+  <nav class="language-ui" aria-label="Language switcher">
+    <a class="language-edge language-edge--ru" href="/ru/" hreflang="ru" lang="ru" data-lang-target="ru" aria-label="Русский язык">RU</a>
+    <a class="language-edge language-edge--en" href="/en/" hreflang="en" lang="en" data-lang-target="en" aria-label="English language" aria-current="page">EN</a>
     <div class="language-ghost" aria-hidden="true">EN</div>
     <div class="curtain-divider" aria-hidden="true"></div>
     <div class="drag-hint" aria-hidden="true">drag</div>
-  </div>
+  </nav>
 
   <div class="site-shell" id="site-shell">
-    <div class="language-layer language-layer--ru" data-layer="ru"></div>
-    <div class="language-reveal" data-reveal="en">
-      <div class="language-layer language-layer--en" data-layer="en"></div>
+    <div class="language-layer language-layer--primary" data-layer="primary">
+    <div class="page" lang="en">
+      <header class="header">
+        <div class="container header__inner">
+          <a class="brand" href="#top-en" aria-label="Max Zolotoy — home">MZ.</a>
+          <nav class="nav" aria-label="Main navigation">
+            <a href="#about-en">About</a><a href="#stack-en">Stack</a><a href="#projects-en">Projects</a><a href="#contacts-en">Contacts</a>
+          </nav>
+        </div>
+      </header>
+
+      <main id="main-en">
+        <section class="hero" id="top-en">
+          <div class="container hero__grid">
+            <div>
+              <div class="eyebrow">GO BACKEND DEVELOPER</div>
+              <h1>Max Zolotoy</h1>
+              <p class="hero__lead">I am developing as a Go backend engineer, focusing on domain logic, APIs and data while keeping invariants explicit and systems reliable.</p>
+              <div class="hero__actions">
+                <a class="button button--primary" href="#projects-en">View projects</a>
+                <a class="button button--ghost" href="#contacts-en">Contact me</a>
+              </div>
+            </div>
+            <div class="hero__visual" aria-hidden="true">
+              <div class="hero__visual-code"><strong>package</strong> portfolio<br><br><strong>func</strong> main() {<br>&nbsp;&nbsp;focus := "Go backend"<br>&nbsp;&nbsp;build(focus)<br>}</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section" id="about-en">
+          <div class="container">
+            <div class="section__head"><div class="kicker">01 / ABOUT</div><h2>An engineering mindset without unnecessary noise.</h2></div>
+            <p class="section__body">My main focus is Go backend development. In learning projects I work through domain modelling, order and payment lifecycles, architectural boundaries and data persistence. This site is a static frontend and also a playground for interaction and deployment experiments.</p>
+          </div>
+        </section>
+
+        <section class="section" id="stack-en">
+          <div class="container">
+            <div class="section__head"><div class="kicker">02 / STACK</div><h2>Technologies I use and continue to study.</h2></div>
+            <div class="chips"><span class="chip">Go</span><span class="chip">PostgreSQL</span><span class="chip">SQL</span><span class="chip">Docker</span><span class="chip">REST</span><span class="chip">Git</span><span class="chip">DDD</span><span class="chip">Linux</span></div>
+          </div>
+        </section>
+
+        <section class="section" id="projects-en">
+          <div class="container">
+            <div class="section__head"><div class="kicker">03 / PROJECTS</div><h2>Learning through realistic engineering scenarios.</h2></div>
+            <div class="project-list">
+    <article class="project-card">
+      <div class="project-card__num">01</div>
+      <div>
+        <h3>Order Domain</h3>
+        <p>A learning order-domain model covering items, money, order states, online payments, cancellation and state transitions.</p>
+        <div class="project-card__tags"><span class="project-card__tag">#Go</span><span class="project-card__tag">#DDD</span><span class="project-card__tag">#Domain-Logic</span></div>
+      </div>
+      <div class="project-card__status">Repository link coming soon</div>
+    </article></div>
+          </div>
+        </section>
+
+        <section class="section" id="contacts-en">
+          <div class="container">
+            <div class="section__head"><div class="kicker">04 /</div><h2>CONTACT</h2></div>
+            <div class="contacts__links">
+              <a class="button button--ghost contact-link" href="mailto:hello@maxzolotoy.com">Email · hello@maxzolotoy.com</a>
+              <a class="button button--ghost contact-link" href="https://t.me/max_zolotoy" target="_blank" rel="noreferrer">Telegram · @max_zolotoy</a>
+              <a class="button button--ghost contact-link" href="https://github.com/Officialsayp" target="_blank" rel="noreferrer">GitHub · github.com/Officialsayp</a>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer class="footer"><div class="container">Built without frontend frameworks — HTML, CSS and JavaScript.</div></footer>
+    </div></div>
+    <div class="language-reveal" data-reveal aria-hidden="true" inert>
+      <div class="language-layer language-layer--curtain" data-layer="curtain"></div>
     </div>
   </div>
-
-  <noscript>
-    <div class="noscript">
-      JavaScript is required for the interactive language curtain. Use
-      <a href="/ru/">RU</a> or <a href="/en/">EN</a>.
-    </div>
-  </noscript>
 
 <script type="module" src="/app.js"></script>
 </body>
