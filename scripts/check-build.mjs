@@ -151,13 +151,15 @@ await assert.rejects(
   'dist/index.html must not expose a third, duplicate canonical page',
 );
 
-const [robots, sitemap, redirects, sourceRedirects, headers, wranglerSource] = await Promise.all([
+const [robots, sitemap, redirects, sourceRedirects, headers, wranglerSource, styles, sourceStyles] = await Promise.all([
   readFile(path.join(dist, 'robots.txt'), 'utf8'),
   readFile(path.join(dist, 'sitemap.xml'), 'utf8'),
   readFile(path.join(dist, '_redirects'), 'utf8'),
   readFile(path.join(root, 'src', '_redirects'), 'utf8'),
   readFile(path.join(dist, '_headers'), 'utf8'),
   readFile(path.join(root, 'wrangler.jsonc'), 'utf8'),
+  readFile(path.join(dist, 'styles.css'), 'utf8'),
+  readFile(path.join(root, 'src', 'styles.css'), 'utf8'),
 ]);
 assert.match(robots, /Sitemap: https:\/\/maxzolotoy\.com\/sitemap\.xml/, 'robots.txt: missing sitemap URL');
 assert.match(sitemap, /<loc>https:\/\/maxzolotoy\.com\/ru\/<\/loc>/, 'sitemap.xml: missing RU URL');
@@ -165,6 +167,53 @@ assert.match(sitemap, /<loc>https:\/\/maxzolotoy\.com\/en\/<\/loc>/, 'sitemap.xm
 assert.equal(occurrences(sitemap, /<loc>/g), 2, 'sitemap.xml: expected exactly two canonical URLs');
 assert.doesNotMatch(sitemap, /<loc>https:\/\/maxzolotoy\.com\/<\/loc>/, 'sitemap.xml: redirecting root must not be listed');
 assert.equal(redirects, sourceRedirects, 'dist/_redirects must match src/_redirects');
+assert.equal(styles, sourceStyles, 'dist/styles.css must match src/styles.css');
+
+function pixelCustomProperty(source, name) {
+  const match = source.match(new RegExp(`--${name}:\\s*(\\d+)px`));
+  assert.ok(match, `styles.css: missing --${name}`);
+  return Number(match[1]);
+}
+
+const languageControlSize = pixelCustomProperty(sourceStyles, 'language-control-size');
+const languageEdgeOffset = pixelCustomProperty(sourceStyles, 'language-edge-offset');
+const headerControlGap = pixelCustomProperty(sourceStyles, 'header-control-gap');
+const contentWidth = pixelCustomProperty(sourceStyles, 'content-w');
+const mobileOffsetMatch = sourceStyles.match(
+  /@media \(max-width: 560px\)[\s\S]*?--language-edge-offset:\s*(\d+)px/,
+);
+assert.ok(mobileOffsetMatch, 'styles.css: missing mobile language edge offset');
+const mobileEdgeOffset = Number(mobileOffsetMatch[1]);
+
+assert.match(
+  sourceStyles,
+  /\.header__inner\s*\{\s*width:\s*min\(\s*var\(--content-w\),\s*calc\(100% - var\(--header-edge-clearance\) - var\(--header-edge-clearance\)\)\s*\);/,
+  'styles.css: header must reserve both language-control gutters',
+);
+assert.match(
+  sourceStyles,
+  /@media \(max-width: 1450px\)\s*\{\s*\.drag-hint\s*\{\s*display:\s*none;/,
+  'styles.css: decorative drag hint must not overlap the header navigation',
+);
+
+for (const viewportWidth of [320, 560, 561, 860, 861, 930, 1160, 1280, 1450]) {
+  const edgeOffset = viewportWidth <= 560 ? mobileEdgeOffset : languageEdgeOffset;
+  const clearance = edgeOffset + languageControlSize + headerControlGap;
+  const headerWidth = Math.min(contentWidth, viewportWidth - (clearance * 2));
+  const headerLeft = (viewportWidth - headerWidth) / 2;
+  const headerRight = headerLeft + headerWidth;
+  const leftControlRight = edgeOffset + languageControlSize;
+  const rightControlLeft = viewportWidth - edgeOffset - languageControlSize;
+
+  assert.ok(
+    headerLeft - leftControlRight >= headerControlGap,
+    `styles.css: left language control overlaps header at ${viewportWidth}px`,
+  );
+  assert.ok(
+    rightControlLeft - headerRight >= headerControlGap,
+    `styles.css: right language control overlaps header at ${viewportWidth}px`,
+  );
+}
 
 const parsedRedirectRules = redirects
   .split(/\r?\n/)
