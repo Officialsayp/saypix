@@ -14,12 +14,13 @@
 - управление клавиатурой;
 - `prefers-reduced-motion`;
 - запоминание выбранного языка в `localStorage`;
-- маршруты `/ru/` и `/en/` + `hreflang`, sitemap и robots.txt;
+- два индексируемых маршрута `/ru/` и `/en/` + `hreflang`, sitemap и robots.txt;
+- постоянная нормализация корня и HTML-алиасов через Cloudflare `_redirects`;
 - локализованные title/description, Open Graph и Twitter Card;
 - JSON-LD граф `WebSite` → `ProfilePage` → `Person` с публичными вариантами имени;
 - адаптивная верстка;
 - нет runtime-зависимостей и frontend-фреймворков;
-- готово к Cloudflare Pages.
+- готово к Cloudflare Workers Static Assets.
 
 ## Локальный запуск
 
@@ -40,14 +41,40 @@ npm run build
 
 Результат появится в `dist/`.
 
-## Cloudflare Pages
+## Cloudflare Workers Static Assets
 
-Настройки проекта:
+Сборка публикуется из `dist/` по настройкам `wrangler.jsonc`. Worker-код,
+backend и VPS не нужны.
+
+Каноническая URL-политика:
+
+- `https://maxzolotoy.com/ru/` — русская индексируемая страница;
+- `https://maxzolotoy.com/en/` — английская индексируемая страница и
+  `x-default`;
+- `/`, `/index.html` и другие известные HTML-алиасы постоянно перенаправляются
+  сразу на соответствующий конечный URL;
+- version preview URLs отключены, а резервная `workers.dev`-копия получает
+  `X-Robots-Tag: noindex`;
+
+Для production в Cloudflare дополнительно должны быть включены zone-level
+правила, которые невозможно выразить в статическом `_redirects`:
+
+- любой `http://maxzolotoy.com/*` → тот же путь на HTTPS;
+- `www.maxzolotoy.com/*` → тот же путь на HTTPS apex-домене;
+- path и query string сохраняются, код ответа — постоянный `301` или `308`.
+
+Перед включением HSTS сначала проверь все HTTP/HTTPS и apex/www варианты.
+Существующее Dashboard-правило для `/` не должно перекрывать репозиторный
+`_redirects`.
+
+Настройки сборки в панели Cloudflare:
 
 - Build command: `npm run build`
 - Build output directory: `dist`
 
-Сервер/VPS для сайта не нужен: после сборки это обычный набор HTML/CSS/JS файлов.
+Локальный `python -m http.server` не применяет файлы `_redirects` и `_headers`.
+Он подходит для проверки `/ru/` и `/en/`, но HTTP-статусы нужно проверять в
+Cloudflare preview/production после deploy.
 
 ## Где менять тексты и ссылки
 

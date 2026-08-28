@@ -1,0 +1,14 @@
+# The root is the language-neutral entry point; English is the default locale.
+/ /en/ 308
+/index /en/ 308
+/index.html /en/ 308
+
+# Permanent aliases for the two indexable locale URLs.
+/ru /ru/ 308
+/ru.html /ru/ 308
+/ru/index /ru/ 308
+/ru/index.html /ru/ 308
+/en /en/ 308
+/en.html /en/ 308
+/en/index /en/ 308
+/en/index.html /en/ 308

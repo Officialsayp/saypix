@@ -5,6 +5,7 @@
   "workers_dev": true,
   "preview_urls": false,
   "assets": {
-    "directory": "./dist"
+    "directory": "./dist",
+    "html_handling": "force-trailing-slash"
   }
 }
