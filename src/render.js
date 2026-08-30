@@ -89,7 +89,7 @@ export function renderPage(lang, { techIconsPath } = {}) {
               </div>
             </div>
             <div class="hero__visual" aria-hidden="true">
-              <div class="hero__visual-code"><strong>package</strong> portfolio<br><br><strong>func</strong> main() {<br>&nbsp;&nbsp;focus := "Go backend"<br>&nbsp;&nbsp;build(focus)<br>}</div>
+              <div class="hero__visual-code"><strong>package</strong> main<br><br><strong>func</strong> main() {<br>&nbsp;&nbsp;profile := []byte{<br>&nbsp;&nbsp;&nbsp;&nbsp;0x6d, 0x61, 0x78, 0x7a, 0x6f, 0x6c, 0x6f, 0x74,<br>&nbsp;&nbsp;&nbsp;&nbsp;0x6f, 0x79, 0x2e, 0x63, 0x6f, 0x6d, 0x20, 0x2d,<br>&nbsp;&nbsp;&nbsp;&nbsp;0x20, 0x67, 0x6f, 0x20, 0x62, 0x61, 0x63, 0x6b,<br>&nbsp;&nbsp;&nbsp;&nbsp;0x65, 0x6e, 0x64, 0x20, 0x64, 0x65, 0x76, 0x65,<br>&nbsp;&nbsp;&nbsp;&nbsp;0x6c, 0x6f, 0x70, 0x65, 0x72,<br>&nbsp;&nbsp;}<br><br>&nbsp;&nbsp;println(string(profile))<br>}</div>
             </div>
           </div>
         </section>
