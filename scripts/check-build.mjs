@@ -5,8 +5,29 @@ import { contactLinks, projectLinks, siteContent } from '../src/content.js';
 
 const root = process.cwd();
 const dist = path.join(root, 'dist');
-const expectedStackItems = ['Go', 'PostgreSQL', 'Docker', 'Git', 'Kafka', 'gRPC', 'Redis', 'REST API', 'Grafana'];
-const expectedTechIconIds = ['tech-go', 'tech-postgresql', 'tech-docker', 'tech-git', 'tech-kafka', 'tech-grpc', 'tech-redis', 'tech-rest-api', 'tech-grafana'];
+const expectedStackItems = [
+  'Go',
+  'REST API',
+  'gRPC',
+  'PostgreSQL',
+  'Redis',
+  'Kafka',
+  'Docker',
+  'Git',
+  'Grafana',
+];
+
+const expectedTechIconIds = [
+  'tech-go',
+  'tech-rest-api',
+  'tech-grpc',
+  'tech-postgresql',
+  'tech-redis',
+  'tech-kafka',
+  'tech-docker',
+  'tech-git',
+  'tech-grafana',
+];
 
 function occurrences(source, pattern) {
   return [...source.matchAll(pattern)].length;
