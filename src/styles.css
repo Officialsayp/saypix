@@ -437,7 +437,10 @@ button { font: inherit; }
   opacity: .8;
   transition: opacity 220ms ease;
 }
-body[data-lang="en"] .drag-hint { right: auto; left: 75px; }
+html[data-initial-lang="en"] .drag-hint {
+  right: auto;
+  left: 75px;
+}
 body.has-used-curtain .drag-hint { opacity: 0; }
 
 /* The hint is decorative. Keep it out of the header until both side gutters
