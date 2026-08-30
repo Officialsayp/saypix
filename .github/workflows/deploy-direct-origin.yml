@@ -1,0 +1,87 @@
+name: Deploy direct origin
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: direct-origin-production
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - name: Validate Caddy deployment profiles
+        run: |
+          docker run --rm -v "$PWD/deploy/caddy:/etc/caddy:ro" caddy:2-alpine caddy validate --config /etc/caddy/Caddyfile.origin --adapter caddyfile
+          docker run --rm -v "$PWD/deploy/caddy:/etc/caddy:ro" caddy:2-alpine caddy validate --config /etc/caddy/Caddyfile.production --adapter caddyfile
+
+  deploy:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && vars.DIRECT_ORIGIN_DEPLOY_ENABLED == 'true'
+    needs: verify
+    runs-on: ubuntu-latest
+    environment: direct-origin
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+
+      - name: Configure SSH
+        env:
+          VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+          VPS_KNOWN_HOSTS: ${{ secrets.VPS_KNOWN_HOSTS }}
+        run: |
+          install -m 700 -d "$HOME/.ssh"
+          printf '%s\n' "$VPS_SSH_KEY" > "$HOME/.ssh/id_ed25519"
+          chmod 600 "$HOME/.ssh/id_ed25519"
+          printf '%s\n' "$VPS_KNOWN_HOSTS" > "$HOME/.ssh/known_hosts"
+          chmod 600 "$HOME/.ssh/known_hosts"
+
+      - name: Package release
+        run: tar -C dist -czf "/tmp/maxzolotoy-${GITHUB_SHA}.tar.gz" .
+
+      - name: Upload release
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+        run: scp "/tmp/maxzolotoy-${GITHUB_SHA}.tar.gz" "${VPS_USER}@${VPS_HOST}:/tmp/maxzolotoy-${GITHUB_SHA}.tar.gz"
+
+      - name: Activate release atomically
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+        run: |
+          ssh "${VPS_USER}@${VPS_HOST}" "RELEASE_ID='${GITHUB_SHA}' sh -s" <<'REMOTE'
+          set -eu
+          base=/var/www/maxzolotoy
+          release="$base/releases/$RELEASE_ID"
+          archive="/tmp/maxzolotoy-$RELEASE_ID.tar.gz"
+          install -d -m 0755 "$release"
+          tar -xzf "$archive" -C "$release"
+          ln -sfn "$release" "$base/current.next"
+          mv -Tf "$base/current.next" "$base/current"
+          rm -f "$archive"
+          REMOTE
+
+      - name: Smoke test direct origin
+        env:
+          VPS_ORIGIN_HOST: ${{ secrets.VPS_ORIGIN_HOST }}
+        run: node scripts/check-remote.mjs "https://${VPS_ORIGIN_HOST}"

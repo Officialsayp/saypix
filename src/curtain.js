@@ -1,5 +1,9 @@
-import { renderPage } from './render.js';
 import { clamp, curtainFrame, snapProgress } from './curtain-math.js';
+
+let installedApi = null;
+
+export function installCurtain(fragmentHtml) {
+  if (installedApi) return installedApi;
 
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 const root = document.documentElement;
@@ -25,7 +29,7 @@ const INPUT_CATCHUP_SPEED_PX_PER_MS = 1.6;
 let activeLang = root.dataset.initialLang === 'en' ? 'en' : 'ru';
 let curtainLang = activeLang === 'en' ? 'ru' : 'en';
 const curtainTemplate = document.createElement('template');
-curtainTemplate.innerHTML = renderPage(curtainLang);
+curtainTemplate.innerHTML = fragmentHtml;
 let progress = activeLang === 'en' ? 1 : 0; // 0 = RU, 1 = EN
 let pendingProgress = progress;
 let pendingGhostX = null;
@@ -105,7 +109,7 @@ function ensureCurtainContent(targetLang) {
   if (curtainLayer.dataset.lang === targetLang) return false;
   curtainLang = targetLang;
   if (curtainTemplate.content.firstElementChild?.lang !== targetLang) {
-    curtainTemplate.innerHTML = renderPage(targetLang);
+    throw new Error(`Curtain fragment language mismatch: expected ${targetLang}`);
   }
   curtainLayer.replaceChildren(curtainTemplate.content.cloneNode(true));
   // `inert` is the primary guard. Removing the cloned controls from the tab
@@ -397,7 +401,12 @@ function startDrag(event, targetLang) {
   paintCurtain(dragStartProgress, { ghostX: pendingGhostX });
   // The ghost still waits for movement; the divider confirms capture now.
   divider.classList.toggle('is-visible', !reducedMotion.matches);
-  dragSource.setPointerCapture?.(pointerId);
+  try {
+    dragSource.setPointerCapture?.(pointerId);
+  } catch {
+    // A lazy first interaction may finish before WebKit accepts pointer capture.
+    // Window-level terminal listeners still provide a safe completion path.
+  }
   window.addEventListener('pointermove', moveDrag, { passive: false });
   window.addEventListener('pointerup', endPointerSession);
   window.addEventListener('pointercancel', cancelDrag);
@@ -630,4 +639,35 @@ paintCurtain(progress);
 updateA11y();
 if (document.fonts?.ready) {
   document.fonts.ready.then(scheduleGeometry).catch(() => {});
+}
+
+function queuedEvent(snapshot, type) {
+  return {
+    ...snapshot,
+    type,
+    isPrimary: true,
+    button: 0,
+    preventDefault() {},
+    getCoalescedEvents() { return [this]; },
+  };
+}
+
+function startQueuedDrag(session) {
+  if (!session || session.ended || session.targetLang === activeLang) return;
+  startDrag(queuedEvent(session.down, 'pointerdown'), session.targetLang);
+  if (!dragging || !session.current) return;
+  const moved = session.current.clientX !== session.down.clientX
+    || session.current.clientY !== session.down.clientY;
+  if (moved) moveDrag(queuedEvent(session.current, 'pointermove'));
+}
+
+function endQueuedDrag(session, cancelled = false) {
+  if (!dragging || !session?.current) return;
+  const event = queuedEvent(session.current, cancelled ? 'pointercancel' : 'pointerup');
+  if (cancelled) cancelDrag(event);
+  else endPointerSession(event);
+}
+
+installedApi = { startQueuedDrag, endQueuedDrag };
+return installedApi;
 }

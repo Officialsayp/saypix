@@ -1,0 +1,32 @@
+(maxzolotoy_static) {
+	root * /var/www/maxzolotoy/current
+	encode zstd gzip
+
+	header {
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		Permissions-Policy "camera=(), microphone=(), geolocation=()"
+		X-Frame-Options "DENY"
+		Cache-Control "public, max-age=0, must-revalidate"
+	}
+
+	@immutable path /assets/*
+	header @immutable Cache-Control "public, max-age=31536000, immutable"
+
+	@health path /_health
+	respond @health "ok\n" 200
+
+	@internal path /_headers /_redirects
+	respond @internal 404
+
+	@root path /
+	redir @root /en/{?query} 308
+
+	@ruAliases path /ru /ru.html /ru/index /ru/index.html
+	redir @ruAliases /ru/{?query} 308
+
+	@enAliases path /en /en.html /en/index /en/index.html
+	redir @enAliases /en/{?query} 308
+
+	file_server
+}

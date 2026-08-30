@@ -5,8 +5,12 @@
   "type": "module",
   "scripts": {
     "build": "node scripts/build.mjs",
-    "check": "node --check src/app.js && node --check src/content.js && node --check src/render.js && node --check src/metadata.js && node --check src/curtain-math.js && node --check scripts/build.mjs && node --check scripts/check-build.mjs && node --check scripts/check-curtain.mjs && node scripts/check-build.mjs && node scripts/check-curtain.mjs",
-    "test": "npm run build && npm run check",
+    "check": "node --check src/boot.js && node --check src/curtain.js && node --check src/content.js && node --check src/render.js && node --check src/metadata.js && node --check src/curtain-math.js && node --check scripts/build.mjs && node --check scripts/check-build.mjs && node --check scripts/check-curtain.mjs && node --check scripts/check-sizes.mjs && node --check scripts/check-smoke.mjs && node scripts/check-build.mjs && node scripts/check-curtain.mjs && node scripts/check-sizes.mjs && node scripts/check-smoke.mjs",
+    "check:deploy": "node --check scripts/check-remote.mjs && node --check scripts/check-deploy.mjs && node scripts/check-deploy.mjs",
+    "test": "npm run build && npm run check && npm run check:deploy",
     "preview": "npm run build && python3 -m http.server 4173 -d dist"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.2"
   }
 }

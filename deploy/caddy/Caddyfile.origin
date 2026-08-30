@@ -1,0 +1,16 @@
+{
+	servers {
+		protocols h1 h2
+	}
+}
+
+import site.caddy
+
+http://origin.maxzolotoy.com {
+	redir https://origin.maxzolotoy.com{uri} 308
+}
+
+https://origin.maxzolotoy.com {
+	import maxzolotoy_static
+	header X-Robots-Tag "noindex, nofollow"
+}
