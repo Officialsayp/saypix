@@ -97,3 +97,13 @@ for (const link of languageLinks) {
   link.addEventListener('focus', warm, { once: true });
   link.addEventListener('pointerdown', event => queueFirstPointer(event, targetLang));
 }
+
+document.addEventListener('click', event => {
+  const button = event.target.closest('[data-copy-code]');
+  if (!button) return;
+  const text = button.nextElementSibling.innerText.replace(/\xa0/g, ' ');
+  navigator.clipboard.writeText(text).then(() => {
+    button.classList.add('is-copied');
+    setTimeout(() => button.classList.remove('is-copied'), 1000);
+  }).catch(() => {});
+});
