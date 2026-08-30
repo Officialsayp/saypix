@@ -8,9 +8,28 @@ function linkOrDisabled(label, href, className = 'button button--ghost contact-l
   return `<a class="${className}" href="${href}"${external ? ' target="_blank" rel="noreferrer"' : ''}>${label}</a>`;
 }
 
-export function renderPage(lang) {
+const TECH_ICON_IDS = Object.freeze({
+  Go: 'go',
+  PostgreSQL: 'postgresql',
+  Docker: 'docker',
+  Git: 'git',
+  Kafka: 'kafka',
+  gRPC: 'grpc',
+  Redis: 'redis',
+  'REST API': 'rest-api',
+  Grafana: 'grafana',
+});
+
+function renderTechChip(name, techIconsPath) {
+  const iconId = TECH_ICON_IDS[name];
+  if (!iconId) throw new Error(`Missing technology icon: ${name}`);
+  return `<span class="chip"><svg class="chip__icon" viewBox="0 0 24 24" aria-hidden="true"><use href="${techIconsPath}#tech-${iconId}"></use></svg>${name}</span>`;
+}
+
+export function renderPage(lang, { techIconsPath } = {}) {
   const c = siteContent[lang];
   if (!c) throw new Error(`Unsupported language: ${lang}`);
+  if (!techIconsPath) throw new Error('Technology icon sprite path is required');
 
   const projects = c.projects.cards.map(card => `
     <article class="project-card">
@@ -68,7 +87,7 @@ export function renderPage(lang) {
         <section class="section" id="stack-${lang}">
           <div class="container">
             <div class="section__head"><div class="kicker">${c.stack.kicker}</div><h2>${c.stack.title}</h2></div>
-            <div class="chips">${c.stack.items.map(item => `<span class="chip">${item}</span>`).join('')}</div>
+            <div class="chips">${c.stack.items.map(item => renderTechChip(item, techIconsPath)).join('')}</div>
           </div>
         </section>
 

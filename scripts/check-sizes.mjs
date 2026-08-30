@@ -18,18 +18,20 @@ const files = {
   css: path.join(assets, one(/^styles\.[a-f0-9]{12}\.css$/, 'stylesheet')),
   boot: path.join(assets, one(/^boot\.[A-Z0-9]{8}\.js$/, 'bootstrap')),
   curtain: path.join(assets, one(/^curtain\.[A-Z0-9]{8}\.js$/, 'curtain module')),
+  techIcons: path.join(assets, one(/^tech-icons\.[a-f0-9]{12}\.svg$/, 'technology icon sprite')),
   ruFragment: path.join(assets, one(/^page-ru\.[a-f0-9]{12}\.html$/, 'RU fragment')),
   enFragment: path.join(assets, one(/^page-en\.[a-f0-9]{12}\.html$/, 'EN fragment')),
 };
 
-// Russian UTF-8 text makes the fully prerendered RU document slightly larger.
-// Keeping it below 14 KiB preserves all SEO/JSON-LD and visible no-JS content.
+// Russian UTF-8 text and visible no-JS Stack labels make localized documents
+// slightly larger. Both stay below the 16 KiB network-risk boundary.
 const budgets = {
-  ruHtml: 14 * 1024,
-  enHtml: 12 * 1024,
+  ruHtml: 15 * 1024,
+  enHtml: 13 * 1024,
   css: 12 * 1024,
   boot: 2 * 1024,
   curtain: 12 * 1024,
+  techIcons: 4 * 1024,
   ruFragment: 8 * 1024,
   enFragment: 8 * 1024,
 };

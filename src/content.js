@@ -3,6 +3,18 @@ export const projectLinks = {
   maxzolotoy: "https://github.com/Officialsayp/saypix",
 };
 
+const stackItems = Object.freeze([
+  "Go",
+  "PostgreSQL",
+  "Docker",
+  "Git",
+  "Kafka",
+  "gRPC",
+  "Redis",
+  "REST API",
+  "Grafana",
+]);
+
 export const siteContent = {
   ru: {
     meta: {
@@ -33,7 +45,7 @@ export const siteContent = {
     stack: {
       kicker: "02 / СТЕК",
       title: "Технологии, с которыми работаю и которые изучаю.",
-      items: ["Go", "PostgreSQL", "SQL", "Docker", "REST", "Git", "DDD", "Linux"]
+      items: stackItems
     },
     projects: {
       kicker: "03 / ПРОЕКТЫ",
@@ -111,7 +123,7 @@ export const siteContent = {
     stack: {
       kicker: "02 / STACK",
       title: "Technologies I use and continue to study.",
-      items: ["Go", "PostgreSQL", "SQL", "Docker", "REST", "Git", "DDD", "Linux"]
+      items: stackItems
     },
     projects: {
       kicker: "03 / PROJECTS",

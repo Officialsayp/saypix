@@ -21,9 +21,11 @@ for (const lang of ['ru', 'en']) {
   assert.match(html, new RegExp(`<html lang="${lang}"`), `/${lang}/: wrong language`);
   assert.match(html, new RegExp(`<main id="main-${lang}">`), `/${lang}/: missing prerendered content`);
 
-  const assetPaths = [...html.matchAll(/(?:href|src|data-curtain-fragment)="(\/assets\/[^"]+)"/g)]
-    .map(match => match[1]);
-  assert.equal(assetPaths.length, 3, `/${lang}/: expected three referenced assets`);
+  const assetPaths = [...new Set(
+    [...html.matchAll(/(?:href|src|data-curtain-fragment)="(\/assets\/[^"]+)"/g)]
+      .map(match => match[1].split('#')[0]),
+  )];
+  assert.equal(assetPaths.length, 4, `/${lang}/: expected four referenced assets`);
   for (const assetPath of assetPaths) {
     const assetResponse = await get(assetPath);
     assert.match(assetResponse.headers.get('cache-control') || '', /immutable/, `${assetPath}: missing immutable cache policy`);

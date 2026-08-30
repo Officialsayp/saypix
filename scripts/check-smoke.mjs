@@ -68,9 +68,11 @@ try {
 
   for (const lang of ['ru', 'en']) {
     const html = await (await fetch(`${origin}/${lang}/`)).text();
-    const assets = [...html.matchAll(/(?:href|src|data-curtain-fragment)="(\/assets\/[^"]+)"/g)]
-      .map(match => match[1]);
-    assert.equal(assets.length, 3, `/${lang}/: expected CSS, bootstrap, and lazy fragment`);
+    const assets = [...new Set(
+      [...html.matchAll(/(?:href|src|data-curtain-fragment)="(\/assets\/[^"]+)"/g)]
+        .map(match => match[1].split('#')[0]),
+    )];
+    assert.equal(assets.length, 4, `/${lang}/: expected CSS, bootstrap, lazy fragment, and icon sprite`);
     for (const asset of assets) {
       const response = await fetch(`${origin}${asset}`);
       assert.equal(response.status, 200, `${asset}: expected 200`);

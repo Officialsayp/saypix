@@ -5,6 +5,8 @@ import { contactLinks, projectLinks, siteContent } from '../src/content.js';
 
 const root = process.cwd();
 const dist = path.join(root, 'dist');
+const expectedStackItems = ['Go', 'PostgreSQL', 'Docker', 'Git', 'Kafka', 'gRPC', 'Redis', 'REST API', 'Grafana'];
+const expectedTechIconIds = ['tech-go', 'tech-postgresql', 'tech-docker', 'tech-git', 'tech-kafka', 'tech-grpc', 'tech-redis', 'tech-rest-api', 'tech-grafana'];
 
 function occurrences(source, pattern) {
   return [...source.matchAll(pattern)].length;
@@ -85,6 +87,15 @@ async function checkPage(file, { lang, canonicalPath }) {
       assert.ok(html.includes(`<li>${highlight}</li>`), `${file}: missing project evidence for ${project.id}`);
     }
   }
+  assert.deepEqual(siteContent[lang].stack.items, expectedStackItems, `${file}: Stack contract changed`);
+  const techIconUses = [...html.matchAll(
+    /<svg class="chip__icon" viewBox="0 0 24 24" aria-hidden="true"><use href="(\/assets\/tech-icons\.[a-f0-9]{12}\.svg)#(tech-[a-z-]+)"><\/use><\/svg>([^<]+)<\/span>/g,
+  )];
+  assert.equal(techIconUses.length, expectedStackItems.length, `${file}: expected one icon per technology`);
+  assert.deepEqual(techIconUses.map(match => match[3]), expectedStackItems, `${file}: visible technology labels changed`);
+  assert.deepEqual(techIconUses.map(match => match[2]), expectedTechIconIds, `${file}: technology icon mapping changed`);
+  assert.equal(new Set(techIconUses.map(match => match[1])).size, 1, `${file}: Stack must use one local sprite`);
+  assert.doesNotMatch(html, /<use href="https?:\/\//i, `${file}: technology icons must not use an external host`);
   assert.match(html, /<a class="language-edge language-edge--ru" href="\/ru\/"/, `${file}: missing crawlable RU link`);
   assert.match(html, /<a class="language-edge language-edge--en" href="\/en\/"/, `${file}: missing crawlable EN link`);
   for (const [, id] of siteContent[lang].nav) {
@@ -171,17 +182,33 @@ const styleAssets = assetNames.filter(file => /^styles\.[a-f0-9]{12}\.css$/.test
 const bootAssets = assetNames.filter(file => /^boot\.[A-Z0-9]{8}\.js$/.test(file));
 const curtainAssets = assetNames.filter(file => /^curtain\.[A-Z0-9]{8}\.js$/.test(file));
 const fragmentAssets = assetNames.filter(file => /^page-(?:ru|en)\.[a-f0-9]{12}\.html$/.test(file));
+const techIconAssets = assetNames.filter(file => /^tech-icons\.[a-f0-9]{12}\.svg$/.test(file));
 assert.equal(styleAssets.length, 1, 'dist/assets: expected one fingerprinted stylesheet');
 assert.equal(bootAssets.length, 1, 'dist/assets: expected one fingerprinted bootstrap');
 assert.equal(curtainAssets.length, 1, 'dist/assets: expected one lazy curtain module');
 assert.equal(fragmentAssets.length, 2, 'dist/assets: expected one lazy fragment per language');
+assert.equal(techIconAssets.length, 1, 'dist/assets: expected one fingerprinted technology sprite');
 for (const lang of ['ru', 'en']) {
   const fragmentName = fragmentAssets.find(file => file.startsWith(`page-${lang}.`));
   const fragment = await readFile(path.join(dist, 'assets', fragmentName), 'utf8');
   assert.match(fragment, new RegExp(`^<div class="page" lang="${lang}">`), `${fragmentName}: wrong fragment language`);
   assert.ok(fragment.includes(`<h1>${siteContent[lang].hero.title}</h1>`), `${fragmentName}: missing localized curtain content`);
+  for (const item of expectedStackItems) {
+    assert.ok(fragment.includes(`</svg>${item}</span>`), `${fragmentName}: missing visible Stack label ${item}`);
+  }
+  const fragmentSpritePaths = [...fragment.matchAll(/<use href="(\/assets\/tech-icons\.[a-f0-9]{12}\.svg)#tech-/g)]
+    .map(match => match[1]);
+  assert.equal(fragmentSpritePaths.length, expectedStackItems.length, `${fragmentName}: expected one icon per technology`);
+  assert.deepEqual([...new Set(fragmentSpritePaths)], [`/assets/${techIconAssets[0]}`], `${fragmentName}: wrong sprite URL`);
   assert.doesNotMatch(fragment, /<script\b/i, `${fragmentName}: lazy fragment must remain inert markup`);
 }
+
+const techIconSprite = await readFile(path.join(dist, 'assets', techIconAssets[0]), 'utf8');
+for (const iconId of expectedTechIconIds) {
+  assert.match(techIconSprite, new RegExp(`<symbol id="${iconId}"`), `${techIconAssets[0]}: missing ${iconId}`);
+}
+assert.match(techIconSprite, /currentColor/, `${techIconAssets[0]}: icons must inherit one monochrome color`);
+assert.doesNotMatch(techIconSprite, /<(?:image|script)\b|(?:href|xlink:href)="https?:/i, `${techIconAssets[0]}: external resources are forbidden`);
 
 const [robots, sitemap, redirects, sourceRedirects, headers, wranglerSource, styles, sourceStyles] = await Promise.all([
   readFile(path.join(dist, 'robots.txt'), 'utf8'),
@@ -201,6 +228,7 @@ assert.doesNotMatch(sitemap, /<loc>https:\/\/maxzolotoy\.com\/<\/loc>/, 'sitemap
 assert.equal(redirects, sourceRedirects, 'dist/_redirects must match src/_redirects');
 assert.ok(styles.length < sourceStyles.length, 'fingerprinted CSS must be minified at build time');
 assert.match(styles, /\.language-edge/, 'minified CSS is missing language controls');
+assert.match(styles, /\.chip__icon/, 'minified CSS is missing technology icon styles');
 
 for (const legacyAsset of ['app.js', 'content.js', 'render.js', 'curtain-math.js', 'styles.css']) {
   await assert.rejects(

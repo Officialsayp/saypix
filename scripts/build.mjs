@@ -40,12 +40,15 @@ const minifiedStyles = (await transform(rawStyles, {
 })).code;
 const stylesPath = await writeFingerprinted('styles', 'css', minifiedStyles);
 
+const rawTechIcons = await readFile(path.join(src, 'tech-icons.svg'), 'utf8');
+const techIconsPath = await writeFingerprinted('tech-icons', 'svg', minifyMarkup(rawTechIcons));
+
 const fragmentPaths = {};
 for (const lang of ['ru', 'en']) {
   fragmentPaths[lang] = await writeFingerprinted(
     `page-${lang}`,
     'html',
-    minifyMarkup(renderPage(lang)),
+    minifyMarkup(renderPage(lang, { techIconsPath })),
   );
 }
 
@@ -98,7 +101,7 @@ function page(variant) {
     .replaceAll('__DRAG_LABEL__', isRu ? 'тянуть' : 'drag')
     .replaceAll('__RU_CURRENT__', isRu ? ' aria-current="page"' : '')
     .replaceAll('__EN_CURRENT__', isRu ? '' : ' aria-current="page"')
-    .replaceAll('__PAGE_HTML__', renderPage(variant.lang));
+    .replaceAll('__PAGE_HTML__', renderPage(variant.lang, { techIconsPath }));
   return minifyMarkup(html);
 }
 
@@ -131,6 +134,7 @@ const initialFiles = new Set([
   'ru/index.html',
   'en/index.html',
   stylesPath.slice(1),
+  techIconsPath.slice(1),
   bootPath.slice(1),
 ]);
 const lazyFiles = new Set([
