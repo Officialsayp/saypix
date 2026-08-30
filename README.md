@@ -5,7 +5,7 @@
 ## Что реализовано
 
 - полноценный статический HTML отдельно для `/ru/` и `/en/`;
-- один языковой слой в исходном DOM и лёгкая шторка как progressive enhancement;
+- один языковой слой в исходном DOM и шторка как lazy progressive enhancement;
 - drag-переключение мышью / touch / pen через Pointer Events;
 - вертикальная граница следует за жестом;
 - threshold 50% + учет скорости свайпа;
@@ -19,8 +19,10 @@
 - локализованные title/description, Open Graph и Twitter Card;
 - JSON-LD граф `WebSite` → `ProfilePage` → `Person` с публичными вариантами имени;
 - адаптивная верстка;
+- минимальный initial bootstrap, lazy curtain-модуль и lazy HTML-фрагмент второго языка;
+- fingerprinted/minified build assets и автоматические size budgets;
 - нет runtime-зависимостей и frontend-фреймворков;
-- готово к Cloudflare Workers Static Assets.
+- два deployment profile: Cloudflare Workers Static Assets и direct Caddy/VPS.
 
 ## Локальный запуск
 
@@ -40,6 +42,10 @@ npm run build
 ```
 
 Результат появится в `dist/`.
+
+Сборка печатает таблицу raw/gzip/brotli-размеров и разделяет ресурсы на
+`INITIAL`, `LAZY` и `STATIC`. `npm test` проверяет budgets, no-JavaScript HTML,
+SEO, redirects и локальный HTTP smoke-test.
 
 ## Cloudflare Workers Static Assets
 
@@ -72,6 +78,10 @@ backend и VPS не нужны.
 - Build command: `npm run build`
 - Build output directory: `dist`
 
+Файлы под `/assets/` имеют content fingerprint и получают годовой
+`immutable` browser cache через `src/_headers`. HTML и stable-name файлы
+обязаны revalidate.
+
 Локальный `python -m http.server` не применяет файлы `_redirects` и `_headers`.
 Он подходит для проверки `/ru/` и `/en/`, но HTTP-статусы нужно проверять в
 Cloudflare preview/production после deploy.
@@ -101,10 +111,12 @@ export const contactLinks = {
 ## Как работает шторка
 
 Сборка сразу помещает в HTML полный контент выбранного URL: русский для
-`/ru/`, английский для `/en/`. Альтернативная страница заранее подготавливается
-в отсоединённом `template`, но не попадает в документ и не смешивает языки для
-поисковых роботов. Она добавляется в визуальный слой только после реального
-наведения, фокуса или нажатия на неактивную языковую ссылку.
+`/ru/`, английский для `/en/`. Основная страница полностью работает без
+JavaScript. Маленький bootstrap не загружает механику и второй язык заранее.
+Только после реального наведения, фокуса или pointerdown он параллельно
+загружает lazy curtain-модуль и fingerprinted HTML-фрагмент второго языка.
+Если любой lazy-запрос не удался, обычная RU/EN-ссылка просто открывает другой
+канонический URL.
 
 Во время drag двигаются только три композитных объекта: слой шторки, её
 однопиксельная граница и иконка под курсором. Основная длинная страница не
@@ -138,3 +150,14 @@ src/styles.css
 В исходном документе существует только одна страница. Геометрия основного и
 временного языковых слоёв синхронизируется после реального взаимодействия,
 перед началом анимации.
+
+## Российские сети и direct origin
+
+Frontend split повышает устойчивость, но не устраняет ISP-level throttling
+между российскими сетями и Cloudflare. Полный baseline, Caddy/VPS profile,
+GitHub Actions deployment, test-origin procedure, безопасный DNS-only cutover и
+rollback описаны в [docs/ru-network-resilience.md](docs/ru-network-resilience.md).
+
+Текущий production нельзя переключать вслепую. Сначала нужен
+`origin.maxzolotoy.com` с серым облаком **DNS only**, тесты из РФ и Европы и
+подтверждение полной передачи каждого asset по HTTP/1.1 и HTTP/2.
