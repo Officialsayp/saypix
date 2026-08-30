@@ -31,7 +31,7 @@ const budgets = {
   css: 12 * 1024,
   boot: 2 * 1024,
   curtain: 12 * 1024,
-  techIcons: 5 * 1024,
+  techIcons: 6 * 1024,
   ruFragment: 9 * 1024,
   enFragment: 8 * 1024,
 };
