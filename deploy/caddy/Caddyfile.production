@@ -1,0 +1,19 @@
+{
+	servers {
+		protocols h1 h2
+	}
+}
+
+import site.caddy
+
+http://maxzolotoy.com, http://www.maxzolotoy.com {
+	redir https://maxzolotoy.com{uri} 308
+}
+
+https://www.maxzolotoy.com {
+	redir https://maxzolotoy.com{uri} 308
+}
+
+https://maxzolotoy.com {
+	import maxzolotoy_static
+}
