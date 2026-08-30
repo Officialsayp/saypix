@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
-import { access, readFile } from 'node:fs/promises';
+import { access, readFile, readdir } from 'node:fs/promises';
 import path from 'node:path';
-import { projectLinks, siteContent } from '../src/content.js';
+import { contactLinks, projectLinks, siteContent } from '../src/content.js';
 
 const root = process.cwd();
 const dist = path.join(root, 'dist');
@@ -87,6 +87,21 @@ async function checkPage(file, { lang, canonicalPath }) {
   }
   assert.match(html, /<a class="language-edge language-edge--ru" href="\/ru\/"/, `${file}: missing crawlable RU link`);
   assert.match(html, /<a class="language-edge language-edge--en" href="\/en\/"/, `${file}: missing crawlable EN link`);
+  for (const [, id] of siteContent[lang].nav) {
+    assert.ok(ids.includes(`${id}-${lang}`), `${file}: missing ${id} section`);
+    assert.match(html, new RegExp(`href="#${id}-${lang}"`), `${file}: ${id} anchor navigation is not usable without JS`);
+  }
+  assert.ok(html.includes(`href="mailto:${contactLinks.email}"`), `${file}: email is not usable without JS`);
+  assert.ok(html.includes(`href="${contactLinks.telegram}"`), `${file}: Telegram is not usable without JS`);
+  assert.ok(html.includes(`href="${contactLinks.github}"`), `${file}: GitHub is not usable without JS`);
+  assert.match(html, /<link rel="stylesheet" href="\/assets\/styles\.[a-f0-9]{12}\.css">/, `${file}: missing fingerprinted CSS`);
+  assert.match(html, /<script type="module" src="\/assets\/boot\.[A-Z0-9]{8}\.js"><\/script>/, `${file}: missing fingerprinted bootstrap`);
+  assert.match(html, /data-curtain-fragment="\/assets\/page-(?:ru|en)\.[a-f0-9]{12}\.html"/, `${file}: missing lazy curtain fragment`);
+  assert.doesNotMatch(html, /(?:src|href)="\/(?:app|content|render|curtain-math|styles)\.(?:js|css)"/, `${file}: legacy critical asset leaked into HTML`);
+  assert.ok(
+    html.indexOf(`<main id="main-${lang}">`) < html.lastIndexOf('<script type="module"'),
+    `${file}: primary content must precede enhancement JavaScript`,
+  );
   assert.match(html, /<link rel="alternate" hreflang="ru" href="https:\/\/maxzolotoy\.com\/ru\/">/, `${file}: missing RU hreflang`);
   assert.match(html, /<link rel="alternate" hreflang="en" href="https:\/\/maxzolotoy\.com\/en\/">/, `${file}: missing EN hreflang`);
   assert.match(html, /<link rel="alternate" hreflang="x-default" href="https:\/\/maxzolotoy\.com\/en\/">/, `${file}: missing x-default hreflang`);
@@ -151,6 +166,23 @@ await assert.rejects(
   'dist/index.html must not expose a third, duplicate canonical page',
 );
 
+const assetNames = await readdir(path.join(dist, 'assets'));
+const styleAssets = assetNames.filter(file => /^styles\.[a-f0-9]{12}\.css$/.test(file));
+const bootAssets = assetNames.filter(file => /^boot\.[A-Z0-9]{8}\.js$/.test(file));
+const curtainAssets = assetNames.filter(file => /^curtain\.[A-Z0-9]{8}\.js$/.test(file));
+const fragmentAssets = assetNames.filter(file => /^page-(?:ru|en)\.[a-f0-9]{12}\.html$/.test(file));
+assert.equal(styleAssets.length, 1, 'dist/assets: expected one fingerprinted stylesheet');
+assert.equal(bootAssets.length, 1, 'dist/assets: expected one fingerprinted bootstrap');
+assert.equal(curtainAssets.length, 1, 'dist/assets: expected one lazy curtain module');
+assert.equal(fragmentAssets.length, 2, 'dist/assets: expected one lazy fragment per language');
+for (const lang of ['ru', 'en']) {
+  const fragmentName = fragmentAssets.find(file => file.startsWith(`page-${lang}.`));
+  const fragment = await readFile(path.join(dist, 'assets', fragmentName), 'utf8');
+  assert.match(fragment, new RegExp(`^<div class="page" lang="${lang}">`), `${fragmentName}: wrong fragment language`);
+  assert.ok(fragment.includes(`<h1>${siteContent[lang].hero.title}</h1>`), `${fragmentName}: missing localized curtain content`);
+  assert.doesNotMatch(fragment, /<script\b/i, `${fragmentName}: lazy fragment must remain inert markup`);
+}
+
 const [robots, sitemap, redirects, sourceRedirects, headers, wranglerSource, styles, sourceStyles] = await Promise.all([
   readFile(path.join(dist, 'robots.txt'), 'utf8'),
   readFile(path.join(dist, 'sitemap.xml'), 'utf8'),
@@ -158,7 +190,7 @@ const [robots, sitemap, redirects, sourceRedirects, headers, wranglerSource, sty
   readFile(path.join(root, 'src', '_redirects'), 'utf8'),
   readFile(path.join(dist, '_headers'), 'utf8'),
   readFile(path.join(root, 'wrangler.jsonc'), 'utf8'),
-  readFile(path.join(dist, 'styles.css'), 'utf8'),
+  readFile(path.join(dist, 'assets', styleAssets[0]), 'utf8'),
   readFile(path.join(root, 'src', 'styles.css'), 'utf8'),
 ]);
 assert.match(robots, /Sitemap: https:\/\/maxzolotoy\.com\/sitemap\.xml/, 'robots.txt: missing sitemap URL');
@@ -167,7 +199,16 @@ assert.match(sitemap, /<loc>https:\/\/maxzolotoy\.com\/en\/<\/loc>/, 'sitemap.xm
 assert.equal(occurrences(sitemap, /<loc>/g), 2, 'sitemap.xml: expected exactly two canonical URLs');
 assert.doesNotMatch(sitemap, /<loc>https:\/\/maxzolotoy\.com\/<\/loc>/, 'sitemap.xml: redirecting root must not be listed');
 assert.equal(redirects, sourceRedirects, 'dist/_redirects must match src/_redirects');
-assert.equal(styles, sourceStyles, 'dist/styles.css must match src/styles.css');
+assert.ok(styles.length < sourceStyles.length, 'fingerprinted CSS must be minified at build time');
+assert.match(styles, /\.language-edge/, 'minified CSS is missing language controls');
+
+for (const legacyAsset of ['app.js', 'content.js', 'render.js', 'curtain-math.js', 'styles.css']) {
+  await assert.rejects(
+    () => access(path.join(dist, legacyAsset)),
+    error => error?.code === 'ENOENT',
+    `dist/${legacyAsset} must not remain as an unfingerprinted asset`,
+  );
+}
 
 function pixelCustomProperty(source, name) {
   const match = source.match(new RegExp(`--${name}:\\s*(\\d+)px`));
@@ -244,7 +285,16 @@ for (const [source, destination] of Object.entries({
   assert.equal(redirectRules.get(source)?.destination, destination, `_redirects: ${source} must lead directly to ${destination}`);
 }
 assert.equal(parsedRedirectRules.length, 11, '_redirects: unexpected rule count');
-assert.doesNotMatch(headers, /immutable/, '_headers: immutable caching requires fingerprinted asset names');
+assert.match(
+  headers,
+  /\/assets\/\*[\s\S]*?Cache-Control: public, max-age=31536000, immutable/,
+  '_headers: fingerprinted assets need immutable browser caching',
+);
+assert.match(
+  headers,
+  /\/\*[\s\S]*?Cache-Control: public, max-age=0, must-revalidate/,
+  '_headers: HTML and stable assets need revalidation',
+);
 assert.match(
   headers,
   /https:\/\/:version\.:subdomain\.workers\.dev\/\*[\s\S]*?X-Robots-Tag: noindex/,
