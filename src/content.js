@@ -88,9 +88,9 @@ export const siteContent = {
     contacts: {
       kicker: "04 /",
       title: "КОНТАКТЫ",
-      email: "Email · hello@maxzolotoy.com",
-      telegram: "Telegram · @max_zolotoy",
-      github: "GitHub · github.com/Officialsayp"
+      email: "hello@maxzolotoy.com",
+      telegram: "@max_zolotoy",
+      github: "github.com/Officialsayp"
     },
     footer: "Сделано без frontend-фреймворков — HTML, CSS и JavaScript."
   },
@@ -163,13 +163,13 @@ export const siteContent = {
         }
       ]
     },
-    contacts: {
-      kicker: "04 /",
-      title: "CONTACT",
-      email: "Email · hello@maxzolotoy.com",
-      telegram: "Telegram · @max_zolotoy",
-      github: "GitHub · github.com/Officialsayp"
-    },
+   contacts: {
+     kicker: "04 /",
+     title: "CONTACT",
+     email: "hello@maxzolotoy.com",
+     telegram: "@max_zolotoy",
+     github: "github.com/Officialsayp"
+   },
     footer: "Built without frontend frameworks — HTML, CSS and JavaScript."
   }
 };

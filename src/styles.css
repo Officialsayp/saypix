@@ -320,6 +320,21 @@ button { font: inherit; }
 .project-card__link:focus-visible { outline: 2px solid #9eb6f7; outline-offset: 5px; border-radius: 2px; }
 
 .contacts__links { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 42px; }
+.contact-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.contact-link__icon {
+  display: block;
+  width: 20px;
+  height: 20px;
+  flex: 0 0 auto;
+  color: currentColor;
+}
+.contact-link__label {
+  display: inline-block;
+}
 .contact-link[aria-disabled="true"] { opacity: .44; cursor: default; pointer-events: none; }
 .contact-note { margin-top: 22px; max-width: 650px; color: #7f8796; font-size: 13px; line-height: 1.6; }
 

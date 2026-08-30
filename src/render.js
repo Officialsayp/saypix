@@ -1,13 +1,5 @@
 import { siteContent, contactLinks } from './content.js';
 
-function linkOrDisabled(label, href, className = 'button button--ghost contact-link') {
-  if (!href) {
-    return `<span class="${className}" aria-disabled="true">${label}</span>`;
-  }
-  const external = href.startsWith('http');
-  return `<a class="${className}" href="${href}"${external ? ' target="_blank" rel="noreferrer"' : ''}>${label}</a>`;
-}
-
 const TECH_ICON_IDS = Object.freeze({
   Go: 'go',
   PostgreSQL: 'postgresql',
@@ -24,6 +16,31 @@ function renderTechChip(name, techIconsPath) {
   const iconId = TECH_ICON_IDS[name];
   if (!iconId) throw new Error(`Missing technology icon: ${name}`);
   return `<span class="chip"><svg class="chip__icon" viewBox="0 0 24 24" aria-hidden="true"><use href="${techIconsPath}#tech-${iconId}"></use></svg>${name}</span>`;
+}
+
+const CONTACT_ICON_IDS = Object.freeze({
+  email: 'email',
+  telegram: 'telegram',
+  github: 'github',
+});
+
+function renderContactLink(kind, label, href, iconsPath) {
+  const iconId = CONTACT_ICON_IDS[kind];
+  if (!iconId) throw new Error(`Missing contact icon: ${kind}`);
+
+  const content = `
+    <svg class="contact-link__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <use href="${iconsPath}#contact-${iconId}"></use>
+    </svg>
+    <span class="contact-link__label">${label}</span>
+  `;
+
+  if (!href) {
+    return `<span class="button button--ghost contact-link" aria-disabled="true">${content}</span>`;
+  }
+
+  const external = href.startsWith('http');
+  return `<a class="button button--ghost contact-link" href="${href}"${external ? ' target="_blank" rel="noreferrer"' : ''}>${content}</a>`;
 }
 
 export function renderPage(lang, { techIconsPath } = {}) {
@@ -102,9 +119,9 @@ export function renderPage(lang, { techIconsPath } = {}) {
           <div class="container">
             <div class="section__head"><div class="kicker">${c.contacts.kicker}</div><h2>${c.contacts.title}</h2></div>
             <div class="contacts__links">
-              ${linkOrDisabled(c.contacts.email, contactLinks.email ? `mailto:${contactLinks.email}` : '')}
-              ${linkOrDisabled(c.contacts.telegram, contactLinks.telegram)}
-              ${linkOrDisabled(c.contacts.github, contactLinks.github)}
+              ${renderContactLink('email', c.contacts.email, contactLinks.email ? `mailto:${contactLinks.email}` : '', techIconsPath)}
+              ${renderContactLink('telegram', c.contacts.telegram, contactLinks.telegram, techIconsPath)}
+              ${renderContactLink('github', c.contacts.github, contactLinks.github, techIconsPath)}
             </div>
           </div>
         </section>
