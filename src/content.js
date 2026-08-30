@@ -5,13 +5,13 @@ export const projectLinks = {
 
 const stackItems = Object.freeze([
   "Go",
+  "REST API",
+  "gRPC",
   "PostgreSQL",
+  "Redis",
+  "Kafka",
   "Docker",
   "Git",
-  "Kafka",
-  "gRPC",
-  "Redis",
-  "REST API",
   "Grafana",
 ]);
 
