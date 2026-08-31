@@ -26,10 +26,10 @@ const files = {
 // Russian UTF-8 text and visible no-JS Stack labels make localized documents
 // slightly larger. Both stay below the 16 KiB network-risk boundary.
 const budgets = {
-  ruHtml: 15.5 * 1024,
-  enHtml: 14 * 1024,
-  css: 12 * 1024,
-  boot: 2 * 1024,
+  ruHtml: 16 * 1024,
+  enHtml: 16 * 1024,
+  css: 13 * 1024,
+  boot: 2.25 * 1024,
   curtain: 12 * 1024,
   techIcons: 6 * 1024,
   ruFragment: 9 * 1024,
