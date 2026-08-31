@@ -7,11 +7,15 @@
 		Referrer-Policy "strict-origin-when-cross-origin"
 		Permissions-Policy "camera=(), microphone=(), geolocation=()"
 		X-Frame-Options "DENY"
-		Cache-Control "public, max-age=0, must-revalidate"
 	}
 
 	@immutable path /assets/*
 	header @immutable Cache-Control "public, max-age=31536000, immutable"
+
+	@mutable {
+		not path /assets/*
+	}
+	header @mutable Cache-Control "public, max-age=0, must-revalidate"
 
 	@health path /_health
 	respond @health "ok\n" 200
