@@ -6,6 +6,15 @@
 
 import site.caddy
 
+http://origin.maxzolotoy.com {
+	redir https://origin.maxzolotoy.com{uri} 308
+}
+
+https://origin.maxzolotoy.com {
+	import maxzolotoy_static
+	header X-Robots-Tag "noindex, nofollow"
+}
+
 http://maxzolotoy.com, http://www.maxzolotoy.com {
 	redir https://maxzolotoy.com{uri} 308
 }
