@@ -23,8 +23,14 @@
 	@internal path /_headers /_redirects
 	respond @internal 404
 
+	@rootRu {
+		path /
+		header_regexp Accept-Language (?i)^ru(?:-|,|;|$)
+	}
+	redir @rootRu /ru/{?query} 302
+	
 	@root path /
-	redir @root /en/{?query} 308
+	redir @root /en/{?query} 302
 
 	@ruAliases path /ru /ru.html /ru/index /ru/index.html
 	redir @ruAliases /ru/{?query} 308
