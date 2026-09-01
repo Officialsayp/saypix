@@ -68,13 +68,12 @@ export function renderPage(lang, { techIconsPath } = {}) {
   return `
     <div class="page" lang="${lang}">
       <header class="header">
-        <div class="container header__inner">
-          <a class="brand" href="#top-${lang}" aria-label="${lang === 'ru' ? 'Максим Золотой — главная' : 'Maxim Zolotoy — home'}">MZ.</a>
-          <nav class="nav" aria-label="${lang === 'ru' ? 'Основная навигация' : 'Main navigation'}">
-            ${c.nav.map(([label, id]) => `<a href="#${id}-${lang}">${label}</a>`).join('')}
-          </nav>
-        </div>
-      </header>
+  <div class="container header__inner">
+    <nav class="nav" aria-label="${lang === 'ru' ? 'Основная навигация' : 'Main navigation'}">
+      ${c.nav.map(([label, id]) => `<a href="#${id}-${lang}">${label}</a>`).join('')}
+    </nav>
+  </div>
+</header>
 
       <main id="main-${lang}">
         <section class="hero" id="top-${lang}">
@@ -129,7 +128,5 @@ export function renderPage(lang, { techIconsPath } = {}) {
           </div>
         </section>
       </main>
-
-      <footer class="footer"><div class="container">${c.footer}</div></footer>
     </div>`;
 }

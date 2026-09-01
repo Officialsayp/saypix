@@ -67,8 +67,7 @@ function syncGeometry() {
     [`#about-${activeLang}`, `#about-${curtainLang}`],
     [`#stack-${activeLang}`, `#stack-${curtainLang}`],
     [`#projects-${activeLang}`, `#projects-${curtainLang}`],
-    [`#contacts-${activeLang}`, `#contacts-${curtainLang}`],
-    ['.footer', '.footer']
+    [`#contacts-${activeLang}`, `#contacts-${curtainLang}`]
   ];
 
   const elements = pairs
