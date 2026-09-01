@@ -1,13 +1,9 @@
 :root {
   --bg: #0b0c10;
-  --bg-soft: #11131a;
   --surface: rgba(255, 255, 255, 0.045);
-  --surface-strong: rgba(255, 255, 255, 0.075);
   --text: #f5f7fb;
   --muted: #a2a8b6;
   --line: rgba(255, 255, 255, 0.14);
-  --accent: #2f6bff;
-  --accent-soft: rgba(47, 107, 255, 0.22);
   --header-h: 76px;
   --content-w: 1180px;
   --page-pad: clamp(20px, 4vw, 54px);
@@ -19,11 +15,10 @@
     calc(env(safe-area-inset-left, 0px) + var(--language-control-size) + var(--header-control-gap)),
     calc(env(safe-area-inset-right, 0px) + var(--language-control-size) + var(--header-control-gap))
   );
-  --radius: 22px;
 }
 
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; background: var(--bg); }
+html { scroll-behavior: smooth; scroll-padding-top: 94px; background: var(--bg); }
 body {
   margin: 0;
   min-width: 320px;
@@ -102,22 +97,41 @@ button { font: inherit; }
   margin-inline: auto;
 }
 
+/* Floating dock: sticky, light, and independent from RU/EN controls. */
 .header {
+  position: sticky;
+  top: 0;
+  z-index: 45;
   min-height: var(--header-h);
   display: flex;
-  align-items: center;
-  border-bottom: 1px solid var(--line);
-  background: rgba(11, 12, 16, .72);
-  backdrop-filter: blur(16px);
+  align-items: flex-start;
+  padding-top: var(--language-edge-offset);
+  pointer-events: none;
+}
+.header::before {
+  content: "";
+  position: absolute;
+  top: 5px;
+  left: 50%;
+  width: min(430px, calc(100% - var(--header-edge-clearance) - var(--header-edge-clearance)));
+  height: 10px;
+  border-top: 1px solid rgba(255,255,255,.12);
+  border-radius: 50%;
+  transform: translateX(-50%);
 }
 .header__inner {
-  width: min(
-    var(--content-w),
-    calc(100% - var(--header-edge-clearance) - var(--header-edge-clearance))
-  );
+  width: fit-content;
+  max-width: calc(100% - var(--header-edge-clearance) - var(--header-edge-clearance));
+  min-height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 0 20px;
+  border: 1px solid rgba(255,255,255,.14);
+  border-radius: 999px;
+  background: rgba(11,12,16,.70);
+  backdrop-filter: blur(16px);
+  pointer-events: auto;
 }
 .nav {
   min-width: 0;
@@ -416,12 +430,11 @@ button { font: inherit; }
   display: inline-block;
 }
 .contact-link[aria-disabled="true"] { opacity: .44; cursor: default; pointer-events: none; }
-.contact-note { margin-top: 22px; max-width: 650px; color: #7f8796; font-size: 13px; line-height: 1.6; }
 
 .language-ui { position: fixed; inset: 0; pointer-events: none; z-index: 50; }
 .language-edge {
   position: fixed;
-  top: max(18px, env(safe-area-inset-top));
+  top: max(var(--language-edge-offset), env(safe-area-inset-top));
   z-index: 53;
   width: var(--language-control-size);
   min-height: 44px;
@@ -458,7 +471,7 @@ button { font: inherit; }
 
 .language-ghost {
   position: fixed;
-  top: max(18px, env(safe-area-inset-top));
+  top: max(var(--language-edge-offset), env(safe-area-inset-top));
   left: 0;
   z-index: 55;
   width: var(--language-control-size);
@@ -524,7 +537,7 @@ body.is-curtain-prepared .curtain-divider {
 }
 body.is-curtain-moving .language-reveal { pointer-events: none; }
 body.is-curtain-prepared .ambient { filter: blur(42px); opacity: .08; }
-body.is-curtain-prepared .header,
+body.is-curtain-prepared .header__inner,
 body.is-curtain-prepared .hero__visual-code,
 body.is-curtain-prepared .language-edge {
   backdrop-filter: none;
@@ -532,8 +545,15 @@ body.is-curtain-prepared .language-edge {
 body.is-curtain-prepared .curtain-divider { box-shadow: none; }
 
 @media (max-width: 860px) {
-  :root { --header-h: 68px; }
-  .nav { display: none; }
+  :root {
+    --header-h: 68px;
+    --language-control-size: 44px;
+    --language-edge-offset: 12px;
+    --header-control-gap: 6px;
+  }
+  .header__inner { width: min(430px, calc(100% - var(--header-edge-clearance) - var(--header-edge-clearance))); padding: 0 3px; }
+  .nav { width: 100%; gap: 0; }
+  .nav a { flex: 1; padding: 14px 0; text-align: center; font-size: 10px; }
   .hero__grid {
     width: min(var(--content-w), calc(100% - (var(--page-pad) * 2)));
     grid-template-columns: 1fr;
@@ -553,10 +573,7 @@ body.is-curtain-prepared .curtain-divider { box-shadow: none; }
 }
 
 @media (max-width: 560px) {
-  :root {
-    --page-pad: 20px;
-    --language-edge-offset: 14px;
-  }
+  :root { --page-pad: 20px; }
   .hero { padding-top: 92px; }
   .hero h1 { font-size: clamp(52px, 17vw, 78px); }
   .hero__lead { font-size: 17px; }
