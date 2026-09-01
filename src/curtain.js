@@ -64,6 +64,7 @@ function syncGeometry() {
   const pairs = [
     ['.header', '.header'],
     ['.hero', '.hero'],
+    ['.hero__content', '.hero__content'],
     [`#about-${activeLang}`, `#about-${curtainLang}`],
     [`#stack-${activeLang}`, `#stack-${curtainLang}`],
     [`#projects-${activeLang}`, `#projects-${curtainLang}`],

@@ -164,6 +164,12 @@ button { font: inherit; }
   gap: clamp(36px, 5vw, 80px);
   align-items: center;
 }
+.hero__content {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+.hero .eyebrow { white-space: nowrap; }
 .eyebrow, .kicker {
   color: #83a5ff;
   font-size: 12px;
@@ -178,6 +184,7 @@ button { font: inherit; }
   letter-spacing: -.065em;
   max-width: 900px;
 }
+.hero h1 span { display: block; }
 .hero__lead {
   max-width: 760px;
   margin: 0;
@@ -185,7 +192,13 @@ button { font: inherit; }
   font-size: clamp(18px, 2vw, 23px);
   line-height: 1.55;
 }
-.hero__actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 34px; }
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: auto;
+  padding-top: 40px;
+}
 .button {
   display: inline-flex;
   align-items: center;
@@ -585,6 +598,7 @@ body.is-curtain-prepared .curtain-divider { box-shadow: none; }
   .hero { padding-top: 92px; }
   .hero h1 { font-size: clamp(52px, 17vw, 78px); }
   .hero__lead { font-size: 17px; }
+  .hero__actions { padding-top: 32px; }
   .hero__visual { width: 100%; border-radius: 26px; }
   .section { padding: 82px 0; }
   .section h2 { font-size: 38px; }
