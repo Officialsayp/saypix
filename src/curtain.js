@@ -561,7 +561,6 @@ function cancelDrag(event) {
   if (!dragging || (event && event.pointerId !== pointerId)) return;
   cancelMoveFrame({ flush: true });
   finishPointerSession();
-  dragTarget = null;
   animateTo(activeLang === 'en' ? 1 : 0);
 }
 
