@@ -88,6 +88,8 @@ function queueFirstPointer(event, targetLang) {
 }
 
 for (const link of languageLinks) {
+  link.addEventListener('dragstart', event => event.preventDefault());
+
   const targetLang = link.dataset.langTarget;
   const warm = () => {
     if (targetLang !== root.dataset.initialLang && !reducedMotion.matches) loadCurtain();
