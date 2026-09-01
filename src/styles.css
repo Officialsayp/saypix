@@ -573,7 +573,10 @@ body.is-curtain-prepared .curtain-divider { box-shadow: none; }
 }
 
 @media (max-width: 560px) {
-  :root { --page-pad: 20px; }
+  :root {
+    --page-pad: 20px;
+    --language-edge-offset: 14px;
+  }
   .hero { padding-top: 92px; }
   .hero h1 { font-size: clamp(52px, 17vw, 78px); }
   .hero__lead { font-size: 17px; }
