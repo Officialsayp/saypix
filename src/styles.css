@@ -445,6 +445,8 @@ button { font: inherit; }
   pointer-events: auto;
   cursor: grab;
   user-select: none;
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
   touch-action: pan-y;
   font-size: 12px;
   font-weight: 780;
