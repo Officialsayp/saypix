@@ -190,6 +190,7 @@ function prepareCurtain(targetLang) {
 
 function showCurtain(targetLang, { showGhost = true } = {}) {
   prepareCurtain(targetLang);
+  root.classList.toggle('is-page-top', window.scrollY <= 24);
   body.classList.add('has-used-curtain', 'is-curtain-moving');
   ghost.classList.toggle('is-visible', showGhost && !reducedMotion.matches);
   divider.classList.toggle('is-visible', !reducedMotion.matches);

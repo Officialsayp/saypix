@@ -496,16 +496,18 @@ button { font: inherit; }
 
 .curtain-divider {
   position: fixed;
-  top: calc(max(var(--language-edge-offset), env(safe-area-inset-top)) + 54px);
+  top: 0;
   bottom: 0;
   left: 0;
   width: 1px;
-  z-index: 52;
+  z-index: 48;
   background: rgba(255,255,255,.5);
   opacity: 0;
   pointer-events: none;
   box-shadow: -12px 0 36px rgba(0,0,0,.28), 12px 0 36px rgba(47,107,255,.12);
+  transition: top 140ms ease, opacity 160ms ease;
 }
+html.is-page-top .curtain-divider { top: 10px; }
 .curtain-divider.is-visible { opacity: 1; }
 
 .drag-hint {
