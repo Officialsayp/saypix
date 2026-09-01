@@ -43,18 +43,21 @@ function renderContactLink(kind, label, href, iconsPath) {
   return `<a class="button button--ghost contact-link" href="${href}"${external ? ' target="_blank" rel="noreferrer"' : ''}>${content}</a>`;
 }
 
-function renderHeroTitle(title) {
-  const [firstName, ...lastNameParts] = title.trim().split(/\s+/);
-  const lastName = lastNameParts.join(' ');
-  return `<span>${firstName}</span>${lastName ? `<span>${lastName}</span>` : ''}`;
-}
-
 export function renderNavigation(lang) {
   const c = siteContent[lang];
   if (!c) throw new Error(`Unsupported language: ${lang}`);
 
+  const alternateLang = lang === 'ru' ? 'en' : 'ru';
+  const alternateNav = siteContent[alternateLang].nav;
+
   return `<nav class="nav" aria-label="${lang === 'ru' ? 'Основная навигация' : 'Main navigation'}">${c.nav
-    .map(([label, id]) => `<a href="#${id}-${lang}">${label}</a>`)
+    .map(([label, id], index) => {
+      const [alternateLabel, alternateId] = alternateNav[index] || [];
+      if (alternateId !== id) throw new Error(`Navigation mismatch: ${id}`);
+      const ruLabel = lang === 'ru' ? label : alternateLabel;
+      const enLabel = lang === 'en' ? label : alternateLabel;
+      return `<a href="#${id}-${lang}" data-ru="${ruLabel}" data-en="${enLabel}">${label}</a>`;
+    })
     .join('')}</nav>`;
 }
 
@@ -85,9 +88,9 @@ export function renderPage(lang, { techIconsPath } = {}) {
       <main id="main-${lang}">
         <section class="hero" id="top-${lang}">
           <div class="container hero__grid">
-            <div class="hero__content">
+            <div>
               <div class="eyebrow">${c.hero.eyebrow}</div>
-              <h1>${renderHeroTitle(c.hero.title)}</h1>
+              <h1>${c.hero.title}</h1>
               <p class="hero__lead">${c.hero.lead}</p>
               <div class="hero__actions">
                 <a class="button button--primary" href="#projects-${lang}">${c.hero.primary}</a>

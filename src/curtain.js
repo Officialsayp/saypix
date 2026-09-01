@@ -16,6 +16,7 @@ const ruButton = document.querySelector('[data-lang-target="ru"]');
 const enButton = document.querySelector('[data-lang-target="en"]');
 const ghost = document.querySelector('.language-ghost');
 const divider = document.querySelector('.curtain-divider');
+const navItems = [...document.querySelectorAll('.nav a[data-ru][data-en]')];
 
 const DRAG_START_PX = 8;
 const MIN_FLING_TRAVEL_PX = 12;
@@ -57,6 +58,8 @@ let lastDragInputX = null;
 let stageWidth = 1;
 let ruDragAnchorX = null;
 let enDragAnchorX = null;
+let navCenters = [];
+let navVisualLangs = navItems.map(() => activeLang);
 let lastViewportWidth = 0;
 let suppressNextClick = false;
 
@@ -64,7 +67,6 @@ function syncGeometry() {
   const pairs = [
     ['.header', '.header'],
     ['.hero', '.hero'],
-    ['.hero__content', '.hero__content'],
     [`#about-${activeLang}`, `#about-${curtainLang}`],
     [`#stack-${activeLang}`, `#stack-${curtainLang}`],
     [`#projects-${activeLang}`, `#projects-${curtainLang}`],
@@ -145,6 +147,10 @@ function updateStageWidth() {
   const enRect = enButton.getBoundingClientRect();
   ruDragAnchorX = clamp(ruRect.right - stageRect.left, 0, stageWidth);
   enDragAnchorX = clamp(enRect.left - stageRect.left, 0, stageWidth);
+  navCenters = navItems.map(item => {
+    const rect = item.getBoundingClientRect();
+    return clamp(rect.left + rect.width / 2 - stageRect.left, 0, stageWidth);
+  });
   return stageWidth;
 }
 
@@ -164,6 +170,21 @@ function paintGhostAt(clientX) {
   ghost.style.transform = `translate3d(${(x - GHOST_HALF_WIDTH).toFixed(3)}px, 0, 0)`;
 }
 
+// The dock stays physically whole. Only a label changes language when the
+// curtain boundary crosses that navigation item's center.
+function syncNavigation(dividerX) {
+  navItems.forEach((item, index) => {
+    const centerX = navCenters[index];
+    if (!Number.isFinite(centerX)) return;
+    const nextLang = curtainLang === 'en'
+      ? (centerX >= dividerX ? 'en' : 'ru')
+      : (centerX <= dividerX ? 'ru' : 'en');
+    if (navVisualLangs[index] === nextLang) return;
+    navVisualLangs[index] = nextLang;
+    item.textContent = item.dataset[nextLang];
+  });
+}
+
 function paintCurtain(p, { ghostX = null, retainPending = false } = {}) {
   const frame = curtainFrame(p, stageWidth, curtainLang);
   progress = frame.progress;
@@ -177,6 +198,7 @@ function paintCurtain(p, { ghostX = null, retainPending = false } = {}) {
   curtainReveal.style.transform = `translate3d(${frame.revealX.toFixed(3)}px, 0, 0)`;
   curtainLayer.style.transform = `translate3d(${frame.layerX.toFixed(3)}px, 0, 0)`;
   divider.style.transform = `translate3d(${dividerX.toFixed(3)}px, 0, 0)`;
+  syncNavigation(frame.dividerPosition);
   if (Number.isFinite(ghostX)) paintGhostAt(ghostX);
 }
 

@@ -143,6 +143,7 @@ button { font: inherit; }
   gap: clamp(18px, 2.5vw, 34px);
 }
 .nav a {
+  min-width: 68px;
   color: var(--muted);
   text-decoration: none;
   font-size: 14px;
@@ -164,12 +165,6 @@ button { font: inherit; }
   gap: clamp(36px, 5vw, 80px);
   align-items: center;
 }
-.hero__content {
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-}
-.hero .eyebrow { white-space: nowrap; }
 .eyebrow, .kicker {
   color: #83a5ff;
   font-size: 12px;
@@ -184,7 +179,6 @@ button { font: inherit; }
   letter-spacing: -.065em;
   max-width: 900px;
 }
-.hero h1 span { display: block; }
 .hero__lead {
   max-width: 760px;
   margin: 0;
@@ -192,13 +186,7 @@ button { font: inherit; }
   font-size: clamp(18px, 2vw, 23px);
   line-height: 1.55;
 }
-.hero__actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin-top: auto;
-  padding-top: 40px;
-}
+.hero__actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 34px; }
 .button {
   display: inline-flex;
   align-items: center;
@@ -518,7 +506,7 @@ button { font: inherit; }
   opacity: 0;
   pointer-events: none;
   box-shadow: -12px 0 36px rgba(0,0,0,.28), 12px 0 36px rgba(47,107,255,.12);
-  transition: top 140ms ease, opacity 160ms ease;
+  transition: opacity 160ms ease;
 }
 html.is-page-top .curtain-divider { top: 10px; }
 .curtain-divider.is-visible { opacity: 1; }
@@ -574,7 +562,7 @@ body.is-curtain-prepared .curtain-divider { box-shadow: none; }
   }
   .header__inner { width: min(430px, calc(100% - var(--header-edge-clearance) - var(--header-edge-clearance))); padding: 0 3px; }
   .nav { width: 100%; gap: 0; }
-  .nav a { flex: 1; padding: 14px 0; text-align: center; font-size: 10px; }
+  .nav a { flex: 1; min-width: 0; padding: 14px 0; text-align: center; font-size: 10px; }
   .hero__grid {
     width: min(var(--content-w), calc(100% - (var(--page-pad) * 2)));
     grid-template-columns: 1fr;
@@ -598,7 +586,6 @@ body.is-curtain-prepared .curtain-divider { box-shadow: none; }
   .hero { padding-top: 92px; }
   .hero h1 { font-size: clamp(52px, 17vw, 78px); }
   .hero__lead { font-size: 17px; }
-  .hero__actions { padding-top: 32px; }
   .hero__visual { width: 100%; border-radius: 26px; }
   .section { padding: 82px 0; }
   .section h2 { font-size: 38px; }
