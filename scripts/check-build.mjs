@@ -37,6 +37,13 @@ function escapeRegExp(value) {
   return String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
+function expectedHeroHeading(title) {
+  const [firstName, ...lastNameParts] = title.trim().split(/\s+/);
+  const lastName = lastNameParts.join(' ');
+
+  return `<h1><span>${firstName}</span>${lastName ? `<span>${lastName}</span>` : ''}</h1>`;
+}
+
 function expectMeta(html, attribute, key, value, file) {
   const tag = `<meta ${attribute}="${key}" content="${value}">`;
   assert.equal(occurrences(html, new RegExp(escapeRegExp(tag), 'g')), 1, `${file}: invalid ${key} metadata`);
@@ -85,23 +92,19 @@ async function checkPage(file, { lang, canonicalPath }) {
   expectMeta(html, 'name', 'twitter:description', siteContent[lang].meta.description, file);
   expectMeta(html, 'name', 'twitter:image', socialImageUrl, file);
   expectMeta(html, 'name', 'twitter:image:alt', siteContent[lang].meta.socialImageAlt, file);
-  const [firstName, ...lastNameParts] = siteContent[lang].hero.title.trim().split(/\s+/);
-const lastName = lastNameParts.join(' ');
-const expectedHeroHeading = `<h1><span>${firstName}</span>${lastName ? `<span>${lastName}</span>` : ''}</h1>`;
 
-const [otherFirstName, ...otherLastNameParts] = siteContent[otherLang].hero.title.trim().split(/\s+/);
-const otherLastName = otherLastNameParts.join(' ');
-const alternateHeroHeading = `<h1><span>${otherFirstName}</span>${otherLastName ? `<span>${otherLastName}</span>` : ''}</h1>`;
+  const localizedHeroHeading = expectedHeroHeading(siteContent[lang].hero.title);
+  const alternateHeroHeading = expectedHeroHeading(siteContent[otherLang].hero.title);
 
-assert.ok(
-  html.includes(expectedHeroHeading),
-  `${file}: missing ${lang.toUpperCase()} heading`,
-);
+  assert.ok(
+    html.includes(localizedHeroHeading),
+    `${file}: missing ${lang.toUpperCase()} heading`,
+  );
 
-assert.ok(
-  !html.includes(alternateHeroHeading),
-  `${file}: contains the alternate-language heading`,
-);
+  assert.ok(
+    !html.includes(alternateHeroHeading),
+    `${file}: contains the alternate-language heading`,
+  );
   assert.ok(html.includes(lang === 'ru' ? 'Макс Золотой' : 'Max Zolotoy'), `${file}: missing visible name variant`);
   assert.ok(html.includes('Golang'), `${file}: missing visible Golang terminology`);
   assert.doesNotMatch(html, /Repository link coming soon|Репозиторий будет добавлен/i, `${file}: project placeholder leaked into production`);
@@ -127,16 +130,16 @@ assert.ok(
   assert.equal(new Set(techIconUses.map(match => match[1])).size, 1, `${file}: Stack must use one local sprite`);
   assert.doesNotMatch(html, /<use href="https?:\/\//i, `${file}: technology icons must not use an external host`);
   assert.match(
-  html,
-  /<a\s+[^>]*class="language-edge language-edge--ru"[^>]*href="\/ru\/"[^>]*>/,
-  `${file}: missing crawlable RU link`,
-);
+    html,
+    /<a\s+[^>]*class="language-edge language-edge--ru"[^>]*href="\/ru\/"[^>]*>/,
+    `${file}: missing crawlable RU link`,
+  );
 
-assert.match(
-  html,
-  /<a\s+[^>]*class="language-edge language-edge--en"[^>]*href="\/en\/"[^>]*>/,
-  `${file}: missing crawlable EN link`,
-);
+  assert.match(
+    html,
+    /<a\s+[^>]*class="language-edge language-edge--en"[^>]*href="\/en\/"[^>]*>/,
+    `${file}: missing crawlable EN link`,
+  );
   for (const [, id] of siteContent[lang].nav) {
     assert.ok(ids.includes(`${id}-${lang}`), `${file}: missing ${id} section`);
     assert.match(html, new RegExp(`href="#${id}-${lang}"`), `${file}: ${id} anchor navigation is not usable without JS`);
@@ -231,7 +234,10 @@ for (const lang of ['ru', 'en']) {
   const fragmentName = fragmentAssets.find(file => file.startsWith(`page-${lang}.`));
   const fragment = await readFile(path.join(dist, 'assets', fragmentName), 'utf8');
   assert.match(fragment, new RegExp(`^<div class="page" lang="${lang}">`), `${fragmentName}: wrong fragment language`);
-  assert.ok(fragment.includes(`<h1>${siteContent[lang].hero.title}</h1>`), `${fragmentName}: missing localized curtain content`);
+  assert.ok(
+    fragment.includes(expectedHeroHeading(siteContent[lang].hero.title)),
+    `${fragmentName}: missing localized curtain content`,
+  );
   for (const item of expectedStackItems) {
     assert.ok(fragment.includes(`</svg>${item}</span>`), `${fragmentName}: missing visible Stack label ${item}`);
   }
