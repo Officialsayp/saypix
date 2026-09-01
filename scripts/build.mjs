@@ -5,7 +5,7 @@ import { brotliCompressSync, constants, gzipSync } from 'node:zlib';
 import { build, transform } from 'esbuild';
 import { siteContent } from '../src/content.js';
 import { renderSeoMetadata } from '../src/metadata.js';
-import { renderPage } from '../src/render.js';
+import { renderNavigation, renderPage } from '../src/render.js';
 
 const root = process.cwd();
 const src = path.join(root, 'src');
@@ -101,6 +101,7 @@ function page(variant) {
     .replaceAll('__DRAG_LABEL__', isRu ? 'тянуть' : 'drag')
     .replaceAll('__RU_CURRENT__', isRu ? ' aria-current="page"' : '')
     .replaceAll('__EN_CURRENT__', isRu ? '' : ' aria-current="page"')
+    .replaceAll('__NAV_HTML__', renderNavigation(variant.lang))
     .replaceAll('__PAGE_HTML__', renderPage(variant.lang, { techIconsPath }));
   return minifyMarkup(html);
 }
