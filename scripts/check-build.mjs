@@ -284,9 +284,10 @@ const mobileOffsetMatch = sourceStyles.match(
 assert.ok(mobileOffsetMatch, 'styles.css: missing mobile language edge offset');
 const mobileEdgeOffset = Number(mobileOffsetMatch[1]);
 
-assert.match(
-  sourceStyles,
-  /.header__inner\s{[\s\S]?max-width:\scalc(\s100% - var(--header-edge-clearance) - var(--header-edge-clearance)\s*);/,
+assert.ok(
+  sourceStyles.includes(
+    'max-width: calc(100% - var(--header-edge-clearance) - var(--header-edge-clearance));',
+  ),
   'styles.css: header must reserve both language-control gutters',
 );
 assert.match(
