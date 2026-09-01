@@ -117,8 +117,17 @@ async function checkPage(file, { lang, canonicalPath }) {
   assert.deepEqual(techIconUses.map(match => match[2]), expectedTechIconIds, `${file}: technology icon mapping changed`);
   assert.equal(new Set(techIconUses.map(match => match[1])).size, 1, `${file}: Stack must use one local sprite`);
   assert.doesNotMatch(html, /<use href="https?:\/\//i, `${file}: technology icons must not use an external host`);
-  assert.match(html, /<a class="language-edge language-edge--ru" href="\/ru\/"/, `${file}: missing crawlable RU link`);
-  assert.match(html, /<a class="language-edge language-edge--en" href="\/en\/"/, `${file}: missing crawlable EN link`);
+  assert.match(
+  html,
+  /<a\s+[^>]*class="language-edge language-edge--ru"[^>]*href="\/ru\/"[^>]*>/,
+  `${file}: missing crawlable RU link`,
+);
+
+assert.match(
+  html,
+  /<a\s+[^>]*class="language-edge language-edge--en"[^>]*href="\/en\/"[^>]*>/,
+  `${file}: missing crawlable EN link`,
+);
   for (const [, id] of siteContent[lang].nav) {
     assert.ok(ids.includes(`${id}-${lang}`), `${file}: missing ${id} section`);
     assert.match(html, new RegExp(`href="#${id}-${lang}"`), `${file}: ${id} anchor navigation is not usable without JS`);
