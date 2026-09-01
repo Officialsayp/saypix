@@ -85,14 +85,23 @@ async function checkPage(file, { lang, canonicalPath }) {
   expectMeta(html, 'name', 'twitter:description', siteContent[lang].meta.description, file);
   expectMeta(html, 'name', 'twitter:image', socialImageUrl, file);
   expectMeta(html, 'name', 'twitter:image:alt', siteContent[lang].meta.socialImageAlt, file);
-  assert.ok(
-    html.includes(`<h1>${siteContent[lang].hero.title}</h1>`),
-    `${file}: missing ${lang.toUpperCase()} heading`,
-  );
-  assert.ok(
-    !html.includes(`<h1>${siteContent[otherLang].hero.title}</h1>`),
-    `${file}: contains the alternate-language heading`,
-  );
+  const [firstName, ...lastNameParts] = siteContent[lang].hero.title.trim().split(/\s+/);
+const lastName = lastNameParts.join(' ');
+const expectedHeroHeading = `<h1><span>${firstName}</span>${lastName ? `<span>${lastName}</span>` : ''}</h1>`;
+
+const [otherFirstName, ...otherLastNameParts] = siteContent[otherLang].hero.title.trim().split(/\s+/);
+const otherLastName = otherLastNameParts.join(' ');
+const alternateHeroHeading = `<h1><span>${otherFirstName}</span>${otherLastName ? `<span>${otherLastName}</span>` : ''}</h1>`;
+
+assert.ok(
+  html.includes(expectedHeroHeading),
+  `${file}: missing ${lang.toUpperCase()} heading`,
+);
+
+assert.ok(
+  !html.includes(alternateHeroHeading),
+  `${file}: contains the alternate-language heading`,
+);
   assert.ok(html.includes(lang === 'ru' ? 'Макс Золотой' : 'Max Zolotoy'), `${file}: missing visible name variant`);
   assert.ok(html.includes('Golang'), `${file}: missing visible Golang terminology`);
   assert.doesNotMatch(html, /Repository link coming soon|Репозиторий будет добавлен/i, `${file}: project placeholder leaked into production`);
