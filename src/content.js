@@ -91,8 +91,7 @@ export const siteContent = {
       email: "hello@maxzolotoy.com",
       telegram: "@max_zolotoy",
       github: "github.com/Officialsayp"
-    },
-    footer: "Сделано без frontend-фреймворков — HTML, CSS и JavaScript."
+    }
   },
   en: {
     meta: {
@@ -169,8 +168,7 @@ export const siteContent = {
      email: "hello@maxzolotoy.com",
      telegram: "@max_zolotoy",
      github: "github.com/Officialsayp"
-   },
-    footer: "Built without frontend frameworks — HTML, CSS and JavaScript."
+   }
   }
 };
 

@@ -117,20 +117,13 @@ button { font: inherit; }
   );
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 28px;
-}
-.brand {
-  flex: 0 0 auto;
-  font-weight: 760;
-  letter-spacing: -.03em;
-  text-decoration: none;
+  justify-content: center;
 }
 .nav {
   min-width: 0;
   display: flex;
-  justify-content: flex-end;
-  gap: clamp(14px, 2.5vw, 34px);
+  justify-content: center;
+  gap: clamp(18px, 2.5vw, 34px);
 }
 .nav a {
   color: var(--muted);
@@ -424,8 +417,6 @@ button { font: inherit; }
 }
 .contact-link[aria-disabled="true"] { opacity: .44; cursor: default; pointer-events: none; }
 .contact-note { margin-top: 22px; max-width: 650px; color: #7f8796; font-size: 13px; line-height: 1.6; }
-
-.footer { padding: 30px 0 90px; border-top: 1px solid var(--line); color: #767e8d; font-size: 13px; }
 
 .language-ui { position: fixed; inset: 0; pointer-events: none; z-index: 50; }
 .language-edge {
