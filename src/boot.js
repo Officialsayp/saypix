@@ -6,15 +6,6 @@ let curtainApi = null;
 let curtainLoad = null;
 let pendingSession = null;
 
-function updatePageTopState() {
-  root.classList.toggle('is-page-top', window.scrollY <= 24);
-}
-
-updatePageTopState();
-requestAnimationFrame(updatePageTopState);
-window.addEventListener('scroll', updatePageTopState, { passive: true });
-window.addEventListener('pageshow', updatePageTopState);
-
 function pointerSnapshot(event) {
   return {
     pointerId: event.pointerId,
