@@ -286,7 +286,7 @@ const mobileEdgeOffset = Number(mobileOffsetMatch[1]);
 
 assert.match(
   sourceStyles,
-  /\.header__inner\s*\{\s*width:\s*min\(\s*var\(--content-w\),\s*calc\(100% - var\(--header-edge-clearance\) - var\(--header-edge-clearance\)\)\s*\);/,
+  /.header__inner\s{[\s\S]?max-width:\scalc(\s100% - var(--header-edge-clearance) - var(--header-edge-clearance)\s*);/,
   'styles.css: header must reserve both language-control gutters',
 );
 assert.match(
