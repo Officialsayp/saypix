@@ -33,11 +33,64 @@ for (const lang of ['ru', 'en']) {
   }
 }
 
-for (const [path, expected] of [['/', '/en/'], ['/ru', '/ru/'], ['/en', '/en/']]) {
-  const response = await fetch(`${origin}${path}?source=remote-smoke`, { redirect: 'manual' });
+const rootEnResponse = await fetch(
+  `${origin}/?source=remote-smoke`,
+  {
+    redirect: 'manual',
+    headers: {
+      'Accept-Language': 'en-US,en;q=0.9',
+    },
+  },
+);
+
+assert.equal(rootEnResponse.status, 302, '/: expected 302 for language routing');
+
+const rootEnLocation = new URL(rootEnResponse.headers.get('location'), origin);
+
+assert.equal(
+  `${rootEnLocation.pathname}${rootEnLocation.search}`,
+  '/en/?source=remote-smoke',
+  '/: EN redirect lost path or query',
+);
+
+const rootRuResponse = await fetch(
+  `${origin}/?source=remote-smoke`,
+  {
+    redirect: 'manual',
+    headers: {
+      'Accept-Language': 'ru-RU,ru;q=0.9,en;q=0.8',
+    },
+  },
+);
+
+assert.equal(rootRuResponse.status, 302, '/: expected 302 for language routing');
+
+const rootRuLocation = new URL(rootRuResponse.headers.get('location'), origin);
+
+assert.equal(
+  `${rootRuLocation.pathname}${rootRuLocation.search}`,
+  '/ru/?source=remote-smoke',
+  '/: RU redirect lost path or query',
+);
+
+for (const [path, expected] of [
+  ['/ru', '/ru/'],
+  ['/en', '/en/'],
+]) {
+  const response = await fetch(
+    `${origin}${path}?source=remote-smoke`,
+    { redirect: 'manual' },
+  );
+
   assert.equal(response.status, 308, `${path}: expected 308`);
+
   const location = new URL(response.headers.get('location'), origin);
-  assert.equal(`${location.pathname}${location.search}`, `${expected}?source=remote-smoke`, `${path}: redirect lost path or query`);
+
+  assert.equal(
+    `${location.pathname}${location.search}`,
+    `${expected}?source=remote-smoke`,
+    `${path}: redirect lost path or query`,
+  );
 }
 
 console.log(`Remote smoke checks passed for ${origin}.`);
