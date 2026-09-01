@@ -43,6 +43,15 @@ function renderContactLink(kind, label, href, iconsPath) {
   return `<a class="button button--ghost contact-link" href="${href}"${external ? ' target="_blank" rel="noreferrer"' : ''}>${content}</a>`;
 }
 
+export function renderNavigation(lang) {
+  const c = siteContent[lang];
+  if (!c) throw new Error(`Unsupported language: ${lang}`);
+
+  return `<nav class="nav" aria-label="${lang === 'ru' ? 'Основная навигация' : 'Main navigation'}">${c.nav
+    .map(([label, id]) => `<a href="#${id}-${lang}">${label}</a>`)
+    .join('')}</nav>`;
+}
+
 export function renderPage(lang, { techIconsPath } = {}) {
   const c = siteContent[lang];
   if (!c) throw new Error(`Unsupported language: ${lang}`);
@@ -67,14 +76,6 @@ export function renderPage(lang, { techIconsPath } = {}) {
 
   return `
     <div class="page" lang="${lang}">
-      <header class="header">
-  <div class="container header__inner">
-    <nav class="nav" aria-label="${lang === 'ru' ? 'Основная навигация' : 'Main navigation'}">
-      ${c.nav.map(([label, id]) => `<a href="#${id}-${lang}">${label}</a>`).join('')}
-    </nav>
-  </div>
-</header>
-
       <main id="main-${lang}">
         <section class="hero" id="top-${lang}">
           <div class="container hero__grid">

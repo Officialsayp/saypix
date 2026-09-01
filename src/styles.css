@@ -97,11 +97,13 @@ button { font: inherit; }
   margin-inline: auto;
 }
 
-/* Floating dock: sticky, light, and independent from RU/EN controls. */
+/* Floating dock: global overlay, never clipped by the language curtain. */
 .header {
-  position: sticky;
+  position: fixed;
   top: 0;
-  z-index: 45;
+  left: 0;
+  right: 0;
+  z-index: 49;
   min-height: var(--header-h);
   display: flex;
   align-items: flex-start;
@@ -131,6 +133,7 @@ button { font: inherit; }
   border-radius: 999px;
   background: rgba(11,12,16,.70);
   backdrop-filter: blur(16px);
+  margin-inline: auto;
   pointer-events: auto;
 }
 .nav {
@@ -493,7 +496,7 @@ button { font: inherit; }
 
 .curtain-divider {
   position: fixed;
-  top: 0;
+  top: calc(max(var(--language-edge-offset), env(safe-area-inset-top)) + 54px);
   bottom: 0;
   left: 0;
   width: 1px;
@@ -542,6 +545,9 @@ body.is-curtain-prepared .hero__visual-code,
 body.is-curtain-prepared .language-edge {
   backdrop-filter: none;
 }
+body.is-curtain-prepared .header__inner {
+  background: rgba(11,12,16,.94);
+}
 body.is-curtain-prepared .curtain-divider { box-shadow: none; }
 
 @media (max-width: 860px) {
@@ -573,10 +579,7 @@ body.is-curtain-prepared .curtain-divider { box-shadow: none; }
 }
 
 @media (max-width: 560px) {
-  :root {
-    --page-pad: 20px;
-    --language-edge-offset: 14px;
-  }
+  :root { --page-pad: 20px; --language-edge-offset: 14px; }
   .hero { padding-top: 92px; }
   .hero h1 { font-size: clamp(52px, 17vw, 78px); }
   .hero__lead { font-size: 17px; }
