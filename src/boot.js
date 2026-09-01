@@ -100,6 +100,42 @@ for (const link of languageLinks) {
   link.addEventListener('pointerdown', event => queueFirstPointer(event, targetLang));
 }
 
+// Keep section navigation semantic in HTML, but do not persist the section hash
+// in the address bar. This prevents reloads and language changes from jumping
+// back to a previously selected section after the user has scrolled elsewhere.
+document.addEventListener('click', event => {
+  if (
+    event.defaultPrevented
+    || event.button !== 0
+    || event.metaKey
+    || event.ctrlKey
+    || event.shiftKey
+    || event.altKey
+  ) {
+    return;
+  }
+
+  const link = event.target.closest('a[href^="#"]:not(.skip-link)');
+  if (!link) return;
+
+  const hash = link.getAttribute('href');
+  if (!hash || hash === '#') return;
+
+  const target = document.getElementById(hash.slice(1));
+  if (!target) return;
+
+  event.preventDefault();
+
+  if (location.hash) {
+    history.replaceState(history.state, '', location.pathname + location.search);
+  }
+
+  target.scrollIntoView({
+    behavior: reducedMotion.matches ? 'auto' : 'smooth',
+    block: 'start',
+  });
+});
+
 document.addEventListener('click', event => {
   const button = event.target.closest('[data-copy-code]');
   if (!button) return;
