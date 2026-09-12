@@ -1,0 +1,49 @@
+{
+  "schema": 1,
+  "status": "PASS_WITH_ENGINE_CAVEAT",
+  "evidenceDate": "2026-09-12",
+  "masterSha256": "fe0dde1281b8fe1b4a8a44e54365050becd72e2c8ea21acde61e5f28fc12be31",
+  "testedAssets": {
+    "microWhiteSvgSha256": "1c3c2427ecf09de9294fbbddcbe2d097bf11426ccccb081a0f419f622eee4938",
+    "faviconSvgSha256": "aaa11d1a773f970649337efa8657ea2eefb727b357f2af78766915f90c9135b7",
+    "faviconPngSha256": {
+      "16": "19ed81b4b3273954549eb555484486ba1a7598156c3cea1767e81fa79392ad4e",
+      "32": "70a6b7b3ab979834a819d42cebd8eb64d9c9123f82bff9583326138abeb7505f",
+      "48": "3ccc585545a0b43915df5ae7cefcda236783f3cc1bb054dba6b168adea9110cb"
+    }
+  },
+  "coverage": {
+    "engines": [
+      "Chromium 151.0.7922.34",
+      "Firefox 153.0",
+      "WebKit 26.5"
+    ],
+    "dpr": [1, 2],
+    "transparentMicroCssWidths": [16, 20, 24, 32, 48, 64],
+    "faviconCssWidths": [16, 32, 48]
+  },
+  "assertions": {
+    "allAssetsLoad": true,
+    "transparentMicroTwoMajorComponentsFrom24px": true,
+    "faviconVisibleAt16_32_48px": true,
+    "faviconTwoMajorComponents": "pass except WebKit 26.5 at 16px DPR2"
+  },
+  "cautions": [
+    {
+      "engine": "WebKit 26.5",
+      "dpr": 2,
+      "width": 16,
+      "asset": "favicon/favicon.svg",
+      "observation": "Anti-aliased pixels can merge the two thresholded components.",
+      "fallback": "Use favicon-16x16.png or favicon.ico frame for the 16px slot."
+    },
+    {
+      "engine": "all tested engines",
+      "width": "16-20",
+      "asset": "svg/logo-micro-white.svg",
+      "observation": "Transparent micro detail is renderer- and DPR-dependent below 24px.",
+      "fallback": "Use the ready favicon composition for browser icon slots."
+    }
+  ],
+  "interpretation": "This is a derivative optical-size result. The locked master was not changed. PASS applies to loading and the intended 24px+ micro range; the listed 16px engine behavior is a documented rendering caveat, not a master-geometry defect."
+}

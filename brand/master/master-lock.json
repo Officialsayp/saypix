@@ -1,0 +1,9 @@
+{
+  "status": "APPROVED_AND_LOCKED",
+  "approved_on": "2026-09-12",
+  "source": "logo-master-v1.svg",
+  "sha256": "fe0dde1281b8fe1b4a8a44e54365050becd72e2c8ea21acde61e5f28fc12be31",
+  "viewBox": [0, 0, 1082, 609],
+  "inkBounds": [60, 60, 1022, 549],
+  "rule": "Do not modify master geometry. Derived assets must verify this hash before building. A separately documented micro optical-size derivative is permitted only after an objective small-size failure."
+}

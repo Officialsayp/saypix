@@ -1,0 +1,104 @@
+[
+  {
+    "file": "master/logo-master-unoptimized.svg",
+    "xmlValid": true,
+    "lockedPathTokensPresent": true,
+    "maskCount": 0
+  },
+  {
+    "file": "master/logo-master-v1.svg",
+    "xmlValid": true,
+    "lockedPathTokensPresent": true,
+    "maskCount": 0
+  },
+  {
+    "file": "master/logo-master.svg",
+    "xmlValid": true,
+    "lockedPathTokensPresent": true,
+    "maskCount": 0
+  },
+  {
+    "file": "svg/logo-silver.svg",
+    "xmlValid": true,
+    "lockedPathTokensPresent": true,
+    "maskCount": 0
+  },
+  {
+    "file": "svg/logo-micro-white.svg",
+    "xmlValid": true,
+    "lockedPathTokensPresent": true,
+    "maskCount": 1
+  },
+  {
+    "file": "svg/logo-charcoal.svg",
+    "xmlValid": true,
+    "lockedPathTokensPresent": true,
+    "maskCount": 0
+  },
+  {
+    "file": "svg/logo-dark.svg",
+    "xmlValid": true,
+    "lockedPathTokensPresent": true,
+    "maskCount": 0
+  },
+  {
+    "file": "svg/logo-black.svg",
+    "xmlValid": true,
+    "lockedPathTokensPresent": true,
+    "maskCount": 0
+  },
+  {
+    "file": "svg/logo-micro.svg",
+    "xmlValid": true,
+    "lockedPathTokensPresent": true,
+    "maskCount": 1
+  },
+  {
+    "file": "svg/logo-light.svg",
+    "xmlValid": true,
+    "lockedPathTokensPresent": true,
+    "maskCount": 0
+  },
+  {
+    "file": "svg/logo-brand.svg",
+    "xmlValid": true,
+    "lockedPathTokensPresent": true,
+    "maskCount": 0
+  },
+  {
+    "file": "svg/logo-white.svg",
+    "xmlValid": true,
+    "lockedPathTokensPresent": true,
+    "maskCount": 0
+  },
+  {
+    "file": "avatars/rounded-square/avatar.svg",
+    "xmlValid": true,
+    "lockedPathTokensPresent": true,
+    "maskCount": 0
+  },
+  {
+    "file": "avatars/square/avatar.svg",
+    "xmlValid": true,
+    "lockedPathTokensPresent": true,
+    "maskCount": 0
+  },
+  {
+    "file": "avatars/circle/avatar.svg",
+    "xmlValid": true,
+    "lockedPathTokensPresent": true,
+    "maskCount": 0
+  },
+  {
+    "file": "favicon/favicon.svg",
+    "xmlValid": true,
+    "lockedPathTokensPresent": true,
+    "maskCount": 1
+  },
+  {
+    "file": "social/opengraph.svg",
+    "xmlValid": true,
+    "lockedPathTokensPresent": true,
+    "maskCount": 0
+  }
+]

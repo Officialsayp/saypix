@@ -1,0 +1,787 @@
+{
+  "masterSha256": "fe0dde1281b8fe1b4a8a44e54365050becd72e2c8ea21acde61e5f28fc12be31",
+  "micro": {
+    "method": "three vector knockout channels, original source paths retained",
+    "strokeWidth": 28,
+    "faviconStrokeWidth": 40,
+    "cuts": [
+      "M 330 245 C 413 303 478 264 580 175 L 660 105",
+      "M 360 350 C 414 334 452 339 486 336 C 526 333 570 324 614 310 C 632 304 648 297 663 289",
+      "M 520 450 C 588 390 651 337 748 376"
+    ]
+  },
+  "assets": [
+    {
+      "file": "master/logo-master-unoptimized.svg",
+      "bytes": 1114,
+      "sha256": "fe0dde1281b8fe1b4a8a44e54365050becd72e2c8ea21acde61e5f28fc12be31",
+      "geometry": "master"
+    },
+    {
+      "file": "master/logo-master.svg",
+      "bytes": 1011,
+      "sha256": "9723fb038b18311d062fa0b3ca86767ae9c80b436c8dd7c8ae0e860ba8d8a65b",
+      "geometry": "master"
+    },
+    {
+      "file": "svg/logo-silver.svg",
+      "bytes": 1114,
+      "sha256": "6a81a9f000dcdcadfaa5e5ec3f9d63425712a899d8259327a1cbfc1aae030259",
+      "geometry": "master"
+    },
+    {
+      "file": "svg/logo-charcoal.svg",
+      "bytes": 1114,
+      "sha256": "4529574fe4bd93264119be405750ed462cb63fc31e165cb494fd9385ccd514b2",
+      "geometry": "master"
+    },
+    {
+      "file": "svg/logo-white.svg",
+      "bytes": 1114,
+      "sha256": "b9bed5ff92778fe54e2044f35420eb71ec3b558d4385c992380d74a9faad5527",
+      "geometry": "master"
+    },
+    {
+      "file": "svg/logo-black.svg",
+      "bytes": 1114,
+      "sha256": "7c1beab3cabe184bbcfd19181dad6696acc124f284d7c120a61246f7866f30ce",
+      "geometry": "master"
+    },
+    {
+      "file": "svg/logo-brand.svg",
+      "bytes": 1162,
+      "sha256": "f60d3e8d7189fd6a778f25f2777189e8350b9931861d371db793e83c7c6b2d6d",
+      "geometry": "master"
+    },
+    {
+      "file": "png/backgrounds/logo-brand-512.png",
+      "bytes": 11789,
+      "sha256": "c0ac9dbb2e728bb2704a50dd972e58bf0912aa210273e0907ff7afbd5d9220a9",
+      "type": "png",
+      "width": 512,
+      "height": 288,
+      "geometry": "master",
+      "sourceSvgSha256": "f60d3e8d7189fd6a778f25f2777189e8350b9931861d371db793e83c7c6b2d6d"
+    },
+    {
+      "file": "png/backgrounds/logo-brand-1024.png",
+      "bytes": 26779,
+      "sha256": "b426b5763889ce182e2a2aa84ed12d01b6cd5e6906d9c1e091538b774b7ee051",
+      "type": "png",
+      "width": 1024,
+      "height": 576,
+      "geometry": "master",
+      "sourceSvgSha256": "f60d3e8d7189fd6a778f25f2777189e8350b9931861d371db793e83c7c6b2d6d"
+    },
+    {
+      "file": "svg/logo-dark.svg",
+      "bytes": 1162,
+      "sha256": "a14d7df0f15e76297184105230a9a6ab47810fa0e3daae54251e6e51995dba5e",
+      "geometry": "master"
+    },
+    {
+      "file": "png/backgrounds/logo-dark-512.png",
+      "bytes": 12434,
+      "sha256": "f716eafba490cf91db642d8d95953d3ff34bc800df98c86a1df98670d6d402c7",
+      "type": "png",
+      "width": 512,
+      "height": 288,
+      "geometry": "master",
+      "sourceSvgSha256": "a14d7df0f15e76297184105230a9a6ab47810fa0e3daae54251e6e51995dba5e"
+    },
+    {
+      "file": "png/backgrounds/logo-dark-1024.png",
+      "bytes": 28830,
+      "sha256": "f7aa4d4af12e6966d19235006113b5946aaad7042eacbc649c492004799769e1",
+      "type": "png",
+      "width": 1024,
+      "height": 576,
+      "geometry": "master",
+      "sourceSvgSha256": "a14d7df0f15e76297184105230a9a6ab47810fa0e3daae54251e6e51995dba5e"
+    },
+    {
+      "file": "svg/logo-light.svg",
+      "bytes": 1162,
+      "sha256": "b447a57d53117835d3f5faf9c50ad121bb04799c24601000d6cabd1f1f8795ef",
+      "geometry": "master"
+    },
+    {
+      "file": "png/backgrounds/logo-light-512.png",
+      "bytes": 12502,
+      "sha256": "ec53a6f11449803e28e68afbc698043d71c813456fbfe32ee691a8711ed7052a",
+      "type": "png",
+      "width": 512,
+      "height": 288,
+      "geometry": "master",
+      "sourceSvgSha256": "b447a57d53117835d3f5faf9c50ad121bb04799c24601000d6cabd1f1f8795ef"
+    },
+    {
+      "file": "png/backgrounds/logo-light-1024.png",
+      "bytes": 28792,
+      "sha256": "2e2bb13c10ae57ad584ad4a6945cb2a3fad1e33ef0aae62839a78dc435126f5a",
+      "type": "png",
+      "width": 1024,
+      "height": 576,
+      "geometry": "master",
+      "sourceSvgSha256": "b447a57d53117835d3f5faf9c50ad121bb04799c24601000d6cabd1f1f8795ef"
+    },
+    {
+      "file": "svg/logo-micro.svg",
+      "bytes": 1577,
+      "sha256": "8e0668c7109bcfbe3f72a172cad36c4ba508c68f5a1b83989975d5f3c284b6cb",
+      "geometry": "micro"
+    },
+    {
+      "file": "svg/logo-micro-white.svg",
+      "bytes": 1577,
+      "sha256": "1c3c2427ecf09de9294fbbddcbe2d097bf11426ccccb081a0f419f622eee4938",
+      "geometry": "micro"
+    },
+    {
+      "file": "png/transparent/logo-silver-512.png",
+      "bytes": 10809,
+      "sha256": "aaac035841cd93bc0c091a5c61cdf4ad44510f46e00baf97d9967471dcf8ba68",
+      "type": "png",
+      "width": 512,
+      "height": 288,
+      "geometry": "master",
+      "sourceSvgSha256": "6a81a9f000dcdcadfaa5e5ec3f9d63425712a899d8259327a1cbfc1aae030259"
+    },
+    {
+      "file": "png/transparent/logo-silver-1024.png",
+      "bytes": 25193,
+      "sha256": "a19bbdd370fda77d865dcb41ed97d3e4b6517fa6f5567f44637e576c86ca385e",
+      "type": "png",
+      "width": 1024,
+      "height": 576,
+      "geometry": "master",
+      "sourceSvgSha256": "6a81a9f000dcdcadfaa5e5ec3f9d63425712a899d8259327a1cbfc1aae030259"
+    },
+    {
+      "file": "png/transparent/logo-silver-2048.png",
+      "bytes": 59619,
+      "sha256": "63c0cf80b3ac3c3a30852e572f97225793abc7efaae6792691792eb1b6f5720a",
+      "type": "png",
+      "width": 2048,
+      "height": 1153,
+      "geometry": "master",
+      "sourceSvgSha256": "6a81a9f000dcdcadfaa5e5ec3f9d63425712a899d8259327a1cbfc1aae030259"
+    },
+    {
+      "file": "png/transparent/logo-charcoal-512.png",
+      "bytes": 11535,
+      "sha256": "aef7ef44262347f5fe7bfa8db6f7aff1c01d1a6d3c41ad124db45835a8c6f84e",
+      "type": "png",
+      "width": 512,
+      "height": 288,
+      "geometry": "master",
+      "sourceSvgSha256": "4529574fe4bd93264119be405750ed462cb63fc31e165cb494fd9385ccd514b2"
+    },
+    {
+      "file": "png/transparent/logo-charcoal-1024.png",
+      "bytes": 27276,
+      "sha256": "ca92c06f6d6d27ce4169d9633287e5febe317cb514abb5ecffcaedab7c38e6e5",
+      "type": "png",
+      "width": 1024,
+      "height": 576,
+      "geometry": "master",
+      "sourceSvgSha256": "4529574fe4bd93264119be405750ed462cb63fc31e165cb494fd9385ccd514b2"
+    },
+    {
+      "file": "png/transparent/logo-charcoal-2048.png",
+      "bytes": 63858,
+      "sha256": "2fda3b1f73bd4d6bd4315a406431fb950401863cd5767cac52338c18f86a72b6",
+      "type": "png",
+      "width": 2048,
+      "height": 1153,
+      "geometry": "master",
+      "sourceSvgSha256": "4529574fe4bd93264119be405750ed462cb63fc31e165cb494fd9385ccd514b2"
+    },
+    {
+      "file": "png/transparent/logo-white-512.png",
+      "bytes": 9390,
+      "sha256": "1a542682f64c59366ad27f47764e9cc82a91636d2d09fa497831e4fd16097e5b",
+      "type": "png",
+      "width": 512,
+      "height": 288,
+      "geometry": "master",
+      "sourceSvgSha256": "b9bed5ff92778fe54e2044f35420eb71ec3b558d4385c992380d74a9faad5527"
+    },
+    {
+      "file": "png/transparent/logo-white-1024.png",
+      "bytes": 21013,
+      "sha256": "4a63bf69107d38ceb6965a21daf398f8320f31b5444bc26af4ea0077b6bc1336",
+      "type": "png",
+      "width": 1024,
+      "height": 576,
+      "geometry": "master",
+      "sourceSvgSha256": "b9bed5ff92778fe54e2044f35420eb71ec3b558d4385c992380d74a9faad5527"
+    },
+    {
+      "file": "png/transparent/logo-white-2048.png",
+      "bytes": 47974,
+      "sha256": "5dd4f050bac07c63b9b23b6db0c34e119f65060d5f6c7cc80b399888178d898d",
+      "type": "png",
+      "width": 2048,
+      "height": 1153,
+      "geometry": "master",
+      "sourceSvgSha256": "b9bed5ff92778fe54e2044f35420eb71ec3b558d4385c992380d74a9faad5527"
+    },
+    {
+      "file": "png/transparent/logo-black-512.png",
+      "bytes": 9051,
+      "sha256": "50575d74efdbc8383098eb8933560782bc6e655a8e16b7f6a8f5ff765743fc39",
+      "type": "png",
+      "width": 512,
+      "height": 288,
+      "geometry": "master",
+      "sourceSvgSha256": "7c1beab3cabe184bbcfd19181dad6696acc124f284d7c120a61246f7866f30ce"
+    },
+    {
+      "file": "png/transparent/logo-black-1024.png",
+      "bytes": 20226,
+      "sha256": "1ac307f32a8cef10fa175f15c2713df44d94ac520982908d748359838391f1c3",
+      "type": "png",
+      "width": 1024,
+      "height": 576,
+      "geometry": "master",
+      "sourceSvgSha256": "7c1beab3cabe184bbcfd19181dad6696acc124f284d7c120a61246f7866f30ce"
+    },
+    {
+      "file": "png/transparent/logo-black-2048.png",
+      "bytes": 46230,
+      "sha256": "458d27d4175a6e6cdfcd2f526754c133427acacb527b5c594468d98f1e4c9743",
+      "type": "png",
+      "width": 2048,
+      "height": 1153,
+      "geometry": "master",
+      "sourceSvgSha256": "7c1beab3cabe184bbcfd19181dad6696acc124f284d7c120a61246f7866f30ce"
+    },
+    {
+      "file": "avatars/square/avatar.svg",
+      "bytes": 1264,
+      "sha256": "e8d6851ed793031e0908060935020e32157e16689264528e90a6924d22eca936",
+      "geometry": "master",
+      "inkFraction": 0.78
+    },
+    {
+      "file": "avatars/square/avatar-128.png",
+      "bytes": 2476,
+      "sha256": "13419d2e420f87d45c8f14d2a0d221f1c281510c567dd3648ae3d4af928a005a",
+      "type": "png",
+      "width": 128,
+      "height": 128,
+      "geometry": "master",
+      "sourceSvgSha256": "e8d6851ed793031e0908060935020e32157e16689264528e90a6924d22eca936"
+    },
+    {
+      "file": "avatars/square/avatar-256.png",
+      "bytes": 5128,
+      "sha256": "e6678b46cb617f19760f4322e9db7d84a2c18e29a9de63043f96158fb0a3867b",
+      "type": "png",
+      "width": 256,
+      "height": 256,
+      "geometry": "master",
+      "sourceSvgSha256": "e8d6851ed793031e0908060935020e32157e16689264528e90a6924d22eca936"
+    },
+    {
+      "file": "avatars/square/avatar-512.png",
+      "bytes": 11575,
+      "sha256": "2b40ab2131c1aaad2ce020ff28a0a3c27c7e87272d8c4612c99331a28b50386a",
+      "type": "png",
+      "width": 512,
+      "height": 512,
+      "geometry": "master",
+      "sourceSvgSha256": "e8d6851ed793031e0908060935020e32157e16689264528e90a6924d22eca936"
+    },
+    {
+      "file": "avatars/square/avatar-1024.png",
+      "bytes": 26856,
+      "sha256": "4d0a6b811ee3496b4858eaec757c58b60559307611979f56cc384020eb9588b4",
+      "type": "png",
+      "width": 1024,
+      "height": 1024,
+      "geometry": "master",
+      "sourceSvgSha256": "e8d6851ed793031e0908060935020e32157e16689264528e90a6924d22eca936"
+    },
+    {
+      "file": "avatars/circle/avatar.svg",
+      "bytes": 1258,
+      "sha256": "620e198fde29231ae90b9b43474afa46e8fe37b6ac5ce5af4fdde962b50d3f4b",
+      "geometry": "master",
+      "inkFraction": 0.78
+    },
+    {
+      "file": "avatars/circle/avatar-128.png",
+      "bytes": 4041,
+      "sha256": "537353eeb0ff1fe229ea4647d3b7da2f9df11791fa9afb1545d1975ef29af7b6",
+      "type": "png",
+      "width": 128,
+      "height": 128,
+      "geometry": "master",
+      "sourceSvgSha256": "620e198fde29231ae90b9b43474afa46e8fe37b6ac5ce5af4fdde962b50d3f4b"
+    },
+    {
+      "file": "avatars/circle/avatar-256.png",
+      "bytes": 8525,
+      "sha256": "5168fad431d6b46900d6098e676d1907781fde2246c8fee5817c2874a50a4f29",
+      "type": "png",
+      "width": 256,
+      "height": 256,
+      "geometry": "master",
+      "sourceSvgSha256": "620e198fde29231ae90b9b43474afa46e8fe37b6ac5ce5af4fdde962b50d3f4b"
+    },
+    {
+      "file": "avatars/circle/avatar-512.png",
+      "bytes": 19490,
+      "sha256": "c399d104d498e036522c371801a666654965168f2fb95fa5c9f9f7fa8143db71",
+      "type": "png",
+      "width": 512,
+      "height": 512,
+      "geometry": "master",
+      "sourceSvgSha256": "620e198fde29231ae90b9b43474afa46e8fe37b6ac5ce5af4fdde962b50d3f4b"
+    },
+    {
+      "file": "avatars/circle/avatar-1024.png",
+      "bytes": 44793,
+      "sha256": "a0d4741cd184cf6bd242c69bc8d895d24520883261ea9ad8818e8cb7c28f652e",
+      "type": "png",
+      "width": 1024,
+      "height": 1024,
+      "geometry": "master",
+      "sourceSvgSha256": "620e198fde29231ae90b9b43474afa46e8fe37b6ac5ce5af4fdde962b50d3f4b"
+    },
+    {
+      "file": "avatars/rounded-square/avatar.svg",
+      "bytes": 1269,
+      "sha256": "6fee71766f167c45c8d6a0398de1def63b344fc69170d9c010cff0090924f5d7",
+      "geometry": "master",
+      "inkFraction": 0.78
+    },
+    {
+      "file": "avatars/rounded-square/avatar-128.png",
+      "bytes": 3144,
+      "sha256": "65cda8ec742cf7e2ea79264a0bd4a7e237a38ec5624974f8cdce9f367642b31a",
+      "type": "png",
+      "width": 128,
+      "height": 128,
+      "geometry": "master",
+      "sourceSvgSha256": "6fee71766f167c45c8d6a0398de1def63b344fc69170d9c010cff0090924f5d7"
+    },
+    {
+      "file": "avatars/rounded-square/avatar-256.png",
+      "bytes": 6485,
+      "sha256": "43543e9243cd9f7665d3334fd292f027df4a9aad11cfdd981834e2e08281ca25",
+      "type": "png",
+      "width": 256,
+      "height": 256,
+      "geometry": "master",
+      "sourceSvgSha256": "6fee71766f167c45c8d6a0398de1def63b344fc69170d9c010cff0090924f5d7"
+    },
+    {
+      "file": "avatars/rounded-square/avatar-512.png",
+      "bytes": 14554,
+      "sha256": "c5d0c6ef18cd8075adc6d0a6f5d60441f718b0640b25aacc59bf47ad9301c9f7",
+      "type": "png",
+      "width": 512,
+      "height": 512,
+      "geometry": "master",
+      "sourceSvgSha256": "6fee71766f167c45c8d6a0398de1def63b344fc69170d9c010cff0090924f5d7"
+    },
+    {
+      "file": "avatars/rounded-square/avatar-1024.png",
+      "bytes": 33549,
+      "sha256": "278aeaa91dd8296136f39f48ea920749fdc1582792d34b8e6f090f6183e6c8ae",
+      "type": "png",
+      "width": 1024,
+      "height": 1024,
+      "geometry": "master",
+      "sourceSvgSha256": "6fee71766f167c45c8d6a0398de1def63b344fc69170d9c010cff0090924f5d7"
+    },
+    {
+      "file": "avatars/square/github-500.png",
+      "bytes": 11133,
+      "sha256": "d2c5ec4cea9650bed57d0dd2cae5fa162ec32f33d48057f69ab2a531b11a6c5f",
+      "type": "png",
+      "width": 500,
+      "height": 500,
+      "geometry": "master",
+      "sourceSvgSha256": "e8d6851ed793031e0908060935020e32157e16689264528e90a6924d22eca936"
+    },
+    {
+      "file": "avatars/square/linkedin-page-400.png",
+      "bytes": 8577,
+      "sha256": "119ed1e6b65d92cd0be15f8b54424aaf50c7b7a0cbe310491bfbcec9f320aa7f",
+      "type": "png",
+      "width": 400,
+      "height": 400,
+      "geometry": "master",
+      "sourceSvgSha256": "e8d6851ed793031e0908060935020e32157e16689264528e90a6924d22eca936"
+    },
+    {
+      "file": "avatars/square/youtube-800.png",
+      "bytes": 19591,
+      "sha256": "370eb41118f16aa7e81e8f7230aa51fecd6f6e4abc6004df82b62827cf95b577",
+      "type": "png",
+      "width": 800,
+      "height": 800,
+      "geometry": "master",
+      "sourceSvgSha256": "e8d6851ed793031e0908060935020e32157e16689264528e90a6924d22eca936"
+    },
+    {
+      "file": "favicon/favicon.svg",
+      "bytes": 1722,
+      "sha256": "aaa11d1a773f970649337efa8657ea2eefb727b357f2af78766915f90c9135b7",
+      "geometry": "micro"
+    },
+    {
+      "file": "favicon/favicon-16x16.png",
+      "bytes": 477,
+      "sha256": "19ed81b4b3273954549eb555484486ba1a7598156c3cea1767e81fa79392ad4e",
+      "type": "png",
+      "width": 16,
+      "height": 16,
+      "geometry": "micro",
+      "sourceSvgSha256": "aaa11d1a773f970649337efa8657ea2eefb727b357f2af78766915f90c9135b7"
+    },
+    {
+      "file": "favicon/favicon-32x32.png",
+      "bytes": 918,
+      "sha256": "70a6b7b3ab979834a819d42cebd8eb64d9c9123f82bff9583326138abeb7505f",
+      "type": "png",
+      "width": 32,
+      "height": 32,
+      "geometry": "micro",
+      "sourceSvgSha256": "aaa11d1a773f970649337efa8657ea2eefb727b357f2af78766915f90c9135b7"
+    },
+    {
+      "file": "favicon/favicon-48x48.png",
+      "bytes": 1328,
+      "sha256": "3ccc585545a0b43915df5ae7cefcda236783f3cc1bb054dba6b168adea9110cb",
+      "type": "png",
+      "width": 48,
+      "height": 48,
+      "geometry": "micro",
+      "sourceSvgSha256": "aaa11d1a773f970649337efa8657ea2eefb727b357f2af78766915f90c9135b7"
+    },
+    {
+      "file": "favicon/favicon.ico",
+      "bytes": 2777,
+      "sha256": "7010a77c1c425b4243a5291206d8da8075bbd0824e93e4884968c66337a97bcc",
+      "geometry": "micro"
+    },
+    {
+      "file": "favicon/apple-touch-icon.png",
+      "bytes": 3611,
+      "sha256": "3ede50698d0ac915a0448095fb3b1c3ec5e4e2560e539483c726865da5f7d2e8",
+      "type": "png",
+      "width": 180,
+      "height": 180,
+      "geometry": "master",
+      "sourceSvgSha256": "25e491b933ca15acde8d269aaaa82ceddadad877757675327f9bcb23435a414d"
+    },
+    {
+      "file": "favicon/pwa-192.png",
+      "bytes": 3918,
+      "sha256": "1567154ab1a9ed55b4f1d9b279b4fdbd059279a09532688fa7bf4c409bba8308",
+      "type": "png",
+      "width": 192,
+      "height": 192,
+      "geometry": "master",
+      "sourceSvgSha256": "25e491b933ca15acde8d269aaaa82ceddadad877757675327f9bcb23435a414d"
+    },
+    {
+      "file": "favicon/pwa-maskable-192.png",
+      "bytes": 3560,
+      "sha256": "5c9181754293eb918057bf829a881da6b7ab60b9e17339cfa9fc03f14bcec8aa",
+      "type": "png",
+      "width": 192,
+      "height": 192,
+      "geometry": "master",
+      "sourceSvgSha256": "cadaeaecc295601e04c9a4deb0a78a681f7877617e26395b8fd02b9871dbbd88"
+    },
+    {
+      "file": "favicon/pwa-512.png",
+      "bytes": 12251,
+      "sha256": "548cdacbfc644c16b793beb821f1eafa8038173b43bf8eb2e9f8a93ac804cb02",
+      "type": "png",
+      "width": 512,
+      "height": 512,
+      "geometry": "master",
+      "sourceSvgSha256": "25e491b933ca15acde8d269aaaa82ceddadad877757675327f9bcb23435a414d"
+    },
+    {
+      "file": "favicon/pwa-maskable-512.png",
+      "bytes": 11301,
+      "sha256": "eaa9adc48532436c5c7af0d6e5af859bef8f3829f0f5516129e59ca0675ce8ea",
+      "type": "png",
+      "width": 512,
+      "height": 512,
+      "geometry": "master",
+      "sourceSvgSha256": "cadaeaecc295601e04c9a4deb0a78a681f7877617e26395b8fd02b9871dbbd88"
+    },
+    {
+      "file": "favicon/site.webmanifest",
+      "bytes": 689,
+      "sha256": "a3e3e4e8820ab2fe97b0bd331bb3efecb178befc29bc3e1815fece1141163ef5",
+      "type": "manifest"
+    },
+    {
+      "file": "social/opengraph.svg",
+      "bytes": 1248,
+      "sha256": "ddee10a9e7926dca06439e22ad9a1e6230fe8a3230f8f347e6d9922b9764752e",
+      "geometry": "master",
+      "inkWidth": 480
+    },
+    {
+      "file": "social/opengraph-1200x630.png",
+      "bytes": 16979,
+      "sha256": "c182c1aa3b456311e701a2ee2d4b660d530094ce68fc8aa5cb475a498184d419",
+      "type": "png",
+      "width": 1200,
+      "height": 630,
+      "geometry": "master",
+      "sourceSvgSha256": "ddee10a9e7926dca06439e22ad9a1e6230fe8a3230f8f347e6d9922b9764752e"
+    },
+    {
+      "file": "tests/scale/master-16.png",
+      "bytes": 350,
+      "sha256": "8308f2a0c001781dffb8a5592892e8b5c241919464d0a0c82db6a14376701925",
+      "type": "png",
+      "width": 16,
+      "height": 9,
+      "geometry": "master",
+      "sourceSvgSha256": "6a81a9f000dcdcadfaa5e5ec3f9d63425712a899d8259327a1cbfc1aae030259"
+    },
+    {
+      "file": "tests/scale/master-20.png",
+      "bytes": 401,
+      "sha256": "5b8570c9edcd29ec7647f0e2fb468f6903721c66cb42ffb6c994c69823ee4fb9",
+      "type": "png",
+      "width": 20,
+      "height": 11,
+      "geometry": "master",
+      "sourceSvgSha256": "6a81a9f000dcdcadfaa5e5ec3f9d63425712a899d8259327a1cbfc1aae030259"
+    },
+    {
+      "file": "tests/scale/master-24.png",
+      "bytes": 478,
+      "sha256": "bca688096d8a179a6d0dfd6189e8c89359a1ca24e2d86fa1493d9c6b9d057e04",
+      "type": "png",
+      "width": 24,
+      "height": 14,
+      "geometry": "master",
+      "sourceSvgSha256": "6a81a9f000dcdcadfaa5e5ec3f9d63425712a899d8259327a1cbfc1aae030259"
+    },
+    {
+      "file": "tests/scale/master-32.png",
+      "bytes": 662,
+      "sha256": "5380a6a1d39bdf917cf3a11a157ddf7da3b4a4842e16488700fb4342d1988e49",
+      "type": "png",
+      "width": 32,
+      "height": 18,
+      "geometry": "master",
+      "sourceSvgSha256": "6a81a9f000dcdcadfaa5e5ec3f9d63425712a899d8259327a1cbfc1aae030259"
+    },
+    {
+      "file": "tests/scale/master-40.png",
+      "bytes": 781,
+      "sha256": "f0d90c3642c41763ee09c6abce5fcff49e1544acf31b2ab8bc9cd98eba5a0e4b",
+      "type": "png",
+      "width": 40,
+      "height": 23,
+      "geometry": "master",
+      "sourceSvgSha256": "6a81a9f000dcdcadfaa5e5ec3f9d63425712a899d8259327a1cbfc1aae030259"
+    },
+    {
+      "file": "tests/scale/master-48.png",
+      "bytes": 910,
+      "sha256": "27da0915f6e982696a033b788a5df0e8730d9984bf88a6f9096aabd12c9fce2f",
+      "type": "png",
+      "width": 48,
+      "height": 27,
+      "geometry": "master",
+      "sourceSvgSha256": "6a81a9f000dcdcadfaa5e5ec3f9d63425712a899d8259327a1cbfc1aae030259"
+    },
+    {
+      "file": "tests/scale/master-64.png",
+      "bytes": 1199,
+      "sha256": "10cf0932d30ee80613c1e7b3bd4a681e3cb5da4c2376d98f33a5f3f13afda504",
+      "type": "png",
+      "width": 64,
+      "height": 36,
+      "geometry": "master",
+      "sourceSvgSha256": "6a81a9f000dcdcadfaa5e5ec3f9d63425712a899d8259327a1cbfc1aae030259"
+    },
+    {
+      "file": "tests/scale/master-96.png",
+      "bytes": 1739,
+      "sha256": "7b4bb2e95dfc476eb126615c6251108d2a1351d2deed2cfac80decea45f7f7dd",
+      "type": "png",
+      "width": 96,
+      "height": 54,
+      "geometry": "master",
+      "sourceSvgSha256": "6a81a9f000dcdcadfaa5e5ec3f9d63425712a899d8259327a1cbfc1aae030259"
+    },
+    {
+      "file": "tests/scale/master-128.png",
+      "bytes": 2291,
+      "sha256": "28e39deb66dc5003c90560494eb46888aa52c00bdaf5369810a9fcfca53f27a8",
+      "type": "png",
+      "width": 128,
+      "height": 72,
+      "geometry": "master",
+      "sourceSvgSha256": "6a81a9f000dcdcadfaa5e5ec3f9d63425712a899d8259327a1cbfc1aae030259"
+    },
+    {
+      "file": "tests/scale/master-180.png",
+      "bytes": 3193,
+      "sha256": "cad86f71cbf3686846fd03e4280f860eff1c5e1680f90047b83c239b3ba9e6fc",
+      "type": "png",
+      "width": 180,
+      "height": 101,
+      "geometry": "master",
+      "sourceSvgSha256": "6a81a9f000dcdcadfaa5e5ec3f9d63425712a899d8259327a1cbfc1aae030259"
+    },
+    {
+      "file": "tests/scale/master-256.png",
+      "bytes": 4782,
+      "sha256": "8b2a7083005346180c1ae559e175416024b11127805aefd9dd0895dae929a64b",
+      "type": "png",
+      "width": 256,
+      "height": 144,
+      "geometry": "master",
+      "sourceSvgSha256": "6a81a9f000dcdcadfaa5e5ec3f9d63425712a899d8259327a1cbfc1aae030259"
+    },
+    {
+      "file": "tests/scale/master-512.png",
+      "bytes": 10809,
+      "sha256": "aaac035841cd93bc0c091a5c61cdf4ad44510f46e00baf97d9967471dcf8ba68",
+      "type": "png",
+      "width": 512,
+      "height": 288,
+      "geometry": "master",
+      "sourceSvgSha256": "6a81a9f000dcdcadfaa5e5ec3f9d63425712a899d8259327a1cbfc1aae030259"
+    },
+    {
+      "file": "tests/scale/master-1024.png",
+      "bytes": 25193,
+      "sha256": "a19bbdd370fda77d865dcb41ed97d3e4b6517fa6f5567f44637e576c86ca385e",
+      "type": "png",
+      "width": 1024,
+      "height": 576,
+      "geometry": "master",
+      "sourceSvgSha256": "6a81a9f000dcdcadfaa5e5ec3f9d63425712a899d8259327a1cbfc1aae030259"
+    },
+    {
+      "file": "tests/scale/master-2048.png",
+      "bytes": 59619,
+      "sha256": "63c0cf80b3ac3c3a30852e572f97225793abc7efaae6792691792eb1b6f5720a",
+      "type": "png",
+      "width": 2048,
+      "height": 1153,
+      "geometry": "master",
+      "sourceSvgSha256": "6a81a9f000dcdcadfaa5e5ec3f9d63425712a899d8259327a1cbfc1aae030259"
+    },
+    {
+      "file": "tests/scale/micro-16.png",
+      "bytes": 362,
+      "sha256": "95deb00bae778807da57c3ad050335813fcdc64ed1b7b51cb081e6875f87a96a",
+      "type": "png",
+      "width": 16,
+      "height": 9,
+      "geometry": "micro",
+      "sourceSvgSha256": "8e0668c7109bcfbe3f72a172cad36c4ba508c68f5a1b83989975d5f3c284b6cb"
+    },
+    {
+      "file": "tests/scale/micro-20.png",
+      "bytes": 412,
+      "sha256": "9793b8d346dbda083e9206197e5f5c7618ebe924f2350c76a07bb3d49b362b47",
+      "type": "png",
+      "width": 20,
+      "height": 11,
+      "geometry": "micro",
+      "sourceSvgSha256": "8e0668c7109bcfbe3f72a172cad36c4ba508c68f5a1b83989975d5f3c284b6cb"
+    },
+    {
+      "file": "tests/scale/micro-24.png",
+      "bytes": 495,
+      "sha256": "dc598aaccad026c491035d01429b6c3bd84b1f7a03fd8e5196eac7d5ee74a2e3",
+      "type": "png",
+      "width": 24,
+      "height": 14,
+      "geometry": "micro",
+      "sourceSvgSha256": "8e0668c7109bcfbe3f72a172cad36c4ba508c68f5a1b83989975d5f3c284b6cb"
+    },
+    {
+      "file": "tests/scale/micro-32.png",
+      "bytes": 683,
+      "sha256": "9023a33119e75789f41ae5c6202dc99524ed3235fed7dbf486ec02934264e437",
+      "type": "png",
+      "width": 32,
+      "height": 18,
+      "geometry": "micro",
+      "sourceSvgSha256": "8e0668c7109bcfbe3f72a172cad36c4ba508c68f5a1b83989975d5f3c284b6cb"
+    },
+    {
+      "file": "tests/scale/micro-40.png",
+      "bytes": 790,
+      "sha256": "e6c2629e29ecf48955e4a5e68d7f69417ce5e5c6b2674db1e91677e0bc3a6a32",
+      "type": "png",
+      "width": 40,
+      "height": 23,
+      "geometry": "micro",
+      "sourceSvgSha256": "8e0668c7109bcfbe3f72a172cad36c4ba508c68f5a1b83989975d5f3c284b6cb"
+    },
+    {
+      "file": "tests/scale/micro-48.png",
+      "bytes": 946,
+      "sha256": "ec918512c67f5d7b54b997c90e8347071cb46ed0c458e84d7c98688a58e1fbb1",
+      "type": "png",
+      "width": 48,
+      "height": 27,
+      "geometry": "micro",
+      "sourceSvgSha256": "8e0668c7109bcfbe3f72a172cad36c4ba508c68f5a1b83989975d5f3c284b6cb"
+    },
+    {
+      "file": "tests/scale/micro-64.png",
+      "bytes": 1222,
+      "sha256": "18656e1c03f9cc309415e64651ac919cdc1dc93de11f7d8b910671644b29c4bc",
+      "type": "png",
+      "width": 64,
+      "height": 36,
+      "geometry": "micro",
+      "sourceSvgSha256": "8e0668c7109bcfbe3f72a172cad36c4ba508c68f5a1b83989975d5f3c284b6cb"
+    },
+    {
+      "file": "tests/scale/micro-96.png",
+      "bytes": 1751,
+      "sha256": "b927667231a275a045b12fa35aa81ed3a5df2abfb6f88967addf2d2d057663a6",
+      "type": "png",
+      "width": 96,
+      "height": 54,
+      "geometry": "micro",
+      "sourceSvgSha256": "8e0668c7109bcfbe3f72a172cad36c4ba508c68f5a1b83989975d5f3c284b6cb"
+    },
+    {
+      "file": "tests/scale/micro-128.png",
+      "bytes": 2287,
+      "sha256": "275a56408cc671e8cdba2a827c018042cc864a8726c737c5292219aa3fc3c886",
+      "type": "png",
+      "width": 128,
+      "height": 72,
+      "geometry": "micro",
+      "sourceSvgSha256": "8e0668c7109bcfbe3f72a172cad36c4ba508c68f5a1b83989975d5f3c284b6cb"
+    },
+    {
+      "file": "brand-colors.json",
+      "bytes": 1754,
+      "sha256": "bf6226177ca5cb3eee4156b91b02ff00445618e51b98c5ccc3c0c61758a36309"
+    },
+    {
+      "file": "brand-tokens.css",
+      "bytes": 389,
+      "sha256": "ae685b437e7f6c759d088c39830b9011a3c9b3416821780ccb2dc94ca23d15a4"
+    }
+  ]
+}

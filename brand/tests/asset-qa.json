@@ -1,0 +1,797 @@
+{
+  "masterLocked": true,
+  "masterSha256": "fe0dde1281b8fe1b4a8a44e54365050becd72e2c8ea21acde61e5f28fc12be31",
+  "assets": [
+    {
+      "file": "png/backgrounds/logo-brand-512.png",
+      "width": 512,
+      "height": 288,
+      "bytes": 11789,
+      "exactRenderMatch": true
+    },
+    {
+      "file": "png/backgrounds/logo-brand-1024.png",
+      "width": 1024,
+      "height": 576,
+      "bytes": 26779,
+      "exactRenderMatch": true
+    },
+    {
+      "file": "png/backgrounds/logo-dark-512.png",
+      "width": 512,
+      "height": 288,
+      "bytes": 12434,
+      "exactRenderMatch": true
+    },
+    {
+      "file": "png/backgrounds/logo-dark-1024.png",
+      "width": 1024,
+      "height": 576,
+      "bytes": 28830,
+      "exactRenderMatch": true
+    },
+    {
+      "file": "png/backgrounds/logo-light-512.png",
+      "width": 512,
+      "height": 288,
+      "bytes": 12502,
+      "exactRenderMatch": true
+    },
+    {
+      "file": "png/backgrounds/logo-light-1024.png",
+      "width": 1024,
+      "height": 576,
+      "bytes": 28792,
+      "exactRenderMatch": true
+    },
+    {
+      "file": "png/transparent/logo-silver-512.png",
+      "width": 512,
+      "height": 288,
+      "bytes": 10809,
+      "exactRenderMatch": true
+    },
+    {
+      "file": "png/transparent/logo-silver-1024.png",
+      "width": 1024,
+      "height": 576,
+      "bytes": 25193,
+      "exactRenderMatch": true
+    },
+    {
+      "file": "png/transparent/logo-silver-2048.png",
+      "width": 2048,
+      "height": 1153,
+      "bytes": 59619,
+      "exactRenderMatch": true
+    },
+    {
+      "file": "png/transparent/logo-charcoal-512.png",
+      "width": 512,
+      "height": 288,
+      "bytes": 11535,
+      "exactRenderMatch": true
+    },
+    {
+      "file": "png/transparent/logo-charcoal-1024.png",
+      "width": 1024,
+      "height": 576,
+      "bytes": 27276,
+      "exactRenderMatch": true
+    },
+    {
+      "file": "png/transparent/logo-charcoal-2048.png",
+      "width": 2048,
+      "height": 1153,
+      "bytes": 63858,
+      "exactRenderMatch": true
+    },
+    {
+      "file": "png/transparent/logo-white-512.png",
+      "width": 512,
+      "height": 288,
+      "bytes": 9390,
+      "exactRenderMatch": true
+    },
+    {
+      "file": "png/transparent/logo-white-1024.png",
+      "width": 1024,
+      "height": 576,
+      "bytes": 21013,
+      "exactRenderMatch": true
+    },
+    {
+      "file": "png/transparent/logo-white-2048.png",
+      "width": 2048,
+      "height": 1153,
+      "bytes": 47974,
+      "exactRenderMatch": true
+    },
+    {
+      "file": "png/transparent/logo-black-512.png",
+      "width": 512,
+      "height": 288,
+      "bytes": 9051,
+      "exactRenderMatch": true
+    },
+    {
+      "file": "png/transparent/logo-black-1024.png",
+      "width": 1024,
+      "height": 576,
+      "bytes": 20226,
+      "exactRenderMatch": true
+    },
+    {
+      "file": "png/transparent/logo-black-2048.png",
+      "width": 2048,
+      "height": 1153,
+      "bytes": 46230,
+      "exactRenderMatch": true
+    },
+    {
+      "file": "avatars/square/avatar-128.png",
+      "width": 128,
+      "height": 128,
+      "bytes": 2476,
+      "exactRenderMatch": true
+    },
+    {
+      "file": "avatars/square/avatar-256.png",
+      "width": 256,
+      "height": 256,
+      "bytes": 5128,
+      "exactRenderMatch": true
+    },
+    {
+      "file": "avatars/square/avatar-512.png",
+      "width": 512,
+      "height": 512,
+      "bytes": 11575,
+      "exactRenderMatch": true
+    },
+    {
+      "file": "avatars/square/avatar-1024.png",
+      "width": 1024,
+      "height": 1024,
+      "bytes": 26856,
+      "exactRenderMatch": true
+    },
+    {
+      "file": "avatars/circle/avatar-128.png",
+      "width": 128,
+      "height": 128,
+      "bytes": 4041,
+      "exactRenderMatch": true
+    },
+    {
+      "file": "avatars/circle/avatar-256.png",
+      "width": 256,
+      "height": 256,
+      "bytes": 8525,
+      "exactRenderMatch": true
+    },
+    {
+      "file": "avatars/circle/avatar-512.png",
+      "width": 512,
+      "height": 512,
+      "bytes": 19490,
+      "exactRenderMatch": true
+    },
+    {
+      "file": "avatars/circle/avatar-1024.png",
+      "width": 1024,
+      "height": 1024,
+      "bytes": 44793,
+      "exactRenderMatch": true
+    },
+    {
+      "file": "avatars/rounded-square/avatar-128.png",
+      "width": 128,
+      "height": 128,
+      "bytes": 3144,
+      "exactRenderMatch": true
+    },
+    {
+      "file": "avatars/rounded-square/avatar-256.png",
+      "width": 256,
+      "height": 256,
+      "bytes": 6485,
+      "exactRenderMatch": true
+    },
+    {
+      "file": "avatars/rounded-square/avatar-512.png",
+      "width": 512,
+      "height": 512,
+      "bytes": 14554,
+      "exactRenderMatch": true
+    },
+    {
+      "file": "avatars/rounded-square/avatar-1024.png",
+      "width": 1024,
+      "height": 1024,
+      "bytes": 33549,
+      "exactRenderMatch": true
+    },
+    {
+      "file": "avatars/square/github-500.png",
+      "width": 500,
+      "height": 500,
+      "bytes": 11133,
+      "exactRenderMatch": true
+    },
+    {
+      "file": "avatars/square/linkedin-page-400.png",
+      "width": 400,
+      "height": 400,
+      "bytes": 8577,
+      "exactRenderMatch": true
+    },
+    {
+      "file": "avatars/square/youtube-800.png",
+      "width": 800,
+      "height": 800,
+      "bytes": 19591,
+      "exactRenderMatch": true
+    },
+    {
+      "file": "favicon/favicon-16x16.png",
+      "width": 16,
+      "height": 16,
+      "bytes": 477,
+      "exactRenderMatch": true
+    },
+    {
+      "file": "favicon/favicon-32x32.png",
+      "width": 32,
+      "height": 32,
+      "bytes": 918,
+      "exactRenderMatch": true
+    },
+    {
+      "file": "favicon/favicon-48x48.png",
+      "width": 48,
+      "height": 48,
+      "bytes": 1328,
+      "exactRenderMatch": true
+    },
+    {
+      "file": "favicon/apple-touch-icon.png",
+      "width": 180,
+      "height": 180,
+      "bytes": 3611,
+      "exactRenderMatch": true
+    },
+    {
+      "file": "favicon/pwa-192.png",
+      "width": 192,
+      "height": 192,
+      "bytes": 3918,
+      "exactRenderMatch": true
+    },
+    {
+      "file": "favicon/pwa-maskable-192.png",
+      "width": 192,
+      "height": 192,
+      "bytes": 3560,
+      "exactRenderMatch": true
+    },
+    {
+      "file": "favicon/pwa-512.png",
+      "width": 512,
+      "height": 512,
+      "bytes": 12251,
+      "exactRenderMatch": true
+    },
+    {
+      "file": "favicon/pwa-maskable-512.png",
+      "width": 512,
+      "height": 512,
+      "bytes": 11301,
+      "exactRenderMatch": true
+    },
+    {
+      "file": "social/opengraph-1200x630.png",
+      "width": 1200,
+      "height": 630,
+      "bytes": 16979,
+      "exactRenderMatch": true
+    },
+    {
+      "file": "tests/scale/master-16.png",
+      "width": 16,
+      "height": 9,
+      "bytes": 350,
+      "exactRenderMatch": true
+    },
+    {
+      "file": "tests/scale/master-20.png",
+      "width": 20,
+      "height": 11,
+      "bytes": 401,
+      "exactRenderMatch": true
+    },
+    {
+      "file": "tests/scale/master-24.png",
+      "width": 24,
+      "height": 14,
+      "bytes": 478,
+      "exactRenderMatch": true
+    },
+    {
+      "file": "tests/scale/master-32.png",
+      "width": 32,
+      "height": 18,
+      "bytes": 662,
+      "exactRenderMatch": true
+    },
+    {
+      "file": "tests/scale/master-40.png",
+      "width": 40,
+      "height": 23,
+      "bytes": 781,
+      "exactRenderMatch": true
+    },
+    {
+      "file": "tests/scale/master-48.png",
+      "width": 48,
+      "height": 27,
+      "bytes": 910,
+      "exactRenderMatch": true
+    },
+    {
+      "file": "tests/scale/master-64.png",
+      "width": 64,
+      "height": 36,
+      "bytes": 1199,
+      "exactRenderMatch": true
+    },
+    {
+      "file": "tests/scale/master-96.png",
+      "width": 96,
+      "height": 54,
+      "bytes": 1739,
+      "exactRenderMatch": true
+    },
+    {
+      "file": "tests/scale/master-128.png",
+      "width": 128,
+      "height": 72,
+      "bytes": 2291,
+      "exactRenderMatch": true
+    },
+    {
+      "file": "tests/scale/master-180.png",
+      "width": 180,
+      "height": 101,
+      "bytes": 3193,
+      "exactRenderMatch": true
+    },
+    {
+      "file": "tests/scale/master-256.png",
+      "width": 256,
+      "height": 144,
+      "bytes": 4782,
+      "exactRenderMatch": true
+    },
+    {
+      "file": "tests/scale/master-512.png",
+      "width": 512,
+      "height": 288,
+      "bytes": 10809,
+      "exactRenderMatch": true
+    },
+    {
+      "file": "tests/scale/master-1024.png",
+      "width": 1024,
+      "height": 576,
+      "bytes": 25193,
+      "exactRenderMatch": true
+    },
+    {
+      "file": "tests/scale/master-2048.png",
+      "width": 2048,
+      "height": 1153,
+      "bytes": 59619,
+      "exactRenderMatch": true
+    },
+    {
+      "file": "tests/scale/micro-16.png",
+      "width": 16,
+      "height": 9,
+      "bytes": 362,
+      "exactRenderMatch": true
+    },
+    {
+      "file": "tests/scale/micro-20.png",
+      "width": 20,
+      "height": 11,
+      "bytes": 412,
+      "exactRenderMatch": true
+    },
+    {
+      "file": "tests/scale/micro-24.png",
+      "width": 24,
+      "height": 14,
+      "bytes": 495,
+      "exactRenderMatch": true
+    },
+    {
+      "file": "tests/scale/micro-32.png",
+      "width": 32,
+      "height": 18,
+      "bytes": 683,
+      "exactRenderMatch": true
+    },
+    {
+      "file": "tests/scale/micro-40.png",
+      "width": 40,
+      "height": 23,
+      "bytes": 790,
+      "exactRenderMatch": true
+    },
+    {
+      "file": "tests/scale/micro-48.png",
+      "width": 48,
+      "height": 27,
+      "bytes": 946,
+      "exactRenderMatch": true
+    },
+    {
+      "file": "tests/scale/micro-64.png",
+      "width": 64,
+      "height": 36,
+      "bytes": 1222,
+      "exactRenderMatch": true
+    },
+    {
+      "file": "tests/scale/micro-96.png",
+      "width": 96,
+      "height": 54,
+      "bytes": 1751,
+      "exactRenderMatch": true
+    },
+    {
+      "file": "tests/scale/micro-128.png",
+      "width": 128,
+      "height": 72,
+      "bytes": 2287,
+      "exactRenderMatch": true
+    }
+  ],
+  "optimization": [
+    {
+      "width": 16,
+      "changedPixels": 0
+    },
+    {
+      "width": 20,
+      "changedPixels": 0
+    },
+    {
+      "width": 24,
+      "changedPixels": 0
+    },
+    {
+      "width": 32,
+      "changedPixels": 0
+    },
+    {
+      "width": 40,
+      "changedPixels": 0
+    },
+    {
+      "width": 48,
+      "changedPixels": 0
+    },
+    {
+      "width": 64,
+      "changedPixels": 0
+    },
+    {
+      "width": 96,
+      "changedPixels": 0
+    },
+    {
+      "width": 128,
+      "changedPixels": 0
+    },
+    {
+      "width": 180,
+      "changedPixels": 0
+    },
+    {
+      "width": 256,
+      "changedPixels": 0
+    },
+    {
+      "width": 512,
+      "changedPixels": 0
+    },
+    {
+      "width": 1024,
+      "changedPixels": 0
+    },
+    {
+      "width": 2048,
+      "changedPixels": 0
+    }
+  ],
+  "smallSize": [
+    {
+      "width": 16,
+      "master": {
+        "height": 9,
+        "majorComponents": 1,
+        "componentAreas": [
+          66
+        ],
+        "thresholdAlpha": 128
+      },
+      "micro": {
+        "height": 9,
+        "majorComponents": 2,
+        "componentAreas": [
+          30,
+          29
+        ],
+        "thresholdAlpha": 128
+      }
+    },
+    {
+      "width": 20,
+      "master": {
+        "height": 11,
+        "majorComponents": 1,
+        "componentAreas": [
+          98
+        ],
+        "thresholdAlpha": 128
+      },
+      "micro": {
+        "height": 11,
+        "majorComponents": 2,
+        "componentAreas": [
+          46,
+          45
+        ],
+        "thresholdAlpha": 128
+      }
+    },
+    {
+      "width": 24,
+      "master": {
+        "height": 14,
+        "majorComponents": 1,
+        "componentAreas": [
+          140
+        ],
+        "thresholdAlpha": 128
+      },
+      "micro": {
+        "height": 14,
+        "majorComponents": 2,
+        "componentAreas": [
+          67,
+          64
+        ],
+        "thresholdAlpha": 128
+      }
+    },
+    {
+      "width": 32,
+      "master": {
+        "height": 18,
+        "majorComponents": 1,
+        "componentAreas": [
+          248
+        ],
+        "thresholdAlpha": 128
+      },
+      "micro": {
+        "height": 18,
+        "majorComponents": 2,
+        "componentAreas": [
+          118,
+          111
+        ],
+        "thresholdAlpha": 128
+      }
+    },
+    {
+      "width": 40,
+      "master": {
+        "height": 23,
+        "majorComponents": 1,
+        "componentAreas": [
+          376
+        ],
+        "thresholdAlpha": 128
+      },
+      "micro": {
+        "height": 23,
+        "majorComponents": 2,
+        "componentAreas": [
+          184,
+          174,
+          2
+        ],
+        "thresholdAlpha": 128
+      }
+    },
+    {
+      "width": 48,
+      "master": {
+        "height": 27,
+        "majorComponents": 1,
+        "componentAreas": [
+          549
+        ],
+        "thresholdAlpha": 128
+      },
+      "micro": {
+        "height": 27,
+        "majorComponents": 2,
+        "componentAreas": [
+          270,
+          253
+        ],
+        "thresholdAlpha": 128
+      }
+    },
+    {
+      "width": 64,
+      "master": {
+        "height": 36,
+        "majorComponents": 1,
+        "componentAreas": [
+          959
+        ],
+        "thresholdAlpha": 128
+      },
+      "micro": {
+        "height": 36,
+        "majorComponents": 2,
+        "componentAreas": [
+          480,
+          452
+        ],
+        "thresholdAlpha": 128
+      }
+    },
+    {
+      "width": 96,
+      "master": {
+        "height": 54,
+        "majorComponents": 1,
+        "componentAreas": [
+          2192
+        ],
+        "thresholdAlpha": 128
+      },
+      "micro": {
+        "height": 54,
+        "majorComponents": 2,
+        "componentAreas": [
+          1091,
+          1035
+        ],
+        "thresholdAlpha": 128
+      }
+    },
+    {
+      "width": 128,
+      "master": {
+        "height": 72,
+        "majorComponents": 2,
+        "componentAreas": [
+          2016,
+          1890,
+          1
+        ],
+        "thresholdAlpha": 128
+      },
+      "micro": {
+        "height": 72,
+        "majorComponents": 2,
+        "componentAreas": [
+          1940,
+          1848
+        ],
+        "thresholdAlpha": 128
+      }
+    },
+    {
+      "width": 180,
+      "master": {
+        "height": 101,
+        "majorComponents": 2,
+        "componentAreas": [
+          3962,
+          3709,
+          1
+        ],
+        "thresholdAlpha": 128
+      }
+    },
+    {
+      "width": 256,
+      "master": {
+        "height": 144,
+        "majorComponents": 2,
+        "componentAreas": [
+          8056,
+          7540
+        ],
+        "thresholdAlpha": 128
+      }
+    },
+    {
+      "width": 512,
+      "master": {
+        "height": 288,
+        "majorComponents": 2,
+        "componentAreas": [
+          32226,
+          30114,
+          1
+        ],
+        "thresholdAlpha": 128
+      }
+    },
+    {
+      "width": 1024,
+      "master": {
+        "height": 576,
+        "majorComponents": 2,
+        "componentAreas": [
+          128930,
+          120458,
+          1
+        ],
+        "thresholdAlpha": 128
+      }
+    },
+    {
+      "width": 2048,
+      "master": {
+        "height": 1153,
+        "majorComponents": 2,
+        "componentAreas": [
+          516460,
+          482495,
+          4,
+          1
+        ],
+        "thresholdAlpha": 128
+      }
+    }
+  ],
+  "crop": {
+    "circle": {
+      "lostInkPixels": 0
+    },
+    "rounded-square": {
+      "lostInkPixels": 0
+    },
+    "maskable": {
+      "conservativeInkCornerRadius": 0.3926221881504078,
+      "safeRadius": 0.4,
+      "pass": true
+    },
+    "socialSquare": {
+      "lostInkPixels": 0
+    }
+  },
+  "notes": [
+    "Connected-component test uses alpha >= 128 and ignores fragments <= 2 pixels or <= 1% of ink. It does not claim perfect legibility on every DPR/renderer.",
+    "Platform crops are local simulations; no platform uploads, external crawler tests or website deployment performed."
+  ],
+  "ico": {
+    "frames": [
+      16,
+      32,
+      48
+    ],
+    "exactFrameMatch": true
+  }
+}
