@@ -111,6 +111,9 @@ await writeFile(path.join(dist, 'en', 'index.html'), page(variants.en));
 
 for (const file of [
   'favicon.svg',
+  'favicon.ico',
+  'favicon.png',
+  'apple-touch-icon.png',
   'og-ru.png',
   'og-en.png',
   '_headers',
