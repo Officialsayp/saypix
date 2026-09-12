@@ -1,0 +1,4 @@
+# Preserve exported binary formats; PDF xref offsets must not be text-normalized.
+*.pdf binary
+*.png binary
+*.ico binary
