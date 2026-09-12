@@ -1,0 +1,568 @@
+{
+  "cssWidth": 16,
+  "dpr": 1,
+  "thresholdWhiteOnBlack": 128,
+  "results": [
+    {
+      "engine": "chromium",
+      "file": "svg/logo-micro-white.svg",
+      "width": 28,
+      "components": 1
+    },
+    {
+      "engine": "chromium",
+      "file": "svg/logo-micro-white.svg",
+      "width": 32,
+      "components": 1
+    },
+    {
+      "engine": "chromium",
+      "file": "svg/logo-micro-white.svg",
+      "width": 36,
+      "components": 2
+    },
+    {
+      "engine": "chromium",
+      "file": "svg/logo-micro-white.svg",
+      "width": 40,
+      "components": 2
+    },
+    {
+      "engine": "chromium",
+      "file": "svg/logo-micro-white.svg",
+      "width": 44,
+      "components": 2
+    },
+    {
+      "engine": "chromium",
+      "file": "favicon/favicon.svg",
+      "width": 28,
+      "components": 2
+    },
+    {
+      "engine": "chromium",
+      "file": "favicon/favicon.svg",
+      "width": 32,
+      "components": 2
+    },
+    {
+      "engine": "chromium",
+      "file": "favicon/favicon.svg",
+      "width": 36,
+      "components": 2
+    },
+    {
+      "engine": "chromium",
+      "file": "favicon/favicon.svg",
+      "width": 40,
+      "components": 2
+    },
+    {
+      "engine": "chromium",
+      "file": "favicon/favicon.svg",
+      "width": 44,
+      "components": 2
+    },
+    {
+      "engine": "firefox",
+      "file": "svg/logo-micro-white.svg",
+      "width": 28,
+      "components": 2
+    },
+    {
+      "engine": "firefox",
+      "file": "svg/logo-micro-white.svg",
+      "width": 32,
+      "components": 2
+    },
+    {
+      "engine": "firefox",
+      "file": "svg/logo-micro-white.svg",
+      "width": 36,
+      "components": 2
+    },
+    {
+      "engine": "firefox",
+      "file": "svg/logo-micro-white.svg",
+      "width": 40,
+      "components": 2
+    },
+    {
+      "engine": "firefox",
+      "file": "svg/logo-micro-white.svg",
+      "width": 44,
+      "components": 2
+    },
+    {
+      "engine": "firefox",
+      "file": "favicon/favicon.svg",
+      "width": 28,
+      "components": 1
+    },
+    {
+      "engine": "firefox",
+      "file": "favicon/favicon.svg",
+      "width": 32,
+      "components": 2
+    },
+    {
+      "engine": "firefox",
+      "file": "favicon/favicon.svg",
+      "width": 36,
+      "components": 2
+    },
+    {
+      "engine": "firefox",
+      "file": "favicon/favicon.svg",
+      "width": 40,
+      "components": 2
+    },
+    {
+      "engine": "firefox",
+      "file": "favicon/favicon.svg",
+      "width": 44,
+      "components": 2
+    },
+    {
+      "engine": "webkit",
+      "file": "svg/logo-micro-white.svg",
+      "width": 28,
+      "components": 1
+    },
+    {
+      "engine": "webkit",
+      "file": "svg/logo-micro-white.svg",
+      "width": 32,
+      "components": 2
+    },
+    {
+      "engine": "webkit",
+      "file": "svg/logo-micro-white.svg",
+      "width": 36,
+      "components": 2
+    },
+    {
+      "engine": "webkit",
+      "file": "svg/logo-micro-white.svg",
+      "width": 40,
+      "components": 2
+    },
+    {
+      "engine": "webkit",
+      "file": "svg/logo-micro-white.svg",
+      "width": 44,
+      "components": 2
+    },
+    {
+      "engine": "webkit",
+      "file": "favicon/favicon.svg",
+      "width": 28,
+      "components": 1
+    },
+    {
+      "engine": "webkit",
+      "file": "favicon/favicon.svg",
+      "width": 32,
+      "components": 1
+    },
+    {
+      "engine": "webkit",
+      "file": "favicon/favicon.svg",
+      "width": 36,
+      "components": 1
+    },
+    {
+      "engine": "webkit",
+      "file": "favicon/favicon.svg",
+      "width": 40,
+      "components": 2
+    },
+    {
+      "engine": "webkit",
+      "file": "favicon/favicon.svg",
+      "width": 44,
+      "components": 2
+    }
+  ],
+  "selection": {
+    "transparentMicro": 28,
+    "favicon": 40,
+    "reason": "Balanced 28 u retains the 20 px thin tail; 40 u is confined to the favicon badge at tested 16/32/48 sizes. A single stronger setting produced a detached tip at 20 px."
+  },
+  "refinementTrials": {
+    "variants": [
+      {
+        "name": "40-32-28",
+        "widths": [
+          40,
+          32,
+          28
+        ]
+      },
+      {
+        "name": "40-36-28",
+        "widths": [
+          40,
+          36,
+          28
+        ]
+      },
+      {
+        "name": "40-shift6",
+        "widths": [
+          40,
+          40,
+          40
+        ],
+        "lower": "M 520 456 C 588 396 651 343 775 388"
+      },
+      {
+        "name": "40-shift8",
+        "widths": [
+          40,
+          40,
+          40
+        ],
+        "lower": "M 520 458 C 588 398 651 345 775 390"
+      }
+    ],
+    "results": [
+      {
+        "engine": "chromium",
+        "file": "svg/logo-micro-white.svg",
+        "variant": "40-32-28",
+        "size": 16,
+        "components": 1
+      },
+      {
+        "engine": "chromium",
+        "file": "svg/logo-micro-white.svg",
+        "variant": "40-32-28",
+        "size": 20,
+        "components": 1
+      },
+      {
+        "engine": "chromium",
+        "file": "svg/logo-micro-white.svg",
+        "variant": "40-36-28",
+        "size": 16,
+        "components": 2
+      },
+      {
+        "engine": "chromium",
+        "file": "svg/logo-micro-white.svg",
+        "variant": "40-36-28",
+        "size": 20,
+        "components": 2
+      },
+      {
+        "engine": "chromium",
+        "file": "svg/logo-micro-white.svg",
+        "variant": "40-shift6",
+        "size": 16,
+        "components": 2
+      },
+      {
+        "engine": "chromium",
+        "file": "svg/logo-micro-white.svg",
+        "variant": "40-shift6",
+        "size": 20,
+        "components": 2
+      },
+      {
+        "engine": "chromium",
+        "file": "svg/logo-micro-white.svg",
+        "variant": "40-shift8",
+        "size": 16,
+        "components": 2
+      },
+      {
+        "engine": "chromium",
+        "file": "svg/logo-micro-white.svg",
+        "variant": "40-shift8",
+        "size": 20,
+        "components": 2
+      },
+      {
+        "engine": "chromium",
+        "file": "favicon/favicon.svg",
+        "variant": "40-32-28",
+        "size": 16,
+        "components": 2
+      },
+      {
+        "engine": "chromium",
+        "file": "favicon/favicon.svg",
+        "variant": "40-32-28",
+        "size": 20,
+        "components": 1
+      },
+      {
+        "engine": "chromium",
+        "file": "favicon/favicon.svg",
+        "variant": "40-36-28",
+        "size": 16,
+        "components": 2
+      },
+      {
+        "engine": "chromium",
+        "file": "favicon/favicon.svg",
+        "variant": "40-36-28",
+        "size": 20,
+        "components": 1
+      },
+      {
+        "engine": "chromium",
+        "file": "favicon/favicon.svg",
+        "variant": "40-shift6",
+        "size": 16,
+        "components": 2
+      },
+      {
+        "engine": "chromium",
+        "file": "favicon/favicon.svg",
+        "variant": "40-shift6",
+        "size": 20,
+        "components": 1
+      },
+      {
+        "engine": "chromium",
+        "file": "favicon/favicon.svg",
+        "variant": "40-shift8",
+        "size": 16,
+        "components": 2
+      },
+      {
+        "engine": "chromium",
+        "file": "favicon/favicon.svg",
+        "variant": "40-shift8",
+        "size": 20,
+        "components": 1
+      },
+      {
+        "engine": "firefox",
+        "file": "svg/logo-micro-white.svg",
+        "variant": "40-32-28",
+        "size": 16,
+        "components": 2
+      },
+      {
+        "engine": "firefox",
+        "file": "svg/logo-micro-white.svg",
+        "variant": "40-32-28",
+        "size": 20,
+        "components": 3
+      },
+      {
+        "engine": "firefox",
+        "file": "svg/logo-micro-white.svg",
+        "variant": "40-36-28",
+        "size": 16,
+        "components": 2
+      },
+      {
+        "engine": "firefox",
+        "file": "svg/logo-micro-white.svg",
+        "variant": "40-36-28",
+        "size": 20,
+        "components": 3
+      },
+      {
+        "engine": "firefox",
+        "file": "svg/logo-micro-white.svg",
+        "variant": "40-shift6",
+        "size": 16,
+        "components": 2
+      },
+      {
+        "engine": "firefox",
+        "file": "svg/logo-micro-white.svg",
+        "variant": "40-shift6",
+        "size": 20,
+        "components": 3
+      },
+      {
+        "engine": "firefox",
+        "file": "svg/logo-micro-white.svg",
+        "variant": "40-shift8",
+        "size": 16,
+        "components": 2
+      },
+      {
+        "engine": "firefox",
+        "file": "svg/logo-micro-white.svg",
+        "variant": "40-shift8",
+        "size": 20,
+        "components": 3
+      },
+      {
+        "engine": "firefox",
+        "file": "favicon/favicon.svg",
+        "variant": "40-32-28",
+        "size": 16,
+        "components": 2
+      },
+      {
+        "engine": "firefox",
+        "file": "favicon/favicon.svg",
+        "variant": "40-32-28",
+        "size": 20,
+        "components": 2
+      },
+      {
+        "engine": "firefox",
+        "file": "favicon/favicon.svg",
+        "variant": "40-36-28",
+        "size": 16,
+        "components": 2
+      },
+      {
+        "engine": "firefox",
+        "file": "favicon/favicon.svg",
+        "variant": "40-36-28",
+        "size": 20,
+        "components": 2
+      },
+      {
+        "engine": "firefox",
+        "file": "favicon/favicon.svg",
+        "variant": "40-shift6",
+        "size": 16,
+        "components": 2
+      },
+      {
+        "engine": "firefox",
+        "file": "favicon/favicon.svg",
+        "variant": "40-shift6",
+        "size": 20,
+        "components": 2
+      },
+      {
+        "engine": "firefox",
+        "file": "favicon/favicon.svg",
+        "variant": "40-shift8",
+        "size": 16,
+        "components": 2
+      },
+      {
+        "engine": "firefox",
+        "file": "favicon/favicon.svg",
+        "variant": "40-shift8",
+        "size": 20,
+        "components": 2
+      },
+      {
+        "engine": "webkit",
+        "file": "svg/logo-micro-white.svg",
+        "variant": "40-32-28",
+        "size": 16,
+        "components": 2
+      },
+      {
+        "engine": "webkit",
+        "file": "svg/logo-micro-white.svg",
+        "variant": "40-32-28",
+        "size": 20,
+        "components": 2
+      },
+      {
+        "engine": "webkit",
+        "file": "svg/logo-micro-white.svg",
+        "variant": "40-36-28",
+        "size": 16,
+        "components": 2
+      },
+      {
+        "engine": "webkit",
+        "file": "svg/logo-micro-white.svg",
+        "variant": "40-36-28",
+        "size": 20,
+        "components": 2
+      },
+      {
+        "engine": "webkit",
+        "file": "svg/logo-micro-white.svg",
+        "variant": "40-shift6",
+        "size": 16,
+        "components": 2
+      },
+      {
+        "engine": "webkit",
+        "file": "svg/logo-micro-white.svg",
+        "variant": "40-shift6",
+        "size": 20,
+        "components": 3
+      },
+      {
+        "engine": "webkit",
+        "file": "svg/logo-micro-white.svg",
+        "variant": "40-shift8",
+        "size": 16,
+        "components": 2
+      },
+      {
+        "engine": "webkit",
+        "file": "svg/logo-micro-white.svg",
+        "variant": "40-shift8",
+        "size": 20,
+        "components": 3
+      },
+      {
+        "engine": "webkit",
+        "file": "favicon/favicon.svg",
+        "variant": "40-32-28",
+        "size": 16,
+        "components": 1
+      },
+      {
+        "engine": "webkit",
+        "file": "favicon/favicon.svg",
+        "variant": "40-32-28",
+        "size": 20,
+        "components": 1
+      },
+      {
+        "engine": "webkit",
+        "file": "favicon/favicon.svg",
+        "variant": "40-36-28",
+        "size": 16,
+        "components": 1
+      },
+      {
+        "engine": "webkit",
+        "file": "favicon/favicon.svg",
+        "variant": "40-36-28",
+        "size": 20,
+        "components": 1
+      },
+      {
+        "engine": "webkit",
+        "file": "favicon/favicon.svg",
+        "variant": "40-shift6",
+        "size": 16,
+        "components": 2
+      },
+      {
+        "engine": "webkit",
+        "file": "favicon/favicon.svg",
+        "variant": "40-shift6",
+        "size": 20,
+        "components": 1
+      },
+      {
+        "engine": "webkit",
+        "file": "favicon/favicon.svg",
+        "variant": "40-shift8",
+        "size": 16,
+        "components": 2
+      },
+      {
+        "engine": "webkit",
+        "file": "favicon/favicon.svg",
+        "variant": "40-shift8",
+        "size": 20,
+        "components": 1
+      }
+    ]
+  }
+}
