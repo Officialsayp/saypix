@@ -385,7 +385,7 @@ button { font: inherit; }
 .project-list { margin-top: 54px; }
 .project-card {
   display: grid;
-  grid-template-columns: 70px minmax(0, 1fr) auto;
+  grid-template-columns: 70px minmax(0, 1fr) 220px;
   gap: 28px;
   padding: 34px 0;
   border-top: 1px solid var(--line);
@@ -425,6 +425,24 @@ button { font: inherit; }
 }
 .project-card__link:hover { color: #fff; }
 .project-card__link:focus-visible { outline: 2px solid #9eb6f7; outline-offset: 5px; border-radius: 2px; }
+
+/* Shared text slots keep translated blocks aligned even before the lazy
+   curtain loads. Minimums grow with typography; content is never clipped. */
+.section h2 { min-height: 3lh; }
+[id^="contacts-"] h2 { min-height: 1lh; }
+.section__body { min-height: 6lh; }
+.project-card h3 { line-height: 1.15; min-height: 2lh; }
+.project-card p { min-height: 3lh; }
+.project-card__highlights li { min-height: 3lh; }
+.project-card__link { min-height: 2lh; }
+@media (max-width: 560px) {
+  .section h2 { min-height: 5lh; }
+  [id^="contacts-"] h2 { min-height: 1lh; }
+  .section__body { min-height: 11lh; }
+  .project-card h3 { min-height: 3lh; }
+  .project-card p { min-height: 7lh; }
+  .project-card__highlights li { min-height: 5lh; }
+}
 
 .contacts__links {
   display: flex;
