@@ -164,7 +164,7 @@ export const siteContent = {
     },
    contacts: {
      kicker: "04 /",
-     title: "CONTACT",
+     title: "CONTACTS",
      email: "hello@maxzolotoy.com",
      telegram: "@max_zolotoy",
      github: "github.com/Officialsayp"
