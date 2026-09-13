@@ -63,6 +63,9 @@ button { font: inherit; }
 .site-shell {
   position: relative;
   isolation: isolate;
+  /* Bound the off-screen curtain without creating another scroll container.
+     Otherwise mobile zoom-out includes its translated width in the page. */
+  overflow: clip;
   min-height: 100vh;
   z-index: 1;
 }
