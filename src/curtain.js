@@ -83,10 +83,10 @@ function syncGeometry() {
   // Batch writes, reads, and final writes. Interleaving those operations forces
   // repeated layout passes in Safari, especially after its browser chrome resizes.
   elements.flat().forEach(element => { element.style.minHeight = ''; });
-  const heights = elements.map(([primary, curtain]) => Math.ceil(Math.max(
+  const heights = elements.map(([primary, curtain]) => Math.max(
     primary.getBoundingClientRect().height,
     curtain.getBoundingClientRect().height,
-  )));
+  ));
   elements.forEach(([primary, curtain], index) => {
     const height = `${heights[index]}px`;
     primary.style.minHeight = height;

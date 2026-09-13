@@ -16,6 +16,7 @@ try {
         top: node.offsetTop + node.offsetHeight * 0.2, behavior: 'instant',
       }));
       const box = await link.boundingBox();
+      const beforeTop = await page.locator(`#${section}-${lang}`).evaluate(node => node.getBoundingClientRect().top);
       await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
       await page.mouse.down();
       await page.waitForFunction(() => document.querySelector('[data-layer="curtain"] section'));
@@ -25,6 +26,8 @@ try {
       await page.waitForURL(`**/${other}/`);
       await page.waitForTimeout(200);
       const actual = await page.locator(`#${section}-${other}`).evaluate(node => -node.getBoundingClientRect().top / node.offsetHeight);
+      const afterTop = await page.locator(`#${section}-${other}`).evaluate(node => node.getBoundingClientRect().top);
+      assert.ok(Math.abs(beforeTop - afterTop) <= 1, JSON.stringify({ width, lang, section, beforeTop, afterTop }));
       assert.ok(Math.abs(expected - actual) < 0.02, JSON.stringify({ width, lang, section, expected, actual }));
       assert.equal(await page.evaluate(() => sessionStorage.getItem('language-scroll')), null);
       await page.close();
