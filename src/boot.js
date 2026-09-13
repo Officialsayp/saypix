@@ -2,6 +2,16 @@ const root = document.documentElement;
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 const languageLinks = [...document.querySelectorAll('[data-lang-target]')];
 
+// Consume only the immediately preceding language transition, never a later visit.
+try {
+  const saved = JSON.parse(sessionStorage.getItem('language-scroll'));
+  sessionStorage.removeItem('language-scroll');
+  const section = saved && document.getElementById(saved.id);
+  if (section && saved.path === location.pathname && Date.now() - saved.time < 10000) {
+    window.scrollTo({ top: section.offsetTop + section.offsetHeight * saved.ratio, behavior: 'instant' });
+  }
+} catch { /* Blocked storage must leave normal navigation usable. */ }
+
 let curtainApi = null;
 let curtainLoad = null;
 let pendingSession = null;
