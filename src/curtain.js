@@ -246,7 +246,24 @@ function completeLanguageChange(lang) {
     return;
   }
   storeLanguage(lang);
-  location.assign(canonicalPath(lang) + localizedHash(lang));
+  // Read from the visible source, not the off-screen translated layer. Section
+  // proportions survive different translated text heights on the next document.
+  const sections = [...primaryLayer.querySelectorAll('section[id]')];
+  const section = sections.filter(item => item.getBoundingClientRect().top <= 1).at(-1) || sections[0];
+  let hash = localizedHash(lang);
+  if (section) {
+    const id = section.id.replace(/-(?:ru|en)$/, `-${lang}`);
+    const rect = section.getBoundingClientRect();
+    hash = `#${id}`;
+    try {
+      sessionStorage.setItem('language-scroll', JSON.stringify({
+        path: canonicalPath(lang), id, time: Date.now(),
+        ratio: clamp(-rect.top / rect.height, 0, 1),
+      }));
+      hash = ''; // A stale section hash must not override the restored position.
+    } catch { /* Without storage, retain the section through a semantic anchor. */ }
+  }
+  location.assign(canonicalPath(lang) + hash);
 }
 
 function easeOutCubic(t) { return 1 - Math.pow(1 - t, 3); }
