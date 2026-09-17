@@ -33,8 +33,8 @@ export const siteContent = {
     ],
     hero: {
       eyebrow: "",
-      title: "Максим Золотой",
-      lead: "Проектирую backend-сервисы на Go: доменную логику, API и данные. Фокус — ясные границы системы, явные состояния и проверяемое поведение.",
+      title: "Золотой Максим",
+      lead: "Backend-разработчик на Go",
       primary: "Посмотреть проекты",
       secondary: "Связаться"
     },
@@ -42,9 +42,10 @@ export const siteContent = {
       kicker: "ОБО МНЕ",
       title: "Проектирую backend, который можно развивать",
       body: [
-        "Я — Максим Золотой, работаю в Ozon Tech. Фокус — backend на Go",
-        "Проектирую системы с ясными границами, явными состояниями и предсказуемым поведением",
-        "Опыт в учёте и логистике IT-оборудования помогает учитывать не только код, но и данные, зависимости и эксплуатацию"
+        "Я занимаюсь проектированием микросервисной архитектуры на Golang",
+        "Активно использую Codex и Claude Code в разработке",
+        "Работаю в Ozon Tech — технологическом направлении российской big tech-компании Ozon",
+        "В свободное время занимаюсь разработкой pet-проектов"
       ]
     },
     stack: {
@@ -117,7 +118,7 @@ export const siteContent = {
     hero: {
       eyebrow: "",
       title: "Maxim Zolotoy",
-      lead: "I design backend services in Go: domain logic, APIs and data flows, with a focus on clear system boundaries, explicit states and verifiable behavior.",
+      lead: "Go Backend Developer",
       primary: "View projects",
       secondary: "Contact me"
     },
@@ -125,9 +126,10 @@ export const siteContent = {
       kicker: "ABOUT",
       title: "Building backend systems for reliability and change",
       body: [
-        "I'm Maxim Zolotoy, currently working at Ozon Tech with a focus on backend engineering in Go",
-        "I design systems around clear boundaries, explicit state transitions and predictable behavior",
-        "My background in IT asset accounting and logistics helps me think beyond code — about data, dependencies and operations"
+        "I design microservice architectures in Go",
+        "I actively use Codex and Claude Code as part of my development workflow",
+        "I work at Ozon Tech, part of a major big tech company",
+        "Outside of work, I build and develop personal projects"
       ]
     },
     stack: {
