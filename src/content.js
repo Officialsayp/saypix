@@ -32,7 +32,7 @@ export const siteContent = {
       ["Контакты", "contacts"]
     ],
     hero: {
-      eyebrow: "GO BACKEND DEVELOPER",
+      eyebrow: "",
       title: "Максим Золотой",
       lead: "Проектирую backend-сервисы на Go: доменную логику, API и данные. Фокус — ясные границы системы, явные состояния и проверяемое поведение.",
       primary: "Посмотреть проекты",
@@ -93,8 +93,8 @@ export const siteContent = {
       ]
     },
     contacts: {
-      kicker: "04 /",
-      title: "КОНТАКТЫ",
+      kicker: "контакты",
+      title: "СВЯЗАТЬСЯ СО МНОЙ",
       email: "hello@maxzolotoy.com",
       telegram: "@max_zolotoy",
       github: "github.com/Officialsayp"
@@ -115,7 +115,7 @@ export const siteContent = {
       ["Contacts", "contacts"]
     ],
     hero: {
-      eyebrow: "GO BACKEND DEVELOPER",
+      eyebrow: "",
       title: "Maxim Zolotoy",
       lead: "I design backend services in Go: domain logic, APIs and data flows, with a focus on clear system boundaries, explicit states and verifiable behavior.",
       primary: "View projects",
@@ -176,8 +176,8 @@ export const siteContent = {
       ]
     },
    contacts: {
-     kicker: "04 /",
-     title: "CONTACTS",
+     kicker: "contacts",
+     title: "GET IN TOUCH",
      email: "hello@maxzolotoy.com",
      telegram: "@max_zolotoy",
      github: "github.com/Officialsayp"

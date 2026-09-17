@@ -97,7 +97,7 @@ export function renderPage(lang, { techIconsPath } = {}) {
         <section class="hero" id="top-${lang}">
           <div class="container hero__grid">
             <div class="hero__content">
-              <div class="eyebrow">${c.hero.eyebrow}</div>
+              ${c.hero.eyebrow ? `<div class="eyebrow">${c.hero.eyebrow}</div>` : ''}
               <h1>${renderHeroTitle(c.hero.title)}</h1>
               <p class="hero__lead">${c.hero.lead}</p>
               <div class="hero__actions">
