@@ -105,8 +105,11 @@ async function checkPage(file, { lang, canonicalPath }) {
     !html.includes(alternateHeroHeading),
     `${file}: contains the alternate-language heading`,
   );
-  assert.ok(html.includes(lang === 'ru' ? 'Макс Золотой' : 'Max Zolotoy'), `${file}: missing visible name variant`);
   assert.ok(html.includes('Golang'), `${file}: missing visible Golang terminology`);
+  assert.ok(
+    html.includes(`<p class="section__body">${siteContent[lang].about.body.join('<br>')}</p>`),
+    `${file}: about body must render as visually separate lines`,
+  );
   assert.doesNotMatch(html, /Repository link coming soon|Репозиторий будет добавлен/i, `${file}: project placeholder leaked into production`);
   for (const project of siteContent[lang].projects.cards) {
     assert.match(project.url, /^https:\/\//, `${file}: project URL must be absolute HTTPS`);
@@ -116,6 +119,14 @@ async function checkPage(file, { lang, canonicalPath }) {
       `${file}: missing crawlable project link ${project.id}`,
     );
     assert.ok(!/^https?:\/\//.test(project.linkLabel), `${file}: project link needs descriptive anchor text`);
+    if (project.codeRepository) {
+      assert.ok(
+        html.includes(`<a class="project-card__link" href="${project.codeRepository}" target="_blank" rel="noreferrer">${project.codeLinkLabel}`),
+        `${file}: missing crawlable code repository link ${project.id}`,
+      );
+      assert.ok(!/^https?:\/\//.test(project.codeLinkLabel), `${file}: code repository link needs descriptive anchor text`);
+      assert.notEqual(project.url, project.codeRepository, `${file}: live URL and code repository must not be conflated`);
+    }
     for (const highlight of project.highlights) {
       assert.ok(html.includes(`<li>${highlight}</li>`), `${file}: missing project evidence for ${project.id}`);
     }
@@ -177,6 +188,10 @@ async function checkPage(file, { lang, canonicalPath }) {
   assert.equal(profile?.mainEntity?.['@id'], 'https://maxzolotoy.com/#maxim-zolotoy', `${file}: missing Person link`);
   assert.equal(person?.name, siteContent[lang].hero.title, `${file}: wrong Person name`);
   assert.equal(person?.jobTitle, 'Go Backend Developer', `${file}: wrong Person job title`);
+  assert.ok(
+    person?.alternateName?.includes(lang === 'ru' ? 'Макс Золотой' : 'Max Zolotoy'),
+    `${file}: missing Person name variant ${lang === 'ru' ? 'Макс Золотой' : 'Max Zolotoy'}`,
+  );
   const recognizedNames = [person?.name, ...(person?.alternateName || [])];
   for (const alias of ['Максим Золотой', 'Макс Золотой', 'Maxim Zolotoy', 'Max Zolotoy', 'maxzolotoy']) {
     assert.ok(recognizedNames.includes(alias), `${file}: missing Person name ${alias}`);
@@ -190,7 +205,8 @@ async function checkPage(file, { lang, canonicalPath }) {
     const softwareProject = softwareProjects.find(item => item['@id'] === projectId);
     assert.equal(softwareProject?.name, project.name, `${file}: wrong project name in JSON-LD`);
     assert.equal(softwareProject?.description, project.description, `${file}: wrong project description in JSON-LD`);
-    assert.equal(softwareProject?.codeRepository, project.url, `${file}: wrong codeRepository in JSON-LD`);
+    assert.equal(softwareProject?.codeRepository, project.codeRepository ?? project.url, `${file}: wrong codeRepository in JSON-LD`);
+    assert.equal(softwareProject?.url, project.url, `${file}: wrong project URL in JSON-LD`);
     assert.deepEqual(softwareProject?.programmingLanguage, project.programmingLanguages, `${file}: wrong project languages in JSON-LD`);
     assert.equal(softwareProject?.author?.['@id'], 'https://maxzolotoy.com/#maxim-zolotoy', `${file}: project author is not linked`);
     assert.ok(profile?.hasPart?.some(item => item['@id'] === projectId), `${file}: ProfilePage is not linked to ${project.id}`);
@@ -199,13 +215,17 @@ async function checkPage(file, { lang, canonicalPath }) {
   assert.doesNotMatch(html, /__[A-Z][A-Z0-9_]+__/, `${file}: unresolved template placeholder`);
 }
 
-const ruProjectIdentity = siteContent.ru.projects.cards.map(({ id, url }) => ({ id, url }));
-const enProjectIdentity = siteContent.en.projects.cards.map(({ id, url }) => ({ id, url }));
+const projectIdentity = ({ id, url, codeRepository }) => ({ id, url, codeRepository: codeRepository ?? null });
+const ruProjectIdentity = siteContent.ru.projects.cards.map(projectIdentity);
+const enProjectIdentity = siteContent.en.projects.cards.map(projectIdentity);
 assert.deepEqual(ruProjectIdentity, enProjectIdentity, 'RU and EN project identities must stay aligned');
+const usedProjectUrls = siteContent.ru.projects.cards
+  .flatMap(({ url, codeRepository }) => [url, ...(codeRepository ? [codeRepository] : [])])
+  .sort();
 assert.deepEqual(
-  ruProjectIdentity.map(project => project.url).sort(),
+  usedProjectUrls,
   Object.values(projectLinks).sort(),
-  'projectLinks must be the single URL source for visible projects',
+  'projectLinks must exactly match the URLs used by visible project cards (url + codeRepository)',
 );
 
 await Promise.all([

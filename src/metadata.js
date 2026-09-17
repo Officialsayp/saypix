@@ -47,7 +47,7 @@ export function buildStructuredData({ lang, canonicalPath }) {
     name: project.name,
     description: project.description,
     url: project.url,
-    codeRepository: project.url,
+    codeRepository: project.codeRepository ?? project.url,
     programmingLanguage: project.programmingLanguages,
     inLanguage: lang,
     author: { '@id': PERSON_ID },

@@ -1,5 +1,6 @@
 export const projectLinks = {
-  stockflow: "https://github.com/Officialsayp/stockflow",
+  zolotoyDev: "https://zolotoy.dev",
+  zolotoyDevBackend: "https://github.com/Officialsayp/zolotoy-dev-backend",
   maxzolotoy: "https://github.com/Officialsayp/saypix",
 };
 
@@ -19,7 +20,7 @@ export const siteContent = {
   ru: {
     meta: {
       title: "Максим Золотой — Go (Golang) backend-разработчик",
-      description: "Портфолио Максима (Макса) Золотого, backend-разработчика на Go (Golang): проекты, PostgreSQL, REST, Docker, DDD и прямые контакты.",
+      description: "Максим Золотой — Go backend-разработчик. Проекты zolotoy.dev и maxzolotoy.com: API, доменная логика, данные и инженерные решения.",
       locale: "ru_RU",
       socialImage: "/og-ru.png",
       socialImageAlt: "Максим Золотой — Go и Golang backend-разработчик"
@@ -33,14 +34,17 @@ export const siteContent = {
     hero: {
       eyebrow: "GO BACKEND DEVELOPER",
       title: "Максим Золотой",
-      lead: "Я — Максим Золотой (Макс Золотой), backend-разработчик на Go (Golang). Проектирую доменную логику, API и работу с данными, уделяя внимание понятным инвариантам и надежности.",
+      lead: "Проектирую backend-сервисы на Go: доменную логику, API и данные. Фокус — ясные границы системы, явные состояния и проверяемое поведение.",
       primary: "Посмотреть проекты",
       secondary: "Связаться"
     },
     about: {
       kicker: "01 / ОБО МНЕ",
-      title: "Инженерный подход без лишнего шума.",
-      body: "Мой основной фокус — Go backend. В учебных проектах прорабатываю доменную модель, жизненный цикл заказа и оплаты, архитектурные границы и хранение данных. Сайт построен как статический frontend и одновременно служит площадкой для экспериментов с интерфейсами и deployment-процессом."
+      title: "Как я проектирую backend-системы.",
+      body: [
+        "Я — Максим Золотой",
+        "Занимаюсь backend-разработкой на Go: проектирую высокопроизводительные, надёжные и расширяемые API"
+      ]
     },
     stack: {
       kicker: "02 / СТЕК",
@@ -49,22 +53,24 @@ export const siteContent = {
     },
     projects: {
       kicker: "03 / ПРОЕКТЫ",
-      title: "Go backend-проекты и проверяемые инженерные кейсы.",
+      title: "Проекты и инженерные решения.",
       cards: [
         {
-          id: "stockflow",
+          id: "zolotoy-dev",
           number: "01",
-          name: "StockFlow — домен заказа и оплаты",
-          description: "Учебный Go-проект в статусе WIP, где я прорабатываю доменную модель заказа и оплаты, переходы состояний и базовые HTTP-обработчики.",
+          name: "zolotoy.dev — среда Go-сервисов",
+          description: "Developer/admin-среда для четырёх сервисов: заказы, аутентификация, уведомления, сокращение ссылок. Frontend опубликован; Go backend развивается поэтапно.",
           highlights: [
-            "Value objects для денег и позиций заказа, статусы и проверяемые переходы состояния.",
-            "Сценарии онлайн-оплаты, отмены и возврата средств закреплены в доменной модели.",
-            "Базовые net/http-обработчики: создание заказа, получение по ID и health check."
+            "Vue 3, strict TypeScript, TanStack Query, Pinia: типизированный HTTP-слой, тесты Vitest и Playwright.",
+            "Каждый сервис доступен в действии через детерминированные сценарии на моках MSW.",
+            "Go backend (order-service): net/http-обработчики заказов; доменная модель заказа и оплаты развивается."
           ],
-          tags: ["Go", "net/http", "DDD", "WIP"],
-          status: "Учебный проект · WIP",
-          url: projectLinks.stockflow,
-          linkLabel: "Исходный код StockFlow на GitHub",
+          tags: ["Go", "Vue 3", "TypeScript", "MSW"],
+          status: "Опубликован · развивается",
+          url: projectLinks.zolotoyDev,
+          linkLabel: "Открыть zolotoy.dev",
+          codeRepository: projectLinks.zolotoyDevBackend,
+          codeLinkLabel: "Backend на GitHub",
           programmingLanguages: ["Go"]
         },
         {
@@ -96,7 +102,7 @@ export const siteContent = {
   en: {
     meta: {
       title: "Maxim Zolotoy — Go (Golang) Backend Developer",
-      description: "Portfolio of Maxim (Max) Zolotoy, a Go (Golang) backend developer: projects, PostgreSQL, REST, Docker, DDD and direct contact details.",
+      description: "Maxim Zolotoy — Go backend developer. Explore zolotoy.dev and maxzolotoy.com: APIs, domain logic, data, and engineering work.",
       locale: "en_US",
       socialImage: "/og-en.png",
       socialImageAlt: "Maxim Zolotoy — Go and Golang Backend Developer"
@@ -110,14 +116,17 @@ export const siteContent = {
     hero: {
       eyebrow: "GO BACKEND DEVELOPER",
       title: "Maxim Zolotoy",
-      lead: "I am Maxim Zolotoy (Max Zolotoy), a Go (Golang) backend developer focused on domain logic, APIs and data, with explicit invariants and reliable systems.",
+      lead: "I design backend services in Go: domain logic, APIs and data flows, with a focus on clear system boundaries, explicit states and verifiable behavior.",
       primary: "View projects",
       secondary: "Contact me"
     },
     about: {
       kicker: "01 / ABOUT",
-      title: "An engineering mindset without unnecessary noise.",
-      body: "My main focus is Go backend development. In learning projects I work through domain modelling, order and payment lifecycles, architectural boundaries and data persistence. This site is a static frontend and also a playground for interaction and deployment experiments."
+      title: "How I approach backend systems.",
+      body: [
+        "I'm Maxim Zolotoy",
+        "I develop backends in Go, designing high-performance, reliable, and extensible APIs"
+      ]
     },
     stack: {
       kicker: "02 / STACK",
@@ -126,22 +135,24 @@ export const siteContent = {
     },
     projects: {
       kicker: "03 / PROJECTS",
-      title: "Go backend projects and verifiable engineering work.",
+      title: "Projects and engineering work.",
       cards: [
         {
-          id: "stockflow",
+          id: "zolotoy-dev",
           number: "01",
-          name: "StockFlow — order and payment domain",
-          description: "A work-in-progress educational Go project where I practice order and payment domain modelling, state transitions, and basic HTTP handlers.",
+          name: "zolotoy.dev — an environment for Go services",
+          description: "A developer/admin environment for four backend services: orders, auth, notifications and URL shortener. The frontend is live; the Go backend grows service by service.",
           highlights: [
-            "Value objects for money and order items, order states, and validated state transitions.",
-            "Online payment, cancellation, and refund scenarios encoded in the domain model.",
-            "Basic net/http handlers for creating orders, retrieving them by ID, and health checks."
+            "Vue 3, strict TypeScript, TanStack Query, Pinia: a typed HTTP boundary with Vitest and Playwright tests.",
+            "Every service UI can be explored through deterministic MSW demo scenarios.",
+            "Go backend (order-service): net/http handlers for creating and fetching orders; the order and payment domain model keeps growing."
           ],
-          tags: ["Go", "net/http", "DDD", "WIP"],
-          status: "Educational project · WIP",
-          url: projectLinks.stockflow,
-          linkLabel: "View the StockFlow source code on GitHub",
+          tags: ["Go", "Vue 3", "TypeScript", "MSW"],
+          status: "Live · in development",
+          url: projectLinks.zolotoyDev,
+          linkLabel: "Open zolotoy.dev",
+          codeRepository: projectLinks.zolotoyDevBackend,
+          codeLinkLabel: "Backend source on GitHub",
           programmingLanguages: ["Go"]
         },
         {

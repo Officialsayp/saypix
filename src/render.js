@@ -87,6 +87,7 @@ export function renderPage(lang, { techIconsPath } = {}) {
       <div class="project-card__meta">
         <span class="project-card__status">${card.status}</span>
         <a class="project-card__link" href="${card.url}" target="_blank" rel="noreferrer">${card.linkLabel}<span aria-hidden="true"> ↗</span></a>
+        ${card.codeRepository ? `<a class="project-card__link" href="${card.codeRepository}" target="_blank" rel="noreferrer">${card.codeLinkLabel}<span aria-hidden="true"> ↗</span></a>` : ''}
       </div>
     </article>`).join('');
 
@@ -116,7 +117,7 @@ export function renderPage(lang, { techIconsPath } = {}) {
         <section class="section" id="about-${lang}">
           <div class="container">
             <div class="section__head"><div class="kicker">${c.about.kicker}</div><h2>${c.about.title}</h2></div>
-            <p class="section__body">${c.about.body}</p>
+            <p class="section__body">${Array.isArray(c.about.body) ? c.about.body.join('<br>') : c.about.body}</p>
           </div>
         </section>
 
