@@ -117,7 +117,7 @@ export function renderPage(lang, { techIconsPath } = {}) {
         <section class="section" id="about-${lang}">
           <div class="container">
             <div class="section__head"><div class="kicker">${c.about.kicker}</div><h2>${c.about.title}</h2></div>
-            <p class="section__body">${Array.isArray(c.about.body) ? c.about.body.join('<br>') : c.about.body}</p>
+            <div class="section__body">${(Array.isArray(c.about.body) ? c.about.body : [c.about.body]).map(paragraph => `<p>${paragraph}</p>`).join('')}</div>
           </div>
         </section>
 

@@ -40,10 +40,11 @@ export const siteContent = {
     },
     about: {
       kicker: "01 / ОБО МНЕ",
-      title: "Как я проектирую backend-системы.",
+      title: "Проектирую backend, который можно развивать",
       body: [
-        "Я — Максим Золотой",
-        "Занимаюсь backend-разработкой на Go: проектирую высокопроизводительные, надёжные и расширяемые API"
+        "Я — Максим Золотой, работаю в Ozon Tech. Фокус — backend на Go",
+        "Проектирую системы с ясными границами, явными состояниями и предсказуемым поведением",
+        "Опыт в учёте и логистике IT-оборудования помогает учитывать не только код, но и данные, зависимости и эксплуатацию"
       ]
     },
     stack: {
@@ -122,10 +123,11 @@ export const siteContent = {
     },
     about: {
       kicker: "01 / ABOUT",
-      title: "How I approach backend systems.",
+      title: "Building backend systems for reliability and change",
       body: [
-        "I'm Maxim Zolotoy",
-        "I develop backends in Go, designing high-performance, reliable, and extensible APIs"
+        "I'm Maxim Zolotoy, currently working at Ozon Tech with a focus on backend engineering in Go",
+        "I design systems around clear boundaries, explicit state transitions and predictable behavior",
+        "My background in IT asset accounting and logistics helps me think beyond code — about data, dependencies and operations"
       ]
     },
     stack: {

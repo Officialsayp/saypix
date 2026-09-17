@@ -107,8 +107,8 @@ async function checkPage(file, { lang, canonicalPath }) {
   );
   assert.ok(html.includes('Golang'), `${file}: missing visible Golang terminology`);
   assert.ok(
-    html.includes(`<p class="section__body">${siteContent[lang].about.body.join('<br>')}</p>`),
-    `${file}: about body must render as visually separate lines`,
+    html.includes(`<div class="section__body">${siteContent[lang].about.body.map(paragraph => `<p>${paragraph}</p>`).join('')}</div>`),
+    `${file}: about body must render as semantic paragraphs`,
   );
   assert.doesNotMatch(html, /Repository link coming soon|Репозиторий будет добавлен/i, `${file}: project placeholder leaked into production`);
   for (const project of siteContent[lang].projects.cards) {

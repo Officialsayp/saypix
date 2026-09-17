@@ -350,6 +350,8 @@ button { font: inherit; }
   font-size: clamp(18px, 2vw, 22px);
   line-height: 1.7;
 }
+.section__body > p { margin: 0; }
+.section__body > p + p { margin-top: 18px; }
 
 .chips {
   display: flex;
