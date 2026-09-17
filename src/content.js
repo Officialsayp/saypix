@@ -39,7 +39,7 @@ export const siteContent = {
       secondary: "Связаться"
     },
     about: {
-      kicker: "01 / ОБО МНЕ",
+      kicker: "ОБО МНЕ",
       title: "Проектирую backend, который можно развивать",
       body: [
         "Я — Максим Золотой, работаю в Ozon Tech. Фокус — backend на Go",
@@ -48,13 +48,13 @@ export const siteContent = {
       ]
     },
     stack: {
-      kicker: "02 / СТЕК",
-      title: "Технологии, с которыми работаю и которые изучаю.",
+      kicker: "СТЕК",
+      title: "Технологии, с которыми работаю и которые изучаю",
       items: stackItems
     },
     projects: {
-      kicker: "03 / ПРОЕКТЫ",
-      title: "Проекты и инженерные решения.",
+      kicker: "ПРОЕКТЫ",
+      title: "Проекты и инженерные решения",
       cards: [
         {
           id: "zolotoy-dev",
@@ -122,7 +122,7 @@ export const siteContent = {
       secondary: "Contact me"
     },
     about: {
-      kicker: "01 / ABOUT",
+      kicker: "ABOUT",
       title: "Building backend systems for reliability and change",
       body: [
         "I'm Maxim Zolotoy, currently working at Ozon Tech with a focus on backend engineering in Go",
@@ -131,13 +131,13 @@ export const siteContent = {
       ]
     },
     stack: {
-      kicker: "02 / STACK",
-      title: "Technologies I use and continue to study.",
+      kicker: "STACK",
+      title: "Technologies I use and continue to study",
       items: stackItems
     },
     projects: {
-      kicker: "03 / PROJECTS",
-      title: "Projects and engineering work.",
+      kicker: "PROJECTS",
+      title: "Projects and engineering work",
       cards: [
         {
           id: "zolotoy-dev",
