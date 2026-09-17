@@ -82,7 +82,7 @@ export function renderPage(lang, { techIconsPath } = {}) {
         <ul class="project-card__highlights">
           ${card.highlights.map(highlight => `<li>${highlight}</li>`).join('')}
         </ul>
-        <div class="project-card__tags">${card.tags.map(tag => `<span class="project-card__tag">#${tag.replaceAll(' ', '-')}</span>`).join('')}</div>
+        <div class="project-card__tags">${card.tags.map(tag => `<span class="project-card__tag">${tag}</span>`).join('')}</div>
       </div>
       <div class="project-card__meta">
         <span class="project-card__status">${card.status}</span>

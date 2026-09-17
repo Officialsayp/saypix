@@ -1,7 +1,8 @@
 export const projectLinks = {
+  maxzolotoyLive: "https://maxzolotoy.com",
+  maxzolotoy: "https://github.com/Officialsayp/saypix",
   zolotoyDev: "https://zolotoy.dev",
   zolotoyDevBackend: "https://github.com/Officialsayp/zolotoy-dev-backend",
-  maxzolotoy: "https://github.com/Officialsayp/saypix",
 };
 
 const stackItems = Object.freeze([
@@ -55,41 +56,60 @@ export const siteContent = {
     },
     projects: {
       kicker: "ПРОЕКТЫ",
-      title: "Проекты и инженерные решения",
+      title: "Go-backend проекты",
       cards: [
         {
-          id: "zolotoy-dev",
+          id: "maxzolotoy",
           number: "01",
-          name: "zolotoy.dev — среда Go-сервисов",
-          description: "Developer/admin-среда для четырёх сервисов: заказы, аутентификация, уведомления, сокращение ссылок. Frontend опубликован; Go backend развивается поэтапно.",
+          name: "maxzolotoy.com",
+          description: "Персональный двуязычный сайт и портфолио с разделами обо мне, стеком, проектами и прямыми контактами.",
           highlights: [
-            "Vue 3, strict TypeScript, TanStack Query, Pinia: типизированный HTTP-слой, тесты Vitest и Playwright.",
-            "Каждый сервис доступен в действии через детерминированные сценарии на моках MSW.",
-            "Go backend (order-service): net/http-обработчики заказов; доменная модель заказа и оплаты развивается."
+            "Статическая RU/EN-сборка с canonical, hreflang, sitemap и JSON-LD.",
+            "Собственное переключение языка, accessibility и сохранение позиции страницы.",
+            "CI проверяет сборку, SEO и ключевые UI-инварианты."
           ],
-          tags: ["Go", "Vue 3", "TypeScript", "MSW"],
-          status: "Опубликован · развивается",
+          tags: [
+            "HTML",
+            "CSS",
+            "JavaScript",
+            "Accessibility",
+            "Technical SEO",
+            "Cloudflare"
+          ],
+          status: "Опубликован",
+          url: projectLinks.maxzolotoyLive,
+          linkLabel: "Открыть сайт",
+          codeRepository: projectLinks.maxzolotoy,
+          codeRepositoryLabel: "Исходный код",
+          programmingLanguages: ["HTML", "CSS", "JavaScript"]
+        },
+        {
+          id: "zolotoy-dev",
+          number: "02",
+          name: "zolotoy.dev",
+          description: "Backend-проект на Go из четырёх сервисов. Order уже развивается в коде, остальные сервисы последовательно добавляются по мере реализации архитектуры.",
+          highlights: [
+            "Order — заказы, оплаты, состояния, идемпотентность и outbox.",
+            "Auth — пользователи, сессии, refresh rotation и RBAC.",
+            "Notification — события, задания доставки, retries и восстановление.",
+            "URL Shortener — короткие ссылки, redirect, кеширование и аналитика."
+          ],
+          tags: [
+            "Go",
+            "REST API",
+            "PostgreSQL",
+            "SQL",
+            "Redis",
+            "Kafka",
+            "Docker",
+            "DDD"
+          ],
+          status: "В разработке · целевой backend-стек",
           url: projectLinks.zolotoyDev,
           linkLabel: "Открыть zolotoy.dev",
           codeRepository: projectLinks.zolotoyDevBackend,
-          codeLinkLabel: "Backend на GitHub",
+          codeRepositoryLabel: "Backend на GitHub",
           programmingLanguages: ["Go"]
-        },
-        {
-          id: "maxzolotoy",
-          number: "02",
-          name: "maxzolotoy.com — двуязычный сайт",
-          description: "Статический RU/EN-сайт на HTML, CSS и JavaScript без runtime-зависимостей — с собственной drag-механикой и SEO-разметкой для двух индексируемых URL.",
-          highlights: [
-            "Контент /ru/ и /en/ предрендерится в статический HTML с canonical, hreflang, sitemap и JSON-LD.",
-            "Переключатель языка поддерживает Pointer Events, клавиатуру, обычные ссылки и prefers-reduced-motion.",
-            "CI пересобирает сайт и проверяет SEO-, accessibility- и curtain-инварианты перед публикацией."
-          ],
-          tags: ["JavaScript", "Accessibility", "Technical SEO", "Cloudflare"],
-          status: "Опубликован",
-          url: projectLinks.maxzolotoy,
-          linkLabel: "Исходный код maxzolotoy.com на GitHub",
-          programmingLanguages: ["HTML", "CSS", "JavaScript"]
         }
       ]
     },
@@ -139,41 +159,60 @@ export const siteContent = {
     },
     projects: {
       kicker: "PROJECTS",
-      title: "Projects and engineering work",
+      title: "Go backend projects",
       cards: [
         {
-          id: "zolotoy-dev",
+          id: "maxzolotoy",
           number: "01",
-          name: "zolotoy.dev — an environment for Go services",
-          description: "A developer/admin environment for four backend services: orders, auth, notifications and URL shortener. The frontend is live; the Go backend grows service by service.",
+          name: "maxzolotoy.com",
+          description: "A bilingual personal website and portfolio covering my profile, stack, projects and direct contacts.",
           highlights: [
-            "Vue 3, strict TypeScript, TanStack Query, Pinia: a typed HTTP boundary with Vitest and Playwright tests.",
-            "Every service UI can be explored through deterministic MSW demo scenarios.",
-            "Go backend (order-service): net/http handlers for creating and fetching orders; the order and payment domain model keeps growing."
+            "Static RU/EN build with canonical URLs, hreflang, sitemap and JSON-LD.",
+            "Custom language switching, accessibility and scroll-position preservation.",
+            "CI validates the build, SEO and key UI invariants."
           ],
-          tags: ["Go", "Vue 3", "TypeScript", "MSW"],
-          status: "Live · in development",
+          tags: [
+            "HTML",
+            "CSS",
+            "JavaScript",
+            "Accessibility",
+            "Technical SEO",
+            "Cloudflare"
+          ],
+          status: "Published",
+          url: projectLinks.maxzolotoyLive,
+          linkLabel: "Open website",
+          codeRepository: projectLinks.maxzolotoy,
+          codeRepositoryLabel: "Source code",
+          programmingLanguages: ["HTML", "CSS", "JavaScript"]
+        },
+        {
+          id: "zolotoy-dev",
+          number: "02",
+          name: "zolotoy.dev",
+          description: "A Go backend project built around four services. Order is currently being implemented, with the remaining services added as the architecture evolves.",
+          highlights: [
+            "Order — orders, payments, state transitions, idempotency and outbox.",
+            "Auth — users, sessions, refresh rotation and RBAC.",
+            "Notification — events, delivery jobs, retries and recovery.",
+            "URL Shortener — short links, redirects, caching and analytics."
+          ],
+          tags: [
+            "Go",
+            "REST API",
+            "PostgreSQL",
+            "SQL",
+            "Redis",
+            "Kafka",
+            "Docker",
+            "DDD"
+          ],
+          status: "In development · target backend stack",
           url: projectLinks.zolotoyDev,
           linkLabel: "Open zolotoy.dev",
           codeRepository: projectLinks.zolotoyDevBackend,
-          codeLinkLabel: "Backend source on GitHub",
+          codeRepositoryLabel: "Backend on GitHub",
           programmingLanguages: ["Go"]
-        },
-        {
-          id: "maxzolotoy",
-          number: "02",
-          name: "maxzolotoy.com — bilingual website",
-          description: "A static RU/EN website built with HTML, CSS, and JavaScript without runtime dependencies, featuring a custom drag interaction and SEO markup for two indexable URLs.",
-          highlights: [
-            "The /ru/ and /en/ content is prerendered to static HTML with canonical, hreflang, sitemap, and JSON-LD.",
-            "The language switcher supports Pointer Events, keyboard controls, ordinary links, and prefers-reduced-motion.",
-            "CI rebuilds the site and verifies SEO, accessibility, and curtain invariants before publishing."
-          ],
-          tags: ["JavaScript", "Accessibility", "Technical SEO", "Cloudflare"],
-          status: "Published",
-          url: projectLinks.maxzolotoy,
-          linkLabel: "View the maxzolotoy.com source code on GitHub",
-          programmingLanguages: ["HTML", "CSS", "JavaScript"]
         }
       ]
     },
