@@ -175,10 +175,15 @@ button { font: inherit; }
 .hero .eyebrow { white-space: nowrap; }
 .eyebrow, .kicker {
   color: #83a5ff;
+  font-family: inherit;
   font-size: 12px;
   line-height: 1;
   letter-spacing: .18em;
   font-weight: 720;
+}
+
+.kicker {
+  text-transform: uppercase;
 }
 .hero h1 {
   margin: 18px 0 22px;
