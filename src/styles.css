@@ -658,3 +658,7 @@ body.is-curtain-prepared .curtain-divider { box-shadow: none; }
   .language-ghost { display: none; }
   .curtain-divider span { display: none; }
 }
+#contacts-ru h2,
+#contacts-en h2 {
+  letter-spacing: -.015em;
+}
