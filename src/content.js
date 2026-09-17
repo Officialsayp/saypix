@@ -34,7 +34,7 @@ export const siteContent = {
     ],
     hero: {
       eyebrow: "",
-      title: "Золотой Максим",
+      title: "Максим Золотой",
       lead: "Backend-разработчик на Go",
       primary: "Посмотреть проекты",
       secondary: "Связаться"
@@ -80,7 +80,7 @@ export const siteContent = {
           url: projectLinks.maxzolotoyLive,
           linkLabel: "Открыть сайт",
           codeRepository: projectLinks.maxzolotoy,
-          codeRepositoryLabel: "Исходный код",
+          codeLinkLabel: "Проект на GitHub",
           programmingLanguages: ["HTML", "CSS", "JavaScript"]
         },
         {
@@ -108,14 +108,14 @@ export const siteContent = {
           url: projectLinks.zolotoyDev,
           linkLabel: "Открыть zolotoy.dev",
           codeRepository: projectLinks.zolotoyDevBackend,
-          codeRepositoryLabel: "Backend на GitHub",
+          codeLinkLabel: "Проект на GitHub",
           programmingLanguages: ["Go"]
         }
       ]
     },
     contacts: {
       kicker: "контакты",
-      title: "СВЯЗАТЬСЯ СО МНОЙ",
+      title: "КОНТАКТЫ И ПРОФИЛИ",
       email: "hello@maxzolotoy.com",
       telegram: "@max_zolotoy",
       github: "github.com/Officialsayp"
@@ -183,7 +183,7 @@ export const siteContent = {
           url: projectLinks.maxzolotoyLive,
           linkLabel: "Open website",
           codeRepository: projectLinks.maxzolotoy,
-          codeRepositoryLabel: "Source code",
+          codeLinkLabel: "Project on GitHub",
           programmingLanguages: ["HTML", "CSS", "JavaScript"]
         },
         {
@@ -211,14 +211,14 @@ export const siteContent = {
           url: projectLinks.zolotoyDev,
           linkLabel: "Open zolotoy.dev",
           codeRepository: projectLinks.zolotoyDevBackend,
-          codeRepositoryLabel: "Backend on GitHub",
+          codeLinkLabel: "Project on GitHub",
           programmingLanguages: ["Go"]
         }
       ]
     },
    contacts: {
      kicker: "contacts",
-     title: "GET IN TOUCH",
+     title: "CONTACT & PROFILES",
      email: "hello@maxzolotoy.com",
      telegram: "@max_zolotoy",
      github: "github.com/Officialsayp"

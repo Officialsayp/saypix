@@ -404,7 +404,7 @@ button { font: inherit; }
 .project-card p { margin: 0; max-width: 820px; color: var(--muted); line-height: 1.65; }
 .project-card__highlights {
   display: grid;
-  gap: 8px;
+  gap: 4px;
   margin: 20px 0 0;
   padding-left: 1.2em;
   max-width: 820px;
