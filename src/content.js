@@ -56,7 +56,7 @@ export const siteContent = {
     },
     projects: {
       kicker: "ПРОЕКТЫ",
-      title: "Go-backend проекты",
+      title: "Мои проекты",
       cards: [
         {
           id: "maxzolotoy",
@@ -159,7 +159,7 @@ export const siteContent = {
     },
     projects: {
       kicker: "PROJECTS",
-      title: "Go backend projects",
+      title: "My Projects",
       cards: [
         {
           id: "maxzolotoy",
