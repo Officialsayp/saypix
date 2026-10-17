@@ -35,7 +35,7 @@ export const siteContent = {
     hero: {
       eyebrow: "",
       title: "Максим Золотой",
-      lead: "Backend-разработчик на Go",
+      lead: "Go Backend Engineer",
       primary: "Посмотреть проекты",
       secondary: "Связаться"
     },
@@ -138,7 +138,7 @@ export const siteContent = {
     hero: {
       eyebrow: "",
       title: "Maxim Zolotoy",
-      lead: "Go Backend Developer",
+      lead: "Go Backend Engineer",
       primary: "View projects",
       secondary: "Contact me"
     },
