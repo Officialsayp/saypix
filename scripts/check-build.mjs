@@ -198,7 +198,11 @@ async function checkPage(file, { lang, canonicalPath }) {
   }
   assert.ok(person?.knowsAbout?.includes('Go'), `${file}: missing Go expertise`);
   assert.ok(person?.knowsAbout?.includes('Golang'), `${file}: missing Golang expertise`);
-  assert.ok(person?.sameAs?.includes('https://github.com/Officialsayp'), `${file}: missing GitHub identity`);
+  assert.ok(
+    Array.isArray(person?.sameAs) &&
+      person.sameAs.some(url => url === 'https://github.com/Officialsayp'),
+    `${file}: missing GitHub identity`,
+  );
   assert.equal(softwareProjects.length, siteContent[lang].projects.cards.length, `${file}: wrong SoftwareSourceCode count`);
   for (const project of siteContent[lang].projects.cards) {
     const projectId = `${project.url}#software-source-code`;
