@@ -29,7 +29,7 @@ try {
         const inset=(44-size)/2;
         const face={x:current.x+inset,y:current.y+inset,width:size,height:size,right:current.right-inset,bottom:current.bottom-inset};
         const hitPoints=[];
-        for(const dx of [1,8,22,36,43])for(const dy of [1,8,22,36,43]){
+        for(const dx of [6,10,22,34,38])for(const dy of [6,10,22,34,38]){
           const found=document.elementFromPoint(current.x+dx,current.y+dy);
           hitPoints.push({dx,dy,hit:found===button||button.contains(found)});
         }
