@@ -315,10 +315,14 @@ button { font: inherit; }
 .code-copy.is-copied .code-copy__icon--copy { opacity: 0; transform: translate3d(0,-1px,0) scale(.94); }
 .code-copy.is-copied .code-copy__icon--check { opacity: 1; transform: translate3d(0,0,0) scale(1); }
 .code-copy.is-copied { border-color: rgba(158,182,247,.42); color: #d7e4ff; }
-.code-copy:hover {
-  background: rgba(255,255,255,.08);
-  border-color: rgba(255,255,255,.30);
-  color: #d8e2ff;
+/* Touch browsers can retain :hover after tapping until the next scroll.
+   Keep hover feedback for real pointers only, restoring the base blue on mobile. */
+@media (hover: hover) and (pointer: fine) {
+  .code-copy:hover {
+    background: rgba(255,255,255,.08);
+    border-color: rgba(255,255,255,.30);
+    color: #d8e2ff;
+  }
 }
 .code-copy:active { transform: translateY(1px); }
 .code-copy:focus-visible {
