@@ -26,10 +26,9 @@ try {
         const box=document.querySelector('.hero__visual-code');
         const current=R(button), inner=R(box);
         const size=parseFloat(getComputedStyle(button,'::before').width)+2; // 1px border on each side; getComputedStyle returns the content box
-        const inset=(44-size)/2;
-        const face={x:current.x+inset,y:current.y,width:size,height:size,right:current.right-inset,bottom:current.y+size};
+        const face={x:current.x,y:current.y,width:size,height:size,right:current.right,bottom:current.y+size};
         const hitPoints=[];
-        for(const dx of [6,10,22,34,38])for(const dy of [6,10,22,34,38]){
+        for(const dx of [size*.38,size*.5,size*.62])for(const dy of [5,11,22,34,40]){
           const found=document.elementFromPoint(current.x+dx,current.y+dy);
           hitPoints.push({dx,dy,hit:found===button||button.contains(found)});
         }
@@ -40,36 +39,50 @@ try {
           Math.abs(icon.x+icon.width/2-(face.x+face.width/2)),
           Math.abs(icon.y+icon.height/2-(face.y+face.height/2))
         ];
-        const upperPoint=document.elementFromPoint(current.x+22,current.y-3);
+        const upperPoint=document.elementFromPoint(current.x+size/2,current.y-3);
         const isUpperButton=upperPoint===button||button.contains(upperPoint);
-        const bottomPoint=document.elementFromPoint(current.x+22,current.bottom-4);
+        const bottomPoint=document.elementFromPoint(current.x+size/2,current.bottom-4);
         const isLowerButton=bottomPoint===button||button.contains(bottomPoint);
+        const leftPoint=document.elementFromPoint(current.x-3,current.y+size/2);
+        const rightPoint=document.elementFromPoint(current.right+3,current.y+size/2);
+        const isLeftButton=leftPoint===button||button.contains(leftPoint);
+        const isRightButton=rightPoint===button||button.contains(rightPoint);
         const computed=getComputedStyle(button,'::before');
         return {current,inner,face,hitPoints,size,
           centerErrorX:visibleCenterErrorX,topAlignmentError,iconCenterError,
-          isUpperButton,isLowerButton,
+          isUpperButton,isLowerButton,isLeftButton,isRightButton,
           pseudoWidth:computed.width,pseudoHeight:computed.height,
           overflow:document.documentElement.scrollWidth-document.documentElement.clientWidth
         };
       });
-      assert.ok(Math.abs(result.current.width-44)<=.02 && Math.abs(result.current.height-44)<=.02,JSON.stringify({width,lang,size:result.current}));
+      assert.ok(Math.abs(result.current.width-result.size)<=.04 && Math.abs(result.current.height-44)<=.02,
+        JSON.stringify({width,lang,painted:result.size,target:result.current}));
       assert.ok(result.centerErrorX<.05 && result.topAlignmentError<.05 && result.iconCenterError.every(n=>n<.05),
         JSON.stringify({width,lang,alignment:{x:result.centerErrorX,top:result.topAlignmentError,icon:result.iconCenterError}}));
-      assert.ok(!result.isUpperButton && result.isLowerButton,
-        JSON.stringify({width,lang,upperHit:result.isUpperButton,lowerHit:result.isLowerButton}));
+      assert.ok(!result.isUpperButton && result.isLowerButton && !result.isLeftButton && !result.isRightButton,
+        JSON.stringify({width,lang,upperHit:result.isUpperButton,lowerHit:result.isLowerButton,
+          leftHit:result.isLeftButton,rightHit:result.isRightButton}));
       assert.ok(result.hitPoints.every(p=>p.hit),JSON.stringify({width,lang,bad:result.hitPoints.filter(p=>!p.hit)}));
       assert.ok(result.overflow<=1,JSON.stringify({width,lang,overflow:result.overflow}));
       // Pointer regression: the cursor must NEVER turn into a hand just above
       // the painted top edge, but the extra lower reach must remain clickable.
       if (width>=768) {
-        await page.mouse.move(result.current.x+22,result.current.y-3);
+        await page.mouse.move(result.current.x+result.size/2,result.current.y-3);
         const outside=await page.evaluate(()=>document.querySelector('.code-copy').matches(':hover'));
-        await page.mouse.move(result.current.x+22,result.current.y+3);
+        await page.mouse.move(result.current.x+result.size/2,result.current.y+3);
         const inside=await page.evaluate(()=>document.querySelector('.code-copy').matches(':hover'));
-        await page.mouse.move(result.current.x+22,result.current.bottom-4);
+        await page.mouse.move(result.current.x+result.size/2,result.current.bottom-4);
         const below=await page.evaluate(()=>document.querySelector('.code-copy').matches(':hover'));
-        assert.ok(!outside && inside && below,
-          JSON.stringify({width,lang,hover:{outside,inside,below}}));
+        await page.mouse.move(result.current.x-3,result.current.y+result.size/2);
+        const left=await page.evaluate(()=>document.querySelector('.code-copy').matches(':hover'));
+        await page.mouse.move(result.current.right+3,result.current.y+result.size/2);
+        const right=await page.evaluate(()=>document.querySelector('.code-copy').matches(':hover'));
+        await page.mouse.move(result.current.x+2,result.current.y+result.size/2);
+        const paintedLeft=await page.evaluate(()=>document.querySelector('.code-copy').matches(':hover'));
+        await page.mouse.move(result.current.right-2,result.current.y+result.size/2);
+        const paintedRight=await page.evaluate(()=>document.querySelector('.code-copy').matches(':hover'));
+        assert.ok(!outside && inside && below && !left && !right && paintedLeft && paintedRight,
+          JSON.stringify({width,lang,hover:{outside,inside,below,left,right,paintedLeft,paintedRight}}));
       }
       // Match the visible square to the pre-change position, down to subpixel precision.
       const expectedTop=result.inner.y+Math.max(6,Math.min(width*.0055,8));
@@ -109,7 +122,9 @@ try {
       }
       console.log('Hero and copy target OK',width,lang,
         'headerGap',+(visual.now.top-visual.now.navBottom).toFixed(1),
-        'copy',result.current.width+'px','upper-hit',result.isUpperButton,'lower-hit',result.isLowerButton);
+        'copy',result.current.width+'x'+result.current.height+'px',
+        'outside-hit',JSON.stringify({top:result.isUpperButton,left:result.isLeftButton,right:result.isRightButton}),
+        'lower-hit',result.isLowerButton);
       await page.close();
     }
   }
