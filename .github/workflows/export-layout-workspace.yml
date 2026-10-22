@@ -1,0 +1,23 @@
+name: Export workspace for local UI variant prototyping
+on:
+  push:
+    branches: [codex/layout-density-audit]
+permissions:
+  contents: read
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/upload-artifact@v4
+        with:
+          name: maxzolotoy-variant-workspace
+          path: |
+            src/
+            scripts/
+            dist/
+            deploy/
+            package.json
+            package-lock.json
+            README.md
+          retention-days: 3
