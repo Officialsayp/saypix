@@ -281,14 +281,14 @@ button { font: inherit; }
 .code-copy {
   --copy-size: clamp(30px, calc(24px + .65vw), 36px);
   --copy-target-size: 44px;
-  --copy-inset: calc((var(--copy-target-size) - var(--copy-size)) / 2);
+  /* Painted width is also the pointer target width; only the bottom extends. */
   position: absolute;
-  /* Start hit testing at the visible top edge. Extra target height extends
-     downward, not above the painted button; keep its original horizontal center. */
+  /* Hit testing starts at the painted top, left and right edges.
+     Only the extra vertical area extends below the visible square. */
   top: clamp(6px, .55vw, 8px);
-  right: calc(clamp(6px, .55vw, 8px) - var(--copy-inset));
+  right: clamp(6px, .55vw, 8px);
   z-index: 3;
-  width: var(--copy-target-size);
+  width: var(--copy-size);
   height: var(--copy-target-size);
   padding: 0;
   border: 0;
@@ -302,14 +302,14 @@ button { font: inherit; }
   touch-action: manipulation;
   transition: background 160ms ease, border-color 160ms ease, color 160ms ease, transform 160ms ease;
 }
-/* The visible surface remains at its original coordinates; only the hit target
-   extends below it. In particular, do not reintroduce a top inset. */
+/* The visible surface covers the whole target width; only height grows below.
+   Never introduce hidden clickable gutters around the painted square. */
 .code-copy::before {
   content: "";
   position: absolute;
   top: 0;
-  left: var(--copy-inset);
-  right: var(--copy-inset);
+  left: 0;
+  right: 0;
   height: var(--copy-size);
   border: 1px solid rgba(255,255,255,.16);
   border-radius: clamp(8px, .55vw, 10px);
