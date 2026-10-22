@@ -47,18 +47,17 @@ try {
       const page = await browser.newPage({viewport:{width,height:844}});
       await page.goto(`${base}/${lang}/`);
       const control = page.locator(`[data-lang-target="${other}"]`);
-      const errors = [];
-      page.on('console', msg => { if (msg.type()==='warning' || msg.type()==='error') errors.push('console: '+msg.text()); });
-      page.on('pageerror', err => errors.push('pageerror: '+err.message));
-      page.on('requestfailed', req => errors.push('requestfailed: '+req.url()+' '+req.failure()?.errorText));
+      // Hover only preloads the lazy assets; the translated DOM is inserted on pointerdown.
+      // Test actual pointer movement, not an invented 'show on hover' behavior.
       await control.hover();
-      try {
-        await page.waitForFunction(() => !!document.querySelector('[data-layer="curtain"] .page'),{timeout:6500});
-      } catch (error) {
-        const debug = await page.evaluate(() => ({initial:document.documentElement.dataset.initialLang,fragment:document.documentElement.dataset.curtainFragment,primary:!!document.querySelector('[data-layer="primary"] .page'),navCount:document.querySelectorAll('[data-lang-target]').length,resources:performance.getEntriesByType('resource').map(r=>({name:r.name,status:r.responseStatus})).slice(-10)}));
-        console.error('Curtain load debug',JSON.stringify({width,lang,debug,errors}));
-        throw error;
-      }
+      const box = await control.boundingBox();
+      await page.mouse.move(box.x+box.width/2,box.y+box.height/2);
+      await page.mouse.down();
+      await page.waitForFunction(
+        () => !!document.querySelector('[data-layer="curtain"] .page'),
+        null,
+        { timeout: 10000 }
+      );
       const pair = await page.evaluate(sel => {
         const primary=document.querySelector('[data-layer="primary"]');
         const curtain=document.querySelector('[data-layer="curtain"]');
@@ -69,9 +68,10 @@ try {
           dh:Math.abs(e.getBoundingClientRect().height - b[i].getBoundingClientRect().height)}));
       },selector);
       assert.ok(pair.every(p=>p.dy<=1&&p.dh<=1), JSON.stringify({width,lang,bad:pair.filter(p=>p.dy>1||p.dh>1).slice(0,5)}));
-      // Click completes a full language transition using the deployed JS path.
-      await control.click();
-      await page.waitForURL(`**/${other}/`);
+      // Drag the real curtain across the viewport and let its own snap complete.
+      await page.mouse.move(other==='en'?5:width-5,box.y+box.height/2,{steps:30});
+      await page.mouse.up();
+      await page.waitForURL(`**/${other}/`,{timeout:12000});
       await page.close();
       console.log('Curtain layers and navigation OK',width,lang);
     }
