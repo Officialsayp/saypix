@@ -278,50 +278,36 @@ button { font: inherit; }
     margin-top: 14px;
   }
 }
+/* Copy control: one square is both the visible surface and the pointer target.
+   Never extend a transparent hitbox beyond the painted border at any breakpoint. */
 .code-copy {
   --copy-size: clamp(30px, calc(24px + .65vw), 36px);
-  --copy-target-size: 44px;
-  /* Painted width is also the pointer target width; only the bottom extends. */
   position: absolute;
-  /* Hit testing starts at the painted top, left and right edges.
-     Only the extra vertical area extends below the visible square. */
   top: clamp(6px, .55vw, 8px);
   right: clamp(6px, .55vw, 8px);
   z-index: 3;
-  width: var(--copy-size);
-  height: var(--copy-target-size);
-  padding: 0;
-  border: 0;
-  border-radius: 12px;
-  background: transparent;
-  color: #9eb6f7;
   display: grid;
   place-items: center;
+  width: var(--copy-size);
+  height: var(--copy-size);
+  padding: 0;
+  border: 1px solid rgba(255,255,255,.16);
+  border-radius: clamp(8px, .55vw, 10px);
+  background: rgba(255,255,255,.045);
+  color: #9eb6f7;
   cursor: pointer;
   pointer-events: auto;
   touch-action: manipulation;
   transition: background 160ms ease, border-color 160ms ease, color 160ms ease, transform 160ms ease;
 }
-/* The visible surface covers the whole target width; only height grows below.
-   Never introduce hidden clickable gutters around the painted square. */
-.code-copy::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: var(--copy-size);
-  border: 1px solid rgba(255,255,255,.16);
-  border-radius: clamp(8px, .55vw, 10px);
-  background: rgba(255,255,255,.045);
-  pointer-events: none;
-  transition: background 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+/* On coarse primary pointers the painted control itself grows to a 44px target.
+   Mouse and trackpad users retain the original compact 30–36px square. */
+@media (pointer: coarse) {
+  .code-copy { --copy-size: 44px; }
 }
 /* Copy and success are two concentric SVGs; no icon-shape morphing. */
 .code-copy__icons {
-  position: absolute;
-  top: calc((var(--copy-size) - 20px) / 2);
-  left: calc(50% - 10px);
+  position: relative;
   display: grid;
   place-items: center;
   width: 20px;
@@ -347,26 +333,24 @@ button { font: inherit; }
 .code-copy__icon--check { opacity: 0; stroke-width: 2; transform: translate3d(0,1px,0) scale(.94); }
 .code-copy.is-copied .code-copy__icon--copy { opacity: 0; transform: translate3d(0,-1px,0) scale(.94); }
 .code-copy.is-copied .code-copy__icon--check { opacity: 1; transform: translate3d(0,0,0) scale(1); }
-.code-copy.is-copied { color: #d7e4ff; }
-.code-copy.is-copied::before { border-color: rgba(158,182,247,.42); }
+.code-copy.is-copied { border-color: rgba(158,182,247,.42); color: #d7e4ff; }
 /* Touch browsers can retain :hover after tapping until the next scroll.
    Keep hover feedback for real pointers only, restoring the base blue on mobile. */
 @media (hover: hover) and (pointer: fine) {
-  .code-copy:hover { color: #d8e2ff; }
-  .code-copy:hover::before {
+  .code-copy:hover {
     background: rgba(255,255,255,.08);
     border-color: rgba(255,255,255,.30);
+    color: #d8e2ff;
   }
 }
 .code-copy:active { transform: translateY(1px); }
-.code-copy:focus-visible { outline: none; }
-.code-copy:focus-visible::before { box-shadow: 0 0 0 2px #83a5ff; }
+.code-copy:focus-visible { outline: 2px solid #83a5ff; outline-offset: 2px; }
 /* English visual feedback on both /ru/ and /en/. */
 .code-copy__tooltip {
   position: absolute;
   z-index: 5;
   left: 50%;
-  /* Anchor tooltip to the painted button's top, not the 44px hitbox center. */
+  /* The tooltip is attached to the same real square used for hit testing. */
   bottom: calc(100% + 12px);
   display: inline-flex;
   align-items: center;
