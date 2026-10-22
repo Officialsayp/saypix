@@ -298,6 +298,11 @@ assert.equal(redirects, sourceRedirects, 'dist/_redirects must match src/_redire
 assert.ok(styles.length < sourceStyles.length, 'fingerprinted CSS must be minified at build time');
 assert.match(styles, /\.language-edge/, 'minified CSS is missing language controls');
 assert.match(styles, /\.chip__icon/, 'minified CSS is missing technology icon styles');
+assert.match(
+  styles,
+  /\.hero__visual:before,\.hero__visual:after\{[^}]*pointer-events:none/,
+  'Hero decorative rings must not intercept the copy button hit target',
+);
 
 for (const legacyAsset of ['app.js', 'content.js', 'render.js', 'curtain-math.js', 'styles.css']) {
   await assert.rejects(

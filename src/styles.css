@@ -243,6 +243,8 @@ button { font: inherit; }
   position: absolute;
   border: 1px solid rgba(255,255,255,.10);
   border-radius: 50%;
+  /* Purely decorative rings must never intercept the copy button. */
+  pointer-events: none;
 }
 .hero__visual::before { width: 72%; aspect-ratio: 1; left: -30%; top: 18%; }
 .hero__visual::after { width: 58%; aspect-ratio: 1; right: -25%; bottom: 10%; }
