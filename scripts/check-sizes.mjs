@@ -28,8 +28,10 @@ const files = {
 const budgets = {
   ruHtml: 16 * 1024,
   enHtml: 16 * 1024,
-  css: 14 * 1024,
-  boot: 3 * 1024,
+  // Copy feedback adds two small SVG states and accessible success/error handling.
+  // Keep HTML below 16 KiB and cap the compact CSS/JS assets separately.
+  css: 16 * 1024,
+  boot: 4 * 1024,
   curtain: 12 * 1024,
   techIcons: 6 * 1024,
   ruFragment: 9 * 1024,
