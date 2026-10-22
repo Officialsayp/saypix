@@ -6,7 +6,7 @@ const browser = await chromium.launch({
   args: ['--no-sandbox', '--disable-dev-shm-usage'],
 });
 const base = process.env.BASE_URL || 'http://127.0.0.1:4173';
-const widths = [320, 375, 430, 768, 1024, 1280, 1399, 1400, 1440, 1512, 1728, 1920];
+const widths = [320, 375, 430, 768, 860, 861, 1024, 1280, 1399, 1400, 1440, 1512, 1728, 1920];
 const R = el => {
   const r = el.getBoundingClientRect();
   return { x:r.x,y:r.y,width:r.width,height:r.height,right:r.right,bottom:r.bottom };
@@ -71,6 +71,11 @@ try {
           JSON.stringify({width,lang,type:'top-shift',visual}));
         assert.ok(Math.abs(visual.now.bottom-visual.before.bottom)<=1.1,
           JSON.stringify({width,lang,type:'bottom-stability',visual}));
+        assert.ok(visual.now.top>visual.now.navBottom+4,
+          JSON.stringify({width,lang,type:'navigation-overlap',visual}));
+      } else if(width>=861) {
+        assert.ok(visual.now.top-visual.before.top>=8,
+          JSON.stringify({width,lang,type:'mid-desktop-clearance',visual}));
         assert.ok(visual.now.top>visual.now.navBottom+4,
           JSON.stringify({width,lang,type:'navigation-overlap',visual}));
       } else {
