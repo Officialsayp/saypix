@@ -47,8 +47,18 @@ try {
       const page = await browser.newPage({viewport:{width,height:844}});
       await page.goto(`${base}/${lang}/`);
       const control = page.locator(`[data-lang-target="${other}"]`);
+      const errors = [];
+      page.on('console', msg => { if (msg.type()==='warning' || msg.type()==='error') errors.push('console: '+msg.text()); });
+      page.on('pageerror', err => errors.push('pageerror: '+err.message));
+      page.on('requestfailed', req => errors.push('requestfailed: '+req.url()+' '+req.failure()?.errorText));
       await control.hover();
-      await page.waitForFunction(() => !!document.querySelector('[data-layer="curtain"] .page'));
+      try {
+        await page.waitForFunction(() => !!document.querySelector('[data-layer="curtain"] .page'),{timeout:6500});
+      } catch (error) {
+        const debug = await page.evaluate(() => ({initial:document.documentElement.dataset.initialLang,fragment:document.documentElement.dataset.curtainFragment,primary:!!document.querySelector('[data-layer="primary"] .page'),navCount:document.querySelectorAll('[data-lang-target]').length,resources:performance.getEntriesByType('resource').map(r=>({name:r.name,status:r.responseStatus})).slice(-10)}));
+        console.error('Curtain load debug',JSON.stringify({width,lang,debug,errors}));
+        throw error;
+      }
       const pair = await page.evaluate(sel => {
         const primary=document.querySelector('[data-layer="primary"]');
         const curtain=document.querySelector('[data-layer="curtain"]');
