@@ -34,9 +34,37 @@ jobs:
           PLAYWRIGHT_MODULE=playwright-core BROWSER_EXECUTABLE="$(command -v google-chrome)" node scripts/check-compact-density.mjs
           PLAYWRIGHT_MODULE=playwright-core BROWSER_EXECUTABLE="$(command -v google-chrome)" node scripts/check-hero-hitbox.mjs
 
+  changes:
+    name: Detect UI changes for WebKit
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+    outputs:
+      ui: ${{ steps.filter.outputs.ui }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v4
+        id: filter
+        with:
+          filters: |
+            ui:
+              - 'src/**'
+              - 'dist/**'
+              - 'scripts/**'
+              - 'package.json'
+              - 'package-lock.json'
+              - '.github/workflows/verify.yml'
+
   webkit-copy:
     name: Verify copy boundaries in WebKit (Safari engine)
+    needs: changes
+    if: needs.changes.outputs.ui == 'true'
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+    container:
+      image: mcr.microsoft.com/playwright:v1.56.1-noble
+      options: --user 1001
     steps:
       - uses: actions/checkout@v4
 
@@ -49,10 +77,10 @@ jobs:
 
       - run: npm run build
 
-      - name: Install browser and system dependencies
-        run: |
-          npm install --no-save --package-lock=false playwright@1.56.1
-          npx playwright install --with-deps webkit
+      # This pinned official image already has WebKit and its Linux dependencies.
+      # Install only the JS package matching the image/browser revision.
+      - name: Install Playwright JS package (browser preinstalled)
+        run: npm install --no-save --package-lock=false playwright@1.56.1
 
       - name: Check hitbox, hover and copy feedback in WebKit
         run: |
