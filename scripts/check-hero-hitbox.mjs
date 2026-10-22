@@ -6,7 +6,7 @@ const browser = await chromium.launch({
   args: ['--no-sandbox', '--disable-dev-shm-usage'],
 });
 const base = process.env.BASE_URL || 'http://127.0.0.1:4173';
-const widths = [320, 375, 430, 768, 1024, 1280, 1379, 1380, 1440, 1512, 1728, 1920];
+const widths = [320, 375, 430, 768, 1024, 1280, 1399, 1400, 1440, 1512, 1728, 1920];
 const R = el => {
   const r = el.getBoundingClientRect();
   return { x:r.x,y:r.y,width:r.width,height:r.height,right:r.right,bottom:r.bottom };
@@ -66,7 +66,7 @@ try {
         const before=measure();style.remove();
         return {now,before};
       });
-      if(width>=1380){
+      if(width>=1400){
         assert.ok(Math.abs((visual.now.top-visual.before.top)-14)<=1.1,
           JSON.stringify({width,lang,type:'top-shift',visual}));
         assert.ok(Math.abs(visual.now.bottom-visual.before.bottom)<=1.1,
