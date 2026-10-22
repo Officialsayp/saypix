@@ -1,0 +1,32 @@
+name: Experimental layout baseline audit
+on:
+  push:
+    branches: [codex/layout-density-audit]
+permissions:
+  contents: read
+jobs:
+  baseline:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm install --no-save --package-lock=false playwright-core@1.56.1
+      - name: Check available Chrome
+        run: |
+          command -v google-chrome
+          google-chrome --version
+      - name: Browser layout audit
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 --directory dist >/tmp/layout-http.log 2>&1 &
+          sleep 2
+          node scripts/layout-density-audit.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: layout-baseline-ru-en
+          path: audit-results/
+          if-no-files-found: warn
