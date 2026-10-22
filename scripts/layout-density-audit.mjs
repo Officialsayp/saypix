@@ -25,6 +25,9 @@ try {
         javaScriptEnabled: false,
       });
       await page.goto('http://127.0.0.1:4173/' + lang + '/', {waitUntil:'load'});
+      if ([375,430,768,1024,1440].includes(width)) {
+        await page.screenshot({path:'audit-results/baseline-' + lang + '-' + width + '.png', fullPage:true});
+      }
       const audit = await page.evaluate((selectors) => {
         const nodes = selectors.flatMap(sel => Array.from(document.querySelectorAll(sel)).map((node, i) => ({node, key: sel + '#' + i})));
         const read = ({node, key}) => {
@@ -33,17 +36,18 @@ try {
           return {key, top: +r.top.toFixed(2), height: +r.height.toFixed(2),
             minHeight: s.minHeight, lineHeight: s.lineHeight, fontSize: s.fontSize};
         };
+        const documentHeight = document.documentElement.scrollHeight;
         const baseline = nodes.map(read);
         for (const {node} of nodes) node.style.minHeight = '0px';
         const natural = nodes.map(read);
         return {
-          documentHeight: document.documentElement.scrollHeight,
+          documentHeight, unconstrainedHeight:document.documentElement.scrollHeight,
           overflowX: document.documentElement.scrollWidth - document.documentElement.clientWidth,
           baseline, natural: natural.map(x => ({key:x.key,height:x.height})),
         };
       }, selectors);
       if ([375,430,768,1024,1440].includes(width)) {
-        await page.screenshot({path:'audit-results/' + lang + '-' + width + '.png', fullPage:true});
+        await page.screenshot({path:'audit-results/unconstrained-' + lang + '-' + width + '.png', fullPage:true});
       }
       pair.push({lang,...audit});
       await page.close();
@@ -61,6 +65,7 @@ try {
       currentEn:b.baseline[i].height,
     })).filter(x=>x.reserveRu>1 || x.reserveEn>1).sort((x,y)=>Math.max(y.reserveRu,y.reserveEn)-Math.max(x.reserveRu,x.reserveEn));
     const record={width,heightRu:a.documentHeight,heightEn:b.documentHeight,
+       unconstrainedHeightRu:a.unconstrainedHeight,unconstrainedHeightEn:b.unconstrainedHeight,
        maxDelta:+Math.max(0,...diffs.map(x=>Math.max(x.topDelta,x.heightDelta))).toFixed(2),
        driftedNodes:bad.length,offenders:bad.slice(0,10),
        largestReserves:nonNatural.slice(0,12),horizontalOverflow:[a.overflowX,b.overflowX]};
