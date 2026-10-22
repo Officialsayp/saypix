@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { readFile, readdir, stat } from 'node:fs/promises';
 import path from 'node:path';
+import { brotliCompressSync } from 'node:zlib';
 
 const dist = path.join(process.cwd(), 'dist');
 const assets = path.join(dist, 'assets');
@@ -30,7 +31,8 @@ const budgets = {
   enHtml: 16 * 1024,
   // Copy feedback adds two small SVG states and accessible success/error handling.
   // Keep HTML below 16 KiB and cap the compact CSS/JS assets separately.
-  css: 16 * 1024,
+  // Compact B adds breakpoint-specific bilingual line slots, but must remain small after transfer encoding.
+  css: 28 * 1024,
   boot: 4 * 1024,
   curtain: 12 * 1024,
   techIcons: 6 * 1024,
@@ -42,6 +44,9 @@ for (const [key, file] of Object.entries(files)) {
   const size = (await stat(file)).size;
   assert.ok(size <= budgets[key], `${path.basename(file)} is ${size} B; budget is ${budgets[key]} B`);
 }
+
+const cssBrotliBytes = brotliCompressSync(await readFile(files.css)).length;
+assert.ok(cssBrotliBytes <= 7 * 1024, `styles.css Brotli ${cssBrotliBytes} B exceeds 7 KiB`);
 
 const bootSource = await readFile(files.boot, 'utf8');
 assert.match(bootSource, /import\("\.\/curtain\.[A-Z0-9]{8}\.js"\)/, 'bootstrap must lazy-load the curtain module');
