@@ -474,10 +474,10 @@ button { font: inherit; }
   grid-template-columns: 70px minmax(0, 1fr) 220px;
   gap: 28px;
   padding: 34px 0;
-  border-top: 1px solid var(--line);
   align-items: start;
 }
-.project-card:last-child { border-bottom: 1px solid var(--line); }
+/* Draw lines only between projects; outer section boundaries stay full width. */
+.project-card + .project-card { border-top: 1px solid var(--line); }
 .project-card__num { color: #788093; font: 12px/1 ui-monospace, monospace; padding-top: 8px; }
 .project-card h3 { margin: 0 0 10px; font-size: clamp(26px, 3vw, 38px); letter-spacing: -.035em; }
 .project-card p { margin: 0; max-width: 820px; color: var(--muted); line-height: 1.65; }
