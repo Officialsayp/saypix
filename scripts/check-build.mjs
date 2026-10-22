@@ -37,6 +37,18 @@ function escapeRegExp(value) {
   return String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
+function checkGoProfileOutput(html, file) {
+  const snippet = html.match(/profile := \[\]byte\{([^}]*)\}/);
+  assert.ok(snippet, `${file}: missing Go playground byte array`);
+  const bytes = [...snippet[1].matchAll(/0x([a-f0-9]{2})/g)]
+    .map(match => parseInt(match[1], 16));
+  assert.equal(
+    Buffer.from(bytes).toString('utf8'),
+    'maxzolotoy.com - go backend engineer',
+    `${file}: embedded Go program must print the current engineer title`,
+  );
+}
+
 function expectedHeroHeading(title) {
   const [firstName, ...lastNameParts] = title.trim().split(/\s+/);
   const lastName = lastNameParts.join(' ');
@@ -51,6 +63,7 @@ function expectMeta(html, attribute, key, value, file) {
 
 async function checkPage(file, { lang, canonicalPath }) {
   const html = await readFile(path.join(dist, file), 'utf8');
+  checkGoProfileOutput(html, file);
   const otherLang = lang === 'ru' ? 'en' : 'ru';
   const ids = [...html.matchAll(/\sid="([^"]+)"/g)].map(match => match[1]);
   const canonicalUrl = `https://maxzolotoy.com/${canonicalPath}`;
@@ -257,6 +270,7 @@ assert.equal(techIconAssets.length, 1, 'dist/assets: expected one fingerprinted 
 for (const lang of ['ru', 'en']) {
   const fragmentName = fragmentAssets.find(file => file.startsWith(`page-${lang}.`));
   const fragment = await readFile(path.join(dist, 'assets', fragmentName), 'utf8');
+  checkGoProfileOutput(fragment, fragmentName);
   assert.match(fragment, new RegExp(`^<div class="page" lang="${lang}">`), `${fragmentName}: wrong fragment language`);
   assert.ok(
     fragment.includes(expectedHeroHeading(siteContent[lang].hero.title)),
