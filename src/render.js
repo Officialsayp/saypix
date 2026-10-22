@@ -108,7 +108,7 @@ export function renderPage(lang, { techIconsPath } = {}) {
             <div class="hero__visual">
               <div class="hero__visual-code">
                 <button class="code-copy" type="button" data-copy-code aria-label="${lang === 'ru' ? 'Скопировать код' : 'Copy code'}"></button>
-                <div class="hero__visual-code-content" data-copy-source><strong>package</strong> main<br><br><strong>func</strong> main() {<br>&nbsp;&nbsp;profile := []byte{<br>&nbsp;&nbsp;&nbsp;&nbsp;0x6d, 0x61, 0x78, 0x7a, 0x6f, 0x6c,<br>&nbsp;&nbsp;&nbsp;&nbsp;0x6f, 0x74, 0x6f, 0x79, 0x2e, 0x63,<br>&nbsp;&nbsp;&nbsp;&nbsp;0x6f, 0x6d, 0x20, 0x2d, 0x20, 0x67,<br>&nbsp;&nbsp;&nbsp;&nbsp;0x6f, 0x20, 0x62, 0x61, 0x63, 0x6b,<br>&nbsp;&nbsp;&nbsp;&nbsp;0x65, 0x6e, 0x64, 0x20, 0x65, 0x6e,<br>&nbsp;&nbsp;&nbsp;&nbsp;0x67, 0x69, 0x6e, 0x65, 0x65,<br>&nbsp;&nbsp;&nbsp;&nbsp;0x72,<br>&nbsp;&nbsp;}<br><br>&nbsp;&nbsp;println(string(profile))<br>}</div>
+                <div class="hero__visual-code-content" data-copy-source><strong>package</strong> main<br><br><strong>func</strong> main() {<br>&nbsp;&nbsp;profile := []byte{<br>&nbsp;&nbsp;&nbsp;&nbsp;0x6d, 0x61, 0x78, 0x7a, 0x6f, 0x6c,<br>&nbsp;&nbsp;&nbsp;&nbsp;0x6f, 0x74, 0x6f, 0x79, 0x2e, 0x63,<br>&nbsp;&nbsp;&nbsp;&nbsp;0x6f, 0x6d, 0x20, 0x2d, 0x20, 0x67,<br>&nbsp;&nbsp;&nbsp;&nbsp;0x6f, 0x20, 0x62, 0x61, 0x63, 0x6b,<br>&nbsp;&nbsp;&nbsp;&nbsp;0x65, 0x6e, 0x64, 0x20, 0x65, 0x6e,<br>&nbsp;&nbsp;&nbsp;&nbsp;0x67, 0x69, 0x6e, 0x65, 0x65, 0x72,<br>&nbsp;&nbsp;}<br><br>&nbsp;&nbsp;println(string(profile))<br>}</div>
               </div>
             </div>
           </div>
