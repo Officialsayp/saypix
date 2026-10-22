@@ -266,18 +266,29 @@ button { font: inherit; }
   padding-top: clamp(40px, 3.2vw, 46px);
 }
 .hero__visual-code strong { color: #fff; }
+/* On wide desktop displays remove only 14px from the visual's top edge.
+   The matching top margin keeps its bottom edge and the grid row stationary. */
+@media (min-width: 1380px) {
+  .hero__visual {
+    max-height: 506px;
+    margin-top: 14px;
+  }
+}
 .code-copy {
   --copy-size: clamp(30px, calc(24px + .65vw), 36px);
+  --copy-target-size: 44px;
+  --copy-inset: calc((var(--copy-target-size) - var(--copy-size)) / 2);
   position: absolute;
-  top: clamp(6px, .55vw, 8px);
-  right: clamp(6px, .55vw, 8px);
+  /* Keep the existing visible square centered while enlarging the hit target. */
+  top: calc(clamp(6px, .55vw, 8px) - var(--copy-inset));
+  right: calc(clamp(6px, .55vw, 8px) - var(--copy-inset));
   z-index: 3;
-  width: var(--copy-size);
-  height: var(--copy-size);
+  width: var(--copy-target-size);
+  height: var(--copy-target-size);
   padding: 0;
-  border: 1px solid rgba(255,255,255,.16);
-  border-radius: clamp(8px, .55vw, 10px);
-  background: rgba(255,255,255,.045);
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
   color: #9eb6f7;
   display: grid;
   place-items: center;
@@ -285,6 +296,17 @@ button { font: inherit; }
   pointer-events: auto;
   touch-action: manipulation;
   transition: background 160ms ease, border-color 160ms ease, color 160ms ease, transform 160ms ease;
+}
+/* The visible surface is a centered inset, not the full touch/mouse target. */
+.code-copy::before {
+  content: "";
+  position: absolute;
+  inset: var(--copy-inset);
+  border: 1px solid rgba(255,255,255,.16);
+  border-radius: clamp(8px, .55vw, 10px);
+  background: rgba(255,255,255,.045);
+  pointer-events: none;
+  transition: background 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
 }
 /* Copy and success are two concentric SVGs; no icon-shape morphing. */
 .code-copy__icons {
@@ -314,27 +336,26 @@ button { font: inherit; }
 .code-copy__icon--check { opacity: 0; stroke-width: 2; transform: translate3d(0,1px,0) scale(.94); }
 .code-copy.is-copied .code-copy__icon--copy { opacity: 0; transform: translate3d(0,-1px,0) scale(.94); }
 .code-copy.is-copied .code-copy__icon--check { opacity: 1; transform: translate3d(0,0,0) scale(1); }
-.code-copy.is-copied { border-color: rgba(158,182,247,.42); color: #d7e4ff; }
+.code-copy.is-copied { color: #d7e4ff; }
+.code-copy.is-copied::before { border-color: rgba(158,182,247,.42); }
 /* Touch browsers can retain :hover after tapping until the next scroll.
    Keep hover feedback for real pointers only, restoring the base blue on mobile. */
 @media (hover: hover) and (pointer: fine) {
-  .code-copy:hover {
+  .code-copy:hover { color: #d8e2ff; }
+  .code-copy:hover::before {
     background: rgba(255,255,255,.08);
     border-color: rgba(255,255,255,.30);
-    color: #d8e2ff;
   }
 }
 .code-copy:active { transform: translateY(1px); }
-.code-copy:focus-visible {
-  outline: 2px solid #83a5ff;
-  outline-offset: 2px;
-}
+.code-copy:focus-visible { outline: none; }
+.code-copy:focus-visible::before { box-shadow: 0 0 0 2px #83a5ff; }
 /* English visual feedback on both /ru/ and /en/. */
 .code-copy__tooltip {
   position: absolute;
   z-index: 5;
   left: 50%;
-  bottom: calc(100% + 12px);
+  bottom: calc(50% + var(--copy-size) / 2 + 12px);
   display: inline-flex;
   align-items: center;
   justify-content: center;
