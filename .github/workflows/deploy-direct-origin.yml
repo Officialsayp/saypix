@@ -72,6 +72,16 @@ jobs:
           ssh "${VPS_USER}@${VPS_HOST}" "RELEASE_ID='${GITHUB_SHA}' sh -s" <<'REMOTE'
           set -eu
           base=/var/www/maxzolotoy
+          # Use the same persistent file lock as the VPS release-prune service.
+          # Keep fd 9 open across extraction and the atomic current switch.
+          lock="$base/releases/.deploy-maxzolotoy.lock"
+          if [ -L "$lock" ]; then
+            echo "Refusing a symlinked deployment lock" >&2
+            exit 1
+          fi
+          command -v flock >/dev/null 2>&1 || exit 1
+          exec 9>"$lock"
+          flock -w 120 9
           release="$base/releases/$RELEASE_ID"
           archive="/tmp/maxzolotoy-$RELEASE_ID.tar.gz"
           install -d -m 0755 "$release"
