@@ -263,12 +263,9 @@ button { font: inherit; }
   font-size: clamp(10px, .8vw, 13px);
   line-height: 1.55;
   white-space: nowrap;
-}
-.hero__visual-code strong { color: #fff; }
-
-.hero__visual-code {
   padding-top: clamp(40px, 3.2vw, 46px);
 }
+.hero__visual-code strong { color: #fff; }
 .code-copy {
   --copy-size: clamp(30px, calc(24px + .65vw), 36px);
   position: absolute;
