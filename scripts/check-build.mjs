@@ -40,6 +40,14 @@ function escapeRegExp(value) {
 function checkGoProfileOutput(html, file) {
   const snippet = html.match(/profile := \[\]byte\{([^}]*)\}/);
   assert.ok(snippet, `${file}: missing Go playground byte array`);
+  const rows = snippet[1].split('<br>')
+    .map(row => [...row.matchAll(/0x[a-f0-9]{2}/g)].length)
+    .filter(Boolean);
+  assert.deepEqual(
+    rows,
+    [6, 6, 6, 6, 6, 6],
+    `${file}: Go byte literals must occupy exactly six uniform rows`,
+  );
   const bytes = [...snippet[1].matchAll(/0x([a-f0-9]{2})/g)]
     .map(match => parseInt(match[1], 16));
   assert.equal(
