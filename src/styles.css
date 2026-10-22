@@ -268,7 +268,7 @@ button { font: inherit; }
 .hero__visual-code strong { color: #fff; }
 /* On wide desktop displays remove only 14px from the visual's top edge.
    The matching top margin keeps its bottom edge and the grid row stationary. */
-@media (min-width: 1380px) {
+@media (min-width: 1400px) {
   .hero__visual {
     max-height: 506px;
     margin-top: 14px;
