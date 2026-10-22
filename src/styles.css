@@ -300,13 +300,18 @@ button { font: inherit; }
   width: 20px;
   height: 20px;
   pointer-events: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
   transform-origin: 50% 50%;
   transition:
     opacity 260ms cubic-bezier(.4,0,.2,1),
     transform 260ms cubic-bezier(.4,0,.2,1);
 }
 .code-copy__icon--copy { opacity: 1; transform: translate3d(0,0,0) scale(1); }
-.code-copy__icon--check { opacity: 0; transform: translate3d(0,1px,0) scale(.94); }
+.code-copy__icon--check { opacity: 0; stroke-width: 2; transform: translate3d(0,1px,0) scale(.94); }
 .code-copy.is-copied .code-copy__icon--copy { opacity: 0; transform: translate3d(0,-1px,0) scale(.94); }
 .code-copy.is-copied .code-copy__icon--check { opacity: 1; transform: translate3d(0,0,0) scale(1); }
 .code-copy.is-copied { border-color: rgba(158,182,247,.42); color: #d7e4ff; }
