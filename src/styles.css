@@ -283,8 +283,9 @@ button { font: inherit; }
   --copy-target-size: 44px;
   --copy-inset: calc((var(--copy-target-size) - var(--copy-size)) / 2);
   position: absolute;
-  /* Keep the existing visible square centered while enlarging the hit target. */
-  top: calc(clamp(6px, .55vw, 8px) - var(--copy-inset));
+  /* Start hit testing at the visible top edge. Extra target height extends
+     downward, not above the painted button; keep its original horizontal center. */
+  top: clamp(6px, .55vw, 8px);
   right: calc(clamp(6px, .55vw, 8px) - var(--copy-inset));
   z-index: 3;
   width: var(--copy-target-size);
@@ -301,11 +302,15 @@ button { font: inherit; }
   touch-action: manipulation;
   transition: background 160ms ease, border-color 160ms ease, color 160ms ease, transform 160ms ease;
 }
-/* The visible surface is a centered inset, not the full touch/mouse target. */
+/* The visible surface remains at its original coordinates; only the hit target
+   extends below it. In particular, do not reintroduce a top inset. */
 .code-copy::before {
   content: "";
   position: absolute;
-  inset: var(--copy-inset);
+  top: 0;
+  left: var(--copy-inset);
+  right: var(--copy-inset);
+  height: var(--copy-size);
   border: 1px solid rgba(255,255,255,.16);
   border-radius: clamp(8px, .55vw, 10px);
   background: rgba(255,255,255,.045);
@@ -314,7 +319,9 @@ button { font: inherit; }
 }
 /* Copy and success are two concentric SVGs; no icon-shape morphing. */
 .code-copy__icons {
-  position: relative;
+  position: absolute;
+  top: calc((var(--copy-size) - 20px) / 2);
+  left: calc(50% - 10px);
   display: grid;
   place-items: center;
   width: 20px;
@@ -359,7 +366,8 @@ button { font: inherit; }
   position: absolute;
   z-index: 5;
   left: 50%;
-  bottom: calc(50% + var(--copy-size) / 2 + 12px);
+  /* Anchor tooltip to the painted button's top, not the 44px hitbox center. */
+  bottom: calc(100% + 12px);
   display: inline-flex;
   align-items: center;
   justify-content: center;
