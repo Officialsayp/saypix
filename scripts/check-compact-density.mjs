@@ -28,6 +28,29 @@ try {
       const page = await browser.newPage({ viewport:{width,height:844}, javaScriptEnabled:false });
       await page.goto(`${base}/${lang}/`);
       const metrics = await page.locator(selector).evaluateAll(coords);
+      // Preserve exactly three visible rules around Projects:
+      // the full-width section top, one separator between the two cards,
+      // and the next section's full-width top.
+      const borders = await page.evaluate(() => {
+        const projects = document.querySelector('[id^="projects-"]');
+        const contacts = document.querySelector('[id^="contacts-"]');
+        const cards = [...projects.querySelectorAll('.project-card')];
+        const top = el => getComputedStyle(el).borderTopWidth;
+        const bottom = el => getComputedStyle(el).borderBottomWidth;
+        return {
+          count: cards.length,
+          sectionTop: top(projects),
+          firstTop: top(cards[0]),
+          middleTop: top(cards[1]),
+          firstBottom: bottom(cards[0]),
+          lastBottom: bottom(cards.at(-1)),
+          nextSectionTop: top(contacts)
+        };
+      });
+      assert.deepEqual(borders,{
+        count:2, sectionTop:'1px', firstTop:'0px', middleTop:'1px',
+        firstBottom:'0px', lastBottom:'0px', nextSectionTop:'1px'
+      }, JSON.stringify({width,lang,borders}));
       const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
       assert.ok(overflow <= 1, JSON.stringify({width,lang,overflow}));
       results.push(metrics);
