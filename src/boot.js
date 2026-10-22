@@ -146,12 +146,40 @@ document.addEventListener('click', event => {
   });
 });
 
+const copyFeedbackTimers = new WeakMap();
+
 document.addEventListener('click', event => {
   const button = event.target.closest('[data-copy-code]');
   if (!button) return;
-  const text = button.nextElementSibling.innerText.replace(/\xa0/g, ' ');
-  navigator.clipboard.writeText(text).then(() => {
+  const container = button.closest('.hero__visual-code');
+  const source = container?.querySelector('[data-copy-source]');
+  const status = container?.querySelector('[data-copy-status]');
+  if (!source) return;
+
+  const isRu = document.documentElement.lang === 'ru';
+  const clearFeedback = () => {
+    const previous = copyFeedbackTimers.get(button);
+    if (previous) clearTimeout(previous);
+    copyFeedbackTimers.delete(button);
+    button.classList.remove('is-copied');
+  };
+  if (!navigator.clipboard?.writeText) {
+    clearFeedback();
+    if (status) status.textContent = isRu ? 'Копирование недоступно' : 'Copy unavailable';
+    return;
+  }
+
+  navigator.clipboard.writeText(source.innerText.replace(/\xa0/g, ' ')).then(() => {
+    clearFeedback();
     button.classList.add('is-copied');
-    setTimeout(() => button.classList.remove('is-copied'), 1000);
-  }).catch(() => {});
+    if (status) status.textContent = isRu ? 'Скопировано' : 'Copied';
+    copyFeedbackTimers.set(button, setTimeout(() => {
+      button.classList.remove('is-copied');
+      if (status) status.textContent = '';
+      copyFeedbackTimers.delete(button);
+    }, 1700));
+  }).catch(() => {
+    clearFeedback();
+    if (status) status.textContent = isRu ? 'Не удалось скопировать' : 'Copy failed';
+  });
 });
