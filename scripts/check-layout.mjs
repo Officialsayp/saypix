@@ -42,6 +42,28 @@ try {
           }
           await page.locator('[data-reveal]').evaluate(node => node.style.removeProperty('transform'));
         }
+        // Real browser hit-testing: decorative rings must not cover any
+        // part of the visible copy button, in either language or layout.
+        const copy = page.locator('.code-copy');
+        await copy.scrollIntoViewIfNeeded();
+        const hitTest = await copy.evaluate(button => {
+          const rect = button.getBoundingClientRect();
+          const inset = 2;
+          const xs = [rect.left + inset, rect.left + rect.width / 2, rect.right - inset];
+          const ys = [rect.top + inset, rect.top + rect.height / 2, rect.bottom - inset];
+          return {
+            size: [rect.width, rect.height],
+            hits: ys.flatMap(y => xs.map(x => {
+              const front = document.elementFromPoint(x, y);
+              return { x, y, actual: front?.className || front?.tagName || null,
+                isButton: front === button || button.contains(front) };
+            })),
+          };
+        });
+        assert.ok(
+          hitTest.hits.every(hit => hit.isButton),
+          `Copy hitbox is obstructed: ${JSON.stringify({ width, lang, mode, hitTest })}`,
+        );
         const other = lang === 'ru' ? 'en' : 'ru';
         const link = page.locator(`[data-lang-target="${other}"]`);
         await link.focus();
