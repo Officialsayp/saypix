@@ -25,7 +25,7 @@ try {
         const button=document.querySelector('.code-copy');
         const box=document.querySelector('.hero__visual-code');
         const current=R(button), inner=R(box);
-        const size=parseFloat(getComputedStyle(button).getPropertyValue('--copy-size'));
+        const size=parseFloat(getComputedStyle(button,'::before').width);
         const inset=(44-size)/2;
         const face={x:current.x+inset,y:current.y+inset,width:size,height:size,right:current.right-inset,bottom:current.bottom-inset};
         const hitPoints=[];
