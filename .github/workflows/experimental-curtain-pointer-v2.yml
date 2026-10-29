@@ -1,0 +1,53 @@
+name: Experimental V2 pointer-locked curtain
+on:
+  push:
+    branches: [codex/curtain-pointer-lock-v2]
+permissions:
+  contents: read
+jobs:
+  chromium:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - name: Build and run existing tests
+        run: |
+          npm ci
+          npm test
+      - name: Validate actual pointer hotspot and strict bilingual layout
+        run: |
+          npm install --no-save --package-lock=false playwright-core@1.56.1
+          python3 -m http.server 4173 --bind 127.0.0.1 --directory dist >/tmp/curtain-v2.log 2>&1 &
+          sleep 2
+          PLAYWRIGHT_MODULE=playwright-core BROWSER_EXECUTABLE="$(command -v google-chrome)" node scripts/check-curtain-pointer-lock.mjs
+          PLAYWRIGHT_MODULE=playwright-core BROWSER_EXECUTABLE="$(command -v google-chrome)" node scripts/check-compact-density.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: curtain-v2-test-build
+          path: dist/
+          retention-days: 5
+  webkit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - name: Build
+        run: |
+          npm ci
+          npm run build
+      - name: Install WebKit
+        run: |
+          npm install --no-save --package-lock=false playwright@1.56.1
+          npx playwright install --with-deps webkit
+      - name: Track pointer on WebKit
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 --directory dist >/tmp/curtain-webkit.log 2>&1 &
+          sleep 2
+          PLAYWRIGHT_MODULE=playwright BROWSER_ENGINE=webkit node scripts/check-curtain-pointer-lock.mjs
