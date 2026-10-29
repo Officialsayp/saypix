@@ -1,168 +1,128 @@
-# maxzolotoy.com — bilingual portfolio prototype
+# maxzolotoy.com
 
-Статический сайт-визитка с интерактивным переключением RU ↔ EN через «языковую шторку».
+**Bilingual personal portfolio · Go Backend Engineering**
 
-Иконки сайта хранятся в `src/`: SVG/ICO favicon, PNG 192×192 и Apple touch icon
-180×180. Сборка публикует их в корне сайта; версия в HTML обновляется при замене
-логотипа. Полный комплект бренда поддерживается отдельно, чтобы не хранить
-в репозитории сайта неиспользуемые экспорты и их дубликаты.
+[English](#english) · [Русский](#русский)  
+**Live:** [English](https://maxzolotoy.com/en/) · [Русский](https://maxzolotoy.com/ru/)
 
-## Что реализовано
+---
 
-- полноценный статический HTML отдельно для `/ru/` и `/en/`;
-- один языковой слой в исходном DOM и шторка как lazy progressive enhancement;
-- drag-переключение мышью / touch / pen через Pointer Events;
-- вертикальная граница следует за жестом;
-- threshold 50% + учет скорости свайпа;
-- автоматическое завершение анимации после отпускания;
-- обычные ссылки RU / EN как crawlable и no-JavaScript fallback;
-- управление клавиатурой;
-- `prefers-reduced-motion`;
-- запоминание выбранного языка в `localStorage`;
-- два индексируемых маршрута `/ru/` и `/en/` + `hreflang`, sitemap и robots.txt;
-- постоянная нормализация корня и HTML-алиасов через Cloudflare `_redirects`;
-- локализованные title/description, Open Graph и Twitter Card;
-- JSON-LD граф `WebSite` → `ProfilePage` → `Person` с публичными вариантами имени;
-- адаптивная верстка;
-- минимальный initial bootstrap, lazy curtain-модуль и lazy HTML-фрагмент второго языка;
-- fingerprinted/minified build assets и автоматические size budgets;
-- нет runtime-зависимостей и frontend-фреймворков;
-- два deployment profile: Cloudflare Workers Static Assets и direct Caddy/VPS.
+## English
 
-## Локальный запуск
+### Overview
+
+maxzolotoy.com is the personal website and engineering portfolio of Maxim Zolotoy. It presents professional experience, technical interests, projects, and contact information through a lightweight, bilingual interface.
+
+Both `/en/` and `/ru/` are independently rendered static pages. A custom language curtain adds an interactive transition without making content or navigation dependent on JavaScript.
+
+### Highlights
+
+- **Interactive RU/EN curtain:** pointer-tracked dragging, click and keyboard navigation, gesture cancellation, and scroll-position restoration.
+- **Progressive enhancement:** complete, indexable pages and working language links without JavaScript; alternate-language content loads on demand.
+- **Responsive and accessible:** semantic HTML, keyboard focus states, reduced-motion support, and layouts for mobile and desktop.
+- **Technical SEO:** canonical URLs, `hreflang`, XML sitemap, Open Graph metadata, and JSON-LD structured data.
+- **Lean delivery:** no frontend framework or runtime dependencies; minified, fingerprinted assets, immutable asset caching, and automated size budgets.
+
+### Technology and architecture
+
+HTML, CSS, and native JavaScript (ES modules) power the frontend. Node.js and esbuild generate static assets in `dist/`; no application server or backend is required to serve the website.
+
+```text
+src/                  Content, templates, styles, and browser logic
+scripts/              Build and validation
+dist/                 Generated, versioned production assets
+deploy/caddy/         Web server configuration
+.github/workflows/    CI and deployment
+docs/                 Infrastructure and recovery documentation
+```
+
+### Local development
+
+**Requirements:** Node.js 22+, npm, and Python 3 for the preview server.
 
 ```bash
+git clone https://github.com/Officialsayp/saypix.git
+cd saypix
+npm ci
 npm run preview
 ```
 
-После сборки открой:
+Open [http://localhost:4173/en/](http://localhost:4173/en/) or [http://localhost:4173/ru/](http://localhost:4173/ru/). The preview command builds the site before serving it.
 
-- http://localhost:4173/ru/
-- http://localhost:4173/en/
-
-## Сборка
+### Build and checks
 
 ```bash
-npm run build
+npm run build         # Generate dist/
+npm test              # Build and run automated checks
+npm run check         # Validate an existing build
+npm run check:deploy  # Validate deployment configuration
 ```
 
-Результат появится в `dist/`.
+Validation covers generated HTML, SEO, curtain behavior, asset budgets, redirects, and HTTP smoke tests. GitHub Actions additionally checks layout and interactions in Chromium and WebKit.
 
-Сборка печатает таблицу raw/gzip/brotli-размеров и разделяет ресурсы на
-`INITIAL`, `LAZY` и `STATIC`. `npm test` проверяет budgets, no-JavaScript HTML,
-SEO, redirects и локальный HTTP smoke-test.
+### Deployment
 
-## Cloudflare Workers Static Assets
+The production website is served by **Caddy on a Selectel VPS**; Cloudflare provides DNS only. When enabled, GitHub Actions deploys changes from `main` using an atomic release switch and verifies the origin with a smoke test.
 
-Сборка публикуется из `dist/` по настройкам `wrangler.jsonc`. Worker-код,
-backend и VPS не нужны.
+Operational procedures and rollback instructions: [Recovery Runbook](docs/recovery-runbook.md).
 
-Каноническая URL-политика:
+---
 
-- `https://maxzolotoy.com/ru/` — русская индексируемая страница;
-- `https://maxzolotoy.com/en/` — английская индексируемая страница и
-  `x-default`;
-- `/`, `/index.html` и другие известные HTML-алиасы постоянно перенаправляются
-  сразу на соответствующий конечный URL;
-- version preview URLs отключены, а резервная `workers.dev`-копия получает
-  `X-Robots-Tag: noindex`;
+## Русский
 
-Для production в Cloudflare дополнительно должны быть включены zone-level
-правила, которые невозможно выразить в статическом `_redirects`:
+### О проекте
 
-- любой `http://maxzolotoy.com/*` → тот же путь на HTTPS;
-- `www.maxzolotoy.com/*` → тот же путь на HTTPS apex-домене;
-- path и query string сохраняются, код ответа — постоянный `301` или `308`.
+maxzolotoy.com — персональный сайт и инженерное портфолио Максима Золотого. Здесь представлены профессиональный опыт, технические интересы, проекты и контакты в лаконичном двуязычном интерфейсе.
 
-Перед включением HSTS сначала проверь все HTTP/HTTPS и apex/www варианты.
-Существующее Dashboard-правило для `/` не должно перекрывать репозиторный
-`_redirects`.
+Страницы `/ru/` и `/en/` формируются как полноценные независимые статические документы. Собственная языковая шторка обеспечивает интерактивное переключение, при этом доступность контента и навигации не зависит от JavaScript.
 
-Настройки сборки в панели Cloudflare:
+### Возможности
 
-- Build command: `npm run build`
-- Build output directory: `dist`
+- **Интерактивная шторка RU/EN:** отслеживание указателя при перетягивании, переключение по клику и с клавиатуры, обработка отменённых жестов и восстановление позиции прокрутки.
+- **Progressive Enhancement:** полноценные индексируемые страницы и рабочие ссылки переключения языка без JavaScript; второй язык загружается по запросу.
+- **Адаптивность и доступность:** семантический HTML, видимые состояния фокуса, поддержка уменьшенной анимации и интерфейс для мобильных устройств и компьютеров.
+- **Техническое SEO:** canonical, `hreflang`, XML sitemap, метаданные Open Graph и структурированные данные JSON-LD.
+- **Оптимизированная загрузка:** без frontend-фреймворка и runtime-зависимостей; минификация, хеширование ресурсов, неизменяемое кеширование и автоматический контроль размера сборки.
 
-Файлы под `/assets/` имеют content fingerprint и получают годовой
-`immutable` browser cache через `src/_headers`. HTML и stable-name файлы
-обязаны revalidate.
+### Технологии и архитектура
 
-Локальный `python -m http.server` не применяет файлы `_redirects` и `_headers`.
-Он подходит для проверки `/ru/` и `/en/`, но HTTP-статусы нужно проверять в
-Cloudflare preview/production после deploy.
-
-## Где менять тексты и ссылки
-
-Контент и контакты находятся в:
+Frontend построен на HTML, CSS и нативном JavaScript (ES modules). Node.js и esbuild формируют статические файлы в `dist/`; для обслуживания сайта не требуется backend или сервер приложений.
 
 ```text
-src/content.js
+src/                  Контент, шаблоны, стили и браузерная логика
+scripts/              Сборка и автоматические проверки
+dist/                 Сгенерированные версионированные ресурсы
+deploy/caddy/         Конфигурация веб-сервера
+.github/workflows/    CI и развёртывание
+docs/                 Документация инфраструктуры и восстановления
 ```
 
-Заполни `contactLinks`:
+### Локальный запуск
 
-```js
-export const contactLinks = {
-  email: "you@example.com",
-  telegram: "https://t.me/username",
-  github: "https://github.com/username"
-};
+**Требования:** Node.js 22+, npm и Python 3 для локального сервера.
+
+```bash
+git clone https://github.com/Officialsayp/saypix.git
+cd saypix
+npm ci
+npm run preview
 ```
 
-Поисковые и social-метаданные собираются из того же контента в
-`src/metadata.js`. Исходники карточек находятся в `src/og-ru.svg` и
-`src/og-en.svg`, а опубликованные PNG имеют размер 1200×630.
+Открой [http://localhost:4173/ru/](http://localhost:4173/ru/) или [http://localhost:4173/en/](http://localhost:4173/en/). Команда предварительно собирает сайт.
 
-## Как работает шторка
+### Сборка и проверки
 
-Сборка сразу помещает в HTML полный контент выбранного URL: русский для
-`/ru/`, английский для `/en/`. Основная страница полностью работает без
-JavaScript. Маленький bootstrap не загружает механику и второй язык заранее.
-Только после реального наведения, фокуса или pointerdown он параллельно
-загружает lazy curtain-модуль и fingerprinted HTML-фрагмент второго языка.
-Если любой lazy-запрос не удался, обычная RU/EN-ссылка просто открывает другой
-канонический URL.
-
-Во время drag двигаются только три композитных объекта: слой шторки, её
-однопиксельная граница и иконка под курсором. Основная длинная страница не
-перемещается.
-
-Покрытие `coverage` находится в диапазоне `0…1`:
-
-- `0` — панель за краем экрана;
-- `0.5` — пройдена половина ширины окна;
-- `1` — страница полностью закрыта.
-
-RU → EN: пользователь тянет EN справа налево. EN → RU: RU слева направо.
-На отпускании 20% и 40% возвращаются в исходный язык, 60% и 80% завершают
-переключение; быстрый уверенный свайп учитывает скорость. После полного
-закрытия сохраняется предпочтение в `localStorage` и браузер переходит на
-настоящий URL (`/ru/` или `/en/`). Без JavaScript эти же ссылки работают как
-обычная навигация, поэтому канонический URL, язык документа и содержимое не
-могут разойтись.
-
-## Что менять после Figma
-
-Главная механика не зависит от визуального дизайна. После готового макета обычно достаточно переработать:
-
-```text
-src/styles.css
+```bash
+npm run build         # Сформировать dist/
+npm test              # Собрать проект и выполнить проверки
+npm run check         # Проверить существующую сборку
+npm run check:deploy  # Проверить конфигурацию развёртывания
 ```
 
-и при необходимости HTML-шаблон, генерируемый функцией `renderPage()` в
-`src/render.js`.
+Проверки охватывают сгенерированный HTML, SEO, работу языковой шторки, ограничения размера ресурсов, перенаправления и HTTP smoke-тесты. GitHub Actions дополнительно проверяет геометрию и взаимодействия в Chromium и WebKit.
 
-В исходном документе существует только одна страница. Геометрия основного и
-временного языковых слоёв синхронизируется после реального взаимодействия,
-перед началом анимации.
+### Развёртывание
 
-## Российские сети и direct origin
+Production-сайт обслуживается **Caddy на Selectel VPS**; Cloudflare используется только для DNS. При включённом деплое GitHub Actions публикует изменения из `main`, атомарно переключает релиз и проверяет сервер с помощью smoke-теста.
 
-Frontend split повышает устойчивость, но не устраняет ISP-level throttling
-между российскими сетями и Cloudflare. Полный baseline, Caddy/VPS profile,
-GitHub Actions deployment, test-origin procedure, безопасный DNS-only cutover и
-rollback описаны в [docs/ru-network-resilience.md](docs/ru-network-resilience.md).
-
-Текущий production нельзя переключать вслепую. Сначала нужен
-`origin.maxzolotoy.com` с серым облаком **DNS only**, тесты из РФ и Европы и
-подтверждение полной передачи каждого asset по HTTP/1.1 и HTTP/2.
+Эксплуатация и порядок отката: [Recovery Runbook](docs/recovery-runbook.md).
