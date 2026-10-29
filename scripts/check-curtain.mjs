@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { curtainFrame, snapProgress } from '../src/curtain-math.js';
+import { curtainFrame, snapProgress, pointerProgress } from '../src/curtain-math.js';
 
 const width = 1000;
 const snap = (progress, targetLang, velocity = 0, travelled = 300) => snapProgress({
@@ -51,4 +51,20 @@ assert.equal(snap(0.2, 'en', -0.5, 20), 1, 'left fling must commit EN');
 assert.equal(snap(0.8, 'ru', 0.5, 20), 0, 'right fling must commit RU');
 assert.equal(snap(0.2, 'en', -0.5, 5), 0, 'short movement must not count as a fling');
 
-console.log('Curtain direction and snap checks passed.');
+// Direct tracking: neither drag origin nor selected-language control affects X.
+for (const [clientX,left,width,expected] of [
+  [0,0,1000,1], [500,0,1000,.5], [1000,0,1000,0],
+  [200,100,1000,.9], [600,100,1000,.5], [1300,100,1000,0],
+  [-50,0,1000,1], [2050,0,1000,0],
+]) {
+  assert.ok(Math.abs(pointerProgress(clientX,left,width)-expected)<1e-10,
+    `pointer ${clientX} with stage ${left}/${width} should produce ${expected}`);
+}
+for (const width of [320,375,768,1512,1920]) {
+  for (let x=0;x<=width;x+=17) {
+    const p=pointerProgress(x,0,width);
+    assert.ok(Math.abs((1-p)*width-x)<1e-8,
+      `pointer ${x} px must map to the divider itself on ${width} px screens`);
+  }
+}
+console.log('Curtain direction, snap and direct pointer tracking checks passed.');
