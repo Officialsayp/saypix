@@ -70,9 +70,11 @@ click and keyboard activation after cancellation, reduced motion, no-JS links,
 focus indication and current-language fill on desktop and mobile.
 
 The `pointercancel` checks use complete synthetic touch sessions because
-Playwright has no cross-browser native cancellation command. Capture loss, mouse
-drags, releases and clicks use browser input. Real-device touch cancellation and
-physical cursor-to-display latency still need owner testing.
+Playwright has no cross-browser native cancellation command. Fast-fling coverage
+uses a synthetic 32ms touch sequence so CI command latency cannot turn it into a
+paused release. Capture loss, snap-back, ordinary successful mouse drags, releases
+and clicks use browser input. Real-device touch cancellation and physical
+cursor-to-display latency still need owner testing.
 
 The pointer-lock regression now also measures 24 rapid reversals **inside the
 same pointermove dispatch**, after the application listener, at every tested

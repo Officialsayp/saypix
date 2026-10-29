@@ -75,10 +75,7 @@ async function releaseCancelledMouse(page) {
   await page.mouse.up();
 }
 
-async function cancelTouch(page, lang, preview) {
-  // Playwright has no cross-browser native pointercancel API. Use one
-  // synthetic touch session throughout: mixing cancel with native mouseup
-  // would invent a click that a real browser-cancelled pointer never emits.
+async function beginTouch(page, lang) {
   const other = lang === 'ru' ? 'en' : 'ru';
   const control = page.locator(`[data-lang-target="${other}"]`);
   const box = await control.boundingBox();
@@ -89,6 +86,14 @@ async function cancelTouch(page, lang, preview) {
   };
   await control.dispatchEvent('pointerdown', pointer);
   await page.waitForFunction(() => document.querySelector('.is-drag-source'));
+  return pointer;
+}
+
+async function cancelTouch(page, lang, preview) {
+  // Playwright has no cross-browser native pointercancel API. Use one
+  // synthetic touch session throughout: mixing cancel with native mouseup
+  // would invent a click that a real browser-cancelled pointer never emits.
+  const pointer = await beginTouch(page, lang);
   if (preview !== 'none') {
     pointer.clientX = preview === 'micro'
       ? pointer.clientX + (lang === 'ru' ? -3 : 3)
@@ -97,6 +102,25 @@ async function cancelTouch(page, lang, preview) {
   }
   await page.locator('body').dispatchEvent('pointercancel', { ...pointer, buttons: 0 });
   await assertIdle(page, lang, `pointercancel ${preview}`);
+}
+
+async function flingTouch(page, lang) {
+  const pointer = await beginTouch(page, lang);
+  // Model a 32ms touch fling. Separate mouse RPCs can take >96ms on CI,
+  // which correctly turns the intended fling into a paused snap-back instead.
+  await page.evaluate(({ pointer, lang, width }) => {
+    const start = performance.now();
+    for (const [type, coverage, elapsed] of [
+      ['pointermove', .15, 0], ['pointermove', .25, 16], ['pointerup', .25, 32],
+    ]) {
+      const event = new PointerEvent(type, {
+        ...pointer, clientX: width * (lang === 'ru' ? 1 - coverage : coverage),
+        buttons: type === 'pointerup' ? 0 : 1,
+      });
+      Object.defineProperty(event, 'timeStamp', { value: start + elapsed });
+      document.body.dispatchEvent(event);
+    }
+  }, { pointer, lang, width: page.viewportSize().width });
 }
 
 try {
@@ -176,10 +200,7 @@ try {
       await assertLanguageControls(page, other);
       await assertHint(page, width > 1450, 'new language document');
       // Sampling the release must still preserve an intentional fast fling.
-      grip = await beginDrag(page, lang);
-      await moveToCoverage(page, other, .15, grip.y);
-      await moveToCoverage(page, other, .25, grip.y);
-      await page.mouse.up();
+      await flingTouch(page, other);
       await page.waitForURL(`**/${lang}/`);
       await assertLanguageControls(page, lang);
       assert.equal(await page.evaluate(() => localStorage.getItem('preferred-language')), lang);
