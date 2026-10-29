@@ -50,7 +50,7 @@ async function assertIdle(page, lang, label) {
   assert.equal(await page.locator('html').getAttribute('lang'), lang, label);
   assert.equal(await page.evaluate(() => localStorage.getItem('preferred-language')), null, label);
   await assertLanguageControls(page, lang);
-  await assertHint(page, page.viewportSize().width > 1450, label);
+  await assertHint(page, true, label);
 }
 
 async function beginDrag(page, targetLang) {
@@ -198,7 +198,7 @@ try {
       assert.equal(await page.locator('html').getAttribute('lang'), other);
       assert.equal(await page.evaluate(() => localStorage.getItem('preferred-language')), other);
       await assertLanguageControls(page, other);
-      await assertHint(page, width > 1450, 'new language document');
+      await assertHint(page, true, 'new language document');
       // Sampling the release must still preserve an intentional fast fling.
       await flingTouch(page, other);
       await page.waitForURL(`**/${lang}/`);
@@ -225,7 +225,7 @@ try {
         await page.goto(`${origin}/${lang}/`);
         const other = lang === 'ru' ? 'en' : 'ru';
         await assertLanguageControls(page, lang);
-        await assertHint(page, width > 1450, `${mode} initial`);
+        await assertHint(page, true, `${mode} initial`);
         if (mode === 'click' || mode === 'keyboard') {
           await cancelTouch(page, lang, 'past-threshold');
         }
@@ -245,7 +245,7 @@ try {
         }
         await page.waitForURL(`**/${other}/`);
         await assertLanguageControls(page, other);
-        await assertHint(page, width > 1450, `${mode} destination`);
+        await assertHint(page, true, `${mode} destination`);
         assert.deepEqual(errors, [], `${engine} ${mode} ${width} ${lang}`);
         await page.close();
         console.log('LANGUAGE_CONTROL_OK', JSON.stringify({ engine, mode, width, lang }));

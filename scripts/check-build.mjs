@@ -356,11 +356,8 @@ assert.ok(
   ),
   'styles.css: header must reserve both language-control gutters',
 );
-assert.match(
-  sourceStyles,
-  /@media \(max-width: 1450px\)\s*\{\s*\.drag-hint\s*\{\s*display:\s*none;/,
-  'styles.css: decorative drag hint must not overlap the header navigation',
-);
+assert.ok(sourceStyles.includes('.drag-hint__label { display: none; }'),
+  'Compact hint must replace its text with a decorative arrow');
 
 for (const viewportWidth of [320, 560, 561, 860, 861, 930, 1160, 1280, 1450]) {
   const edgeOffset = viewportWidth <= 560 ? mobileEdgeOffset : languageEdgeOffset;

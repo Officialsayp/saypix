@@ -48,7 +48,7 @@ classes. The completed return left the hint at `opacity: 0`.
 - The hint now follows `is-curtain-moving`: it fades out during the gesture and
   settling, then returns when cancellation cleanup runs. Successful navigation
   keeps it hidden until the destination document loads; that document has its own
-  localized hint. The existing layout still hides hints at widths <=1450px.
+  localized hint. At widths <=1450px, a static inward-facing chevron below the target language control replaces the text hint. It inherits the same cancellation lifecycle, is decorative, and does not intercept clicks.
 - Current-language fill uses the static `aria-current="page"` attribute, so the
   selected RU/EN control has a quiet gray fill immediately, including without JS.
   The other control retains its dark background and thin outline. Previewing a
