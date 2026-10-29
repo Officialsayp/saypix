@@ -116,8 +116,6 @@ function ensureCurtainContent(targetLang) {
 
 function updateA11y() {
   const ruActive = activeLang === 'ru';
-  ruButton.classList.toggle('is-active', ruActive);
-  enButton.classList.toggle('is-active', !ruActive);
   if (ruActive) {
     ruButton.setAttribute('aria-current', 'page');
     enButton.removeAttribute('aria-current');
@@ -193,7 +191,7 @@ function prepareCurtain(targetLang) {
 function showCurtain(targetLang, { showGhost = true } = {}) {
   prepareCurtain(targetLang);
   root.classList.toggle('is-page-top', window.scrollY <= 24);
-  body.classList.add('has-used-curtain', 'is-curtain-moving');
+  body.classList.add('is-curtain-moving');
   ghost.classList.toggle('is-visible', showGhost && !reducedMotion.matches);
   divider.classList.toggle('is-visible', !reducedMotion.matches);
 }
@@ -314,7 +312,10 @@ function animateTo(target, { duration, showGhost = false } = {}) {
 }
 
 function recordPointerSamples(event) {
-  const events = event.getCoalescedEvents?.() || [event];
+  const coalesced = event.getCoalescedEvents?.();
+  // Terminal events have an empty coalesced list. Include the release itself
+  // so a pause expires old velocity samples instead of committing a stale fling.
+  const events = coalesced?.length ? coalesced : [event];
   for (const sample of events) {
     const time = Number.isFinite(sample.timeStamp) ? sample.timeStamp : performance.now();
     dragSamples.push({ x: clamp(sample.clientX - stageLeft, 0, stageWidth), time });
@@ -332,10 +333,11 @@ function currentVelocity() {
 }
 
 function startDrag(event, targetLang) {
-  if (targetLang === activeLang) return;
-  if (reducedMotion.matches) return;
   if (event.isPrimary === false) return;
   if (event.pointerType === 'mouse' && event.button !== 0) return;
+  suppressNextClick = false;
+  if (targetLang === activeLang) return;
+  if (reducedMotion.matches) return;
   cancelAnimationFrame(settleFrame);
   settleFrame = 0;
   hideCurtain();
@@ -495,6 +497,7 @@ function endMouseSession(event) {
 
 function cancelDrag(event) {
   if (!dragging || (event && event.pointerId !== pointerId)) return;
+  suppressOneClick();
   finishPointerSession();
   animateTo(activeLang === 'en' ? 1 : 0);
 }
@@ -511,8 +514,9 @@ function handleLostPointerCapture(event) {
 }
 
 function suppressOneClick() {
+  // Capture loss can precede mouseup by many frames. Retain the guard until
+  // that gesture's click, a new pointerdown, or a keyboard activation.
   suppressNextClick = true;
-  window.setTimeout(() => { suppressNextClick = false; }, 0);
 }
 
 function switchByClick(targetLang) {
@@ -533,7 +537,9 @@ for (const button of [ruButton, enButton]) {
   button.addEventListener('pointerdown', event => startDrag(event, targetLang));
   button.addEventListener('lostpointercapture', handleLostPointerCapture);
   button.addEventListener('click', event => {
-    if (suppressNextClick) {
+    const suppressPointerClick = suppressNextClick && event.detail > 0;
+    suppressNextClick = false;
+    if (suppressPointerClick) {
       event.preventDefault();
       return;
     }
@@ -555,6 +561,7 @@ window.addEventListener('resize', () => {
   if (Math.abs(viewportWidth - lastViewportWidth) < 1) return;
   lastViewportWidth = viewportWidth;
   if (dragging || settleFrame) {
+    suppressOneClick();
       cancelAnimationFrame(settleFrame);
     settleFrame = 0;
     finishPointerSession();

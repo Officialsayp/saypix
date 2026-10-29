@@ -587,7 +587,8 @@ button { font: inherit; }
   outline: 2px solid #83a5ff;
   outline-offset: 3px;
 }
-.language-edge.is-active { background: rgba(255,255,255,.10); cursor: default; }
+/* The current language is already marked in static HTML, before lazy setup. */
+.language-edge[aria-current="page"] { background: rgba(255,255,255,.10); cursor: default; }
 .language-edge.is-drag-source { opacity: .28; }
 .language-edge--ru { left: max(var(--language-edge-offset), env(safe-area-inset-left)); }
 .language-edge--en { right: max(var(--language-edge-offset), env(safe-area-inset-right)); }
@@ -645,7 +646,8 @@ html[data-initial-lang="en"] .drag-hint {
   right: auto;
   left: 75px;
 }
-body.has-used-curtain .drag-hint { opacity: 0; }
+/* Cancellation clears this transient state and restores the invitation to drag. */
+body.is-curtain-moving .drag-hint { opacity: 0; }
 
 /* The hint is decorative. Keep it out of the header until both side gutters
    are wider than the fixed language control and the adjacent navigation. */

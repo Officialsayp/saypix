@@ -57,6 +57,23 @@ try {
         await page.mouse.move(x,dragY,{steps:1});
         await measure(x,'fast-jump-'+i);
       }
+      // Observe immediately after the application's pointermove listener in the
+      // same event dispatch. A delayed rAF/catch-up loop would fail this check,
+      // even if it happened to catch up before a later Playwright evaluation.
+      await page.evaluate(() => {
+        window.pointerTrackingErrors = [];
+        window.addEventListener('pointermove', event => {
+          const r = document.querySelector('.curtain-divider').getBoundingClientRect();
+          window.pointerTrackingErrors.push(Math.abs(r.left + r.width / 2 - event.clientX));
+        });
+      });
+      for (let i=0; i<24; i++) {
+        await page.mouse.move(width * [.02,.98,.2,.8][i%4], dragY, {steps:1});
+      }
+      const burstErrors = await page.evaluate(() => window.pointerTrackingErrors);
+      assert.equal(burstErrors.length,24,`${engine}: missing rapid-reversal pointer events`);
+      assert.ok(Math.max(...burstErrors)<=tolerance,
+        JSON.stringify({engine,width,lang,burstErrors}));
       assert.equal(errors.length,0,JSON.stringify({engine,width,lang,errors}));
       await page.mouse.up();
       await page.waitForFunction(
@@ -70,7 +87,10 @@ try {
         JSON.stringify({url:url.href}));
       console.log('TRACKING_OK',JSON.stringify({
         engine,width,lang,maxError:+Math.max(...measures.map(x=>x.error)).toFixed(3),
-        samples:measures.length,end:url.pathname
+        samples:measures.length,
+        synchronousBurstSamples:burstErrors.length,
+        synchronousBurstMaxError:+Math.max(...burstErrors).toFixed(3),
+        end:url.pathname
       }));
       await page.close();
     }
