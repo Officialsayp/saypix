@@ -32,3 +32,13 @@ export function snapProgress({
   if (progress === 0.5) return targetLang === 'en' ? 1 : 0;
   return progress >= 0.5 ? 1 : 0;
 }
+
+/** Convert a viewport pointer coordinate to the RU/EN boundary position.
+ *  Use the current stage's viewport origin so embedded/repositioned shells work.
+ *  No grip offset, easing, velocity limiter, or artificial drag smoothing.
+ */
+export function pointerProgress(clientX, stageLeft, stageWidth) {
+  const width = Math.max(1, stageWidth);
+  const localX = clamp(clientX - stageLeft, 0, width);
+  return 1 - localX / width;
+}
