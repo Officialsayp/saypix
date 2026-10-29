@@ -33,6 +33,7 @@ jobs:
           sleep 2
           PLAYWRIGHT_MODULE=playwright-core BROWSER_EXECUTABLE="$(command -v google-chrome)" node scripts/check-compact-density.mjs
           PLAYWRIGHT_MODULE=playwright-core BROWSER_EXECUTABLE="$(command -v google-chrome)" node scripts/check-hero-hitbox.mjs
+          PLAYWRIGHT_MODULE=playwright-core BROWSER_EXECUTABLE="$(command -v google-chrome)" node scripts/check-curtain-lifecycle.mjs
 
   changes:
     name: Detect UI changes for WebKit
@@ -57,7 +58,7 @@ jobs:
               - '.github/workflows/verify.yml'
 
   webkit-copy:
-    name: Verify copy boundaries in WebKit (Safari engine)
+    name: Verify copy and curtain lifecycle in WebKit (Safari engine)
     needs: changes
     if: needs.changes.outputs.ui == 'true'
     runs-on: ubuntu-latest
@@ -82,8 +83,9 @@ jobs:
       - name: Install Playwright JS package (browser preinstalled)
         run: npm install --no-save --package-lock=false playwright@1.56.1
 
-      - name: Check hitbox, hover and copy feedback in WebKit
+      - name: Check hitbox, copy feedback and curtain lifecycle in WebKit
         run: |
           python3 -m http.server 4173 --bind 127.0.0.1 --directory dist >/tmp/copy-webkit-ci.log 2>&1 &
           sleep 2
           PLAYWRIGHT_MODULE=playwright BROWSER_ENGINE=webkit node scripts/check-hero-hitbox.mjs
+          PLAYWRIGHT_MODULE=playwright BROWSER_ENGINE=webkit node scripts/check-curtain-lifecycle.mjs

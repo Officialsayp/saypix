@@ -587,7 +587,8 @@ button { font: inherit; }
   outline: 2px solid #83a5ff;
   outline-offset: 3px;
 }
-.language-edge.is-active { background: rgba(255,255,255,.10); cursor: default; }
+/* The current language is already marked in static HTML, before lazy setup. */
+.language-edge[aria-current="page"] { background: rgba(255,255,255,.10); cursor: default; }
 .language-edge.is-drag-source { opacity: .28; }
 .language-edge--ru { left: max(var(--language-edge-offset), env(safe-area-inset-left)); }
 .language-edge--en { right: max(var(--language-edge-offset), env(safe-area-inset-right)); }
@@ -645,12 +646,29 @@ html[data-initial-lang="en"] .drag-hint {
   right: auto;
   left: 75px;
 }
-body.has-used-curtain .drag-hint { opacity: 0; }
+/* Cancellation clears this transient state and restores the invitation to drag. */
+body.is-curtain-moving .drag-hint { opacity: 0; }
 
-/* The hint is decorative. Keep it out of the header until both side gutters
-   are wider than the fixed language control and the adjacent navigation. */
+.drag-hint { pointer-events: none; }
+.drag-hint__arrow { display: none; width: 7px; height: 7px; border-left: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: rotate(45deg); }
+/* Place the compact cue below the target control, outside the navigation row. */
 @media (max-width: 1450px) {
-  .drag-hint { display: none; }
+  .drag-hint {
+    top: calc(max(var(--language-edge-offset), env(safe-area-inset-top)) + 44px + 6px);
+    right: max(var(--language-edge-offset), env(safe-area-inset-right));
+    width: var(--language-control-size);
+    height: 12px;
+    display: grid;
+    place-items: center;
+    color: var(--muted);
+  }
+  html[data-initial-lang="en"] .drag-hint {
+    left: max(var(--language-edge-offset), env(safe-area-inset-left));
+    right: auto;
+  }
+  .drag-hint__label { display: none; }
+  .drag-hint__arrow { display: block; }
+  html[data-initial-lang="en"] .drag-hint__arrow { transform: rotate(225deg); }
 }
 
 /* Warm the drag layers before the first visible pixel moves in WebKit. */
@@ -713,7 +731,7 @@ body.is-curtain-prepared .curtain-divider { box-shadow: none; }
   .section h2 { font-size: 38px; }
   .section__body { font-size: 17px; margin-top: 28px; }
   .project-card { padding: 28px 0; gap: 14px; }
-  .drag-hint { display: none; }
+
 }
 
 @media (min-width: 861px) and (max-width: 1199px) {
