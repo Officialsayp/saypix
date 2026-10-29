@@ -35,14 +35,18 @@ try {
           const r=document.querySelector('.curtain-divider').getBoundingClientRect();
           const g=document.querySelector('.language-ghost').getBoundingClientRect();
           return {center:r.left+r.width/2,
-            ghostCenter:g.left+g.width/2,
+            ghostCenter:g.left+g.width/2, ghostHalfWidth:g.width/2,
             shown:document.querySelector('.curtain-divider').classList.contains('is-visible')};
         });
         const error=Math.abs(expected-value.center);
         measures.push({label,x:expected,error});
         assert.ok(error<=tolerance,JSON.stringify({engine,width,lang,label,expected,value,error}));
-        assert.ok(Math.abs(value.ghostCenter-expected)<=1.2,
-          JSON.stringify({engine,width,lang,label,ghost:value.ghostCenter,expected}));
+        // The floating language chip intentionally stays fully visible near
+        // viewport edges; the seam itself must NOT inherit this constraint.
+        const expectedGhost=Math.max(value.ghostHalfWidth,
+          Math.min(width-value.ghostHalfWidth,expected));
+        assert.ok(Math.abs(value.ghostCenter-expectedGhost)<=1.2,
+          JSON.stringify({engine,width,lang,label,ghost:value.ghostCenter,expectedGhost}));
       };
       await measure(dragX,'initial-grip');
       const targets=lang==='ru'
