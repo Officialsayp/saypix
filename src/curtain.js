@@ -1,4 +1,4 @@
-import { clamp, curtainFrame, snapProgress } from './curtain-math.js';
+import { clamp, curtainFrame, snapProgress, pointerProgress } from './curtain-math.js';
 
 let installedApi = null;
 
@@ -22,10 +22,7 @@ const DRAG_START_PX = 8;
 const MIN_FLING_TRAVEL_PX = 12;
 const FLING_VELOCITY = 0.45;
 const VELOCITY_WINDOW_MS = 96;
-const GHOST_HALF_WIDTH = 24;
-const MOUSE_FALLBACK_GUARD_MS = 32;
-const INPUT_JUMP_PX = 48;
-const INPUT_CATCHUP_SPEED_PX_PER_MS = 1.6;
+const MOUSE_FALLBACK_GUARD_MS = 10;
 
 let activeLang = root.dataset.initialLang === 'en' ? 'en' : 'ru';
 let curtainLang = activeLang === 'en' ? 'ru' : 'en';
@@ -39,25 +36,19 @@ let dragTarget = null;
 let pointerId = null;
 let dragSource = null;
 let dragSamples = [];
-let moveFrame = 0;
 let settleFrame = 0;
 let geometryFrame = 0;
 let geometryLang = null;
 let dragOriginX = 0;
 let dragOriginY = 0;
-let dragStartProgress = progress;
 let dragMoved = false;
 let dragPreviewed = false;
 let dragPointerType = '';
 let lastPointerMoveAt = -Infinity;
 let lostCaptureFrame = 0;
-let inputCatchUpFrame = 0;
-let inputCatchUpLastTime = 0;
-let dragVisualGhostX = null;
-let lastDragInputX = null;
 let stageWidth = 1;
-let ruDragAnchorX = null;
-let enDragAnchorX = null;
+let stageLeft = 0;
+let ghostHalfWidth = 24;
 let navCenters = [];
 let navVisualLangs = navItems.map(() => activeLang);
 let lastViewportWidth = 0;
@@ -139,35 +130,21 @@ function updateA11y() {
 
 function updateStageWidth() {
   const stageRect = shell.getBoundingClientRect();
+  stageLeft = stageRect.left;
   const width = stageRect.width || document.documentElement.clientWidth || window.innerWidth;
   stageWidth = Math.max(1, width);
-  // The curtain should begin where the user grips the inner side of the
-  // language control, not one control-width beyond it at the viewport edge.
-  const ruRect = ruButton.getBoundingClientRect();
-  const enRect = enButton.getBoundingClientRect();
-  ruDragAnchorX = clamp(ruRect.right - stageRect.left, 0, stageWidth);
-  enDragAnchorX = clamp(enRect.left - stageRect.left, 0, stageWidth);
+  ghostHalfWidth = (ghost.getBoundingClientRect().width || 48) / 2;
   navCenters = navItems.map(item => {
     const rect = item.getBoundingClientRect();
-    return clamp(rect.left + rect.width / 2 - stageRect.left, 0, stageWidth);
+    return clamp(rect.left + rect.width / 2 - stageLeft, 0, stageWidth);
   });
   return stageWidth;
 }
 
-function dragAnchorProgress(targetLang) {
-  const anchorX = targetLang === 'en' ? enDragAnchorX : ruDragAnchorX;
-  if (!Number.isFinite(anchorX)) return targetLang === 'en' ? 0 : 1;
-  return clamp(1 - (anchorX / stageWidth), 0, 1);
-}
-
-function progressToDividerX(p) {
-  return (1 - p) * stageWidth;
-}
-
 function paintGhostAt(clientX) {
-  const maxX = Math.max(GHOST_HALF_WIDTH, stageWidth - GHOST_HALF_WIDTH);
-  const x = clamp(clientX, GHOST_HALF_WIDTH, maxX);
-  ghost.style.transform = `translate3d(${(x - GHOST_HALF_WIDTH).toFixed(3)}px, 0, 0)`;
+  const maxX = Math.max(ghostHalfWidth, window.innerWidth - ghostHalfWidth);
+  const x = clamp(clientX, ghostHalfWidth, maxX);
+  ghost.style.transform = `translate3d(${(x - ghostHalfWidth).toFixed(3)}px, 0, 0)`;
 }
 
 // The dock stays physically whole. Only a label changes language when the
@@ -191,13 +168,15 @@ function paintCurtain(p, { ghostX = null, retainPending = false } = {}) {
   if (!retainPending) pendingProgress = progress;
   // Keep a visible divider inside the viewport at the fully closed endpoints.
   // The reveal itself still uses the exact edge coordinate above.
-  const dividerX = clamp(frame.dividerPosition, .5, Math.max(.5, stageWidth - .5));
+  const dividerX = clamp(stageLeft + frame.dividerPosition, stageLeft + .5,
+    stageLeft + Math.max(.5, stageWidth - .5));
 
   // These are local compositor transforms. Do not update an inherited CSS custom
   // property here: that invalidates both full language trees on every pointer frame.
   curtainReveal.style.transform = `translate3d(${frame.revealX.toFixed(3)}px, 0, 0)`;
   curtainLayer.style.transform = `translate3d(${frame.layerX.toFixed(3)}px, 0, 0)`;
-  divider.style.transform = `translate3d(${dividerX.toFixed(3)}px, 0, 0)`;
+  // 1px divider center (not its left border) overlays the pointer hotspot.
+  divider.style.transform = `translate3d(${(dividerX - .5).toFixed(3)}px, 0, 0)`;
   syncNavigation(frame.dividerPosition);
   if (Number.isFinite(ghostX)) paintGhostAt(ghostX);
 }
@@ -268,56 +247,6 @@ function completeLanguageChange(lang) {
 
 function easeOutCubic(t) { return 1 - Math.pow(1 - t, 3); }
 
-function cancelMoveFrame({ flush = false } = {}) {
-  if (!moveFrame) return;
-  cancelAnimationFrame(moveFrame);
-  moveFrame = 0;
-  if (flush) paintCurtain(pendingProgress, { ghostX: pendingGhostX });
-}
-
-function cancelInputCatchUp() {
-  if (!inputCatchUpFrame) return;
-  cancelAnimationFrame(inputCatchUpFrame);
-  inputCatchUpFrame = 0;
-  inputCatchUpLastTime = 0;
-}
-
-function startInputCatchUp() {
-  if (inputCatchUpFrame) return;
-  inputCatchUpLastTime = performance.now();
-
-  const tick = now => {
-    inputCatchUpFrame = 0;
-    const elapsed = clamp(now - inputCatchUpLastTime, 8, 48);
-    inputCatchUpLastTime = now;
-
-    const currentDividerX = progressToDividerX(progress);
-    const targetDividerX = progressToDividerX(pendingProgress);
-    const maxStep = elapsed * INPUT_CATCHUP_SPEED_PX_PER_MS;
-    const nextDividerX = currentDividerX + clamp(targetDividerX - currentDividerX, -maxStep, maxStep);
-    const nextProgress = clamp(1 - (nextDividerX / stageWidth), 0, 1);
-
-    const currentGhostX = Number.isFinite(dragVisualGhostX) ? dragVisualGhostX : dragOriginX;
-    const targetGhostX = Number.isFinite(pendingGhostX) ? pendingGhostX : currentGhostX;
-    const nextGhostX = currentGhostX + clamp(targetGhostX - currentGhostX, -maxStep, maxStep);
-
-    paintCurtain(nextProgress, { ghostX: nextGhostX, retainPending: true });
-    dragVisualGhostX = nextGhostX;
-
-    const dividerSettled = Math.abs(targetDividerX - nextDividerX) < .5;
-    const ghostSettled = Math.abs(targetGhostX - nextGhostX) < .5;
-    if (dragging && (!dividerSettled || !ghostSettled)) {
-      inputCatchUpFrame = requestAnimationFrame(tick);
-      return;
-    }
-
-    paintCurtain(pendingProgress, { ghostX: pendingGhostX });
-    dragVisualGhostX = pendingGhostX;
-  };
-
-  inputCatchUpFrame = requestAnimationFrame(tick);
-}
-
 function detachPointerListeners() {
   window.removeEventListener('pointermove', moveDrag);
   window.removeEventListener('pointerup', endPointerSession);
@@ -328,7 +257,6 @@ function detachPointerListeners() {
 
 function finishPointerSession() {
   detachPointerListeners();
-  cancelInputCatchUp();
   if (lostCaptureFrame) {
     cancelAnimationFrame(lostCaptureFrame);
     lostCaptureFrame = 0;
@@ -341,8 +269,6 @@ function finishPointerSession() {
   dragSamples = [];
   dragPointerType = '';
   lastPointerMoveAt = -Infinity;
-  dragVisualGhostX = null;
-  lastDragInputX = null;
   ruButton.classList.remove('is-drag-source');
   enButton.classList.remove('is-drag-source');
   if (source?.hasPointerCapture?.(capturedPointerId)) {
@@ -351,7 +277,6 @@ function finishPointerSession() {
 }
 
 function cleanupCurtain() {
-  cancelMoveFrame();
   finishPointerSession();
   hideCurtain();
   dragTarget = null;
@@ -392,7 +317,7 @@ function recordPointerSamples(event) {
   const events = event.getCoalescedEvents?.() || [event];
   for (const sample of events) {
     const time = Number.isFinite(sample.timeStamp) ? sample.timeStamp : performance.now();
-    dragSamples.push({ x: clamp(sample.clientX, 0, stageWidth), time });
+    dragSamples.push({ x: clamp(sample.clientX - stageLeft, 0, stageWidth), time });
   }
   const lastTime = dragSamples.at(-1)?.time ?? performance.now();
   dragSamples = dragSamples.filter(sample => lastTime - sample.time <= VELOCITY_WINDOW_MS);
@@ -413,32 +338,27 @@ function startDrag(event, targetLang) {
   if (event.pointerType === 'mouse' && event.button !== 0) return;
   cancelAnimationFrame(settleFrame);
   settleFrame = 0;
-  cancelMoveFrame();
   hideCurtain();
   dragging = true;
   dragTarget = targetLang;
   dragOriginX = event.clientX;
   dragOriginY = event.clientY;
-  dragStartProgress = dragAnchorProgress(targetLang);
   dragMoved = false;
   dragPreviewed = false;
   dragPointerType = event.pointerType || '';
   lastPointerMoveAt = -Infinity;
   pointerId = event.pointerId;
-  pendingProgress = dragStartProgress;
   pendingGhostX = event.clientX;
-  dragVisualGhostX = event.clientX;
-  lastDragInputX = event.clientX;
   paintGhostAt(pendingGhostX);
-  dragSamples = [{ x: clamp(event.clientX, 0, stageWidth), time: performance.now() }];
+  dragSamples = [{ x: clamp(event.clientX - stageLeft, 0, stageWidth), time: performance.now() }];
   dragSource = targetLang === 'en' ? enButton : ruButton;
   dragSource.classList.add('is-drag-source');
   // Promote the transform layers before the first visible pixel moves. This
   // keeps Safari from doing its expensive layer/filter switch on that frame.
   prepareCurtain(targetLang);
-  // Start at the grip edge, so the divider is visible immediately under the
-  // language control instead of appearing only after it enters the viewport.
-  paintCurtain(dragStartProgress, { ghostX: pendingGhostX });
+  // Exact pointer lock: start from the hotspot under the actual initial grab.
+  pendingProgress = pointerProgress(event.clientX, stageLeft, stageWidth);
+  paintCurtain(pendingProgress, { ghostX: pendingGhostX });
   // The ghost still waits for movement; the divider confirms capture now.
   divider.classList.toggle('is-visible', !reducedMotion.matches);
   try {
@@ -456,33 +376,12 @@ function startDrag(event, targetLang) {
   }
 }
 
-function queueDragPosition(event, { immediate = false } = {}) {
-  const travel = event.clientX - dragOriginX;
-  pendingProgress = clamp(dragStartProgress - (travel / stageWidth), 0, 1);
+function queueDragPosition(event) {
+  // Paint the newest pointer position directly. No spring, no 48px jump detector,
+  // no speed cap and no deferred rAF cursor-chasing loop.
+  pendingProgress = pointerProgress(event.clientX, stageLeft, stageWidth);
   pendingGhostX = event.clientX;
-  const inputJump = Number.isFinite(lastDragInputX)
-    && Math.abs(event.clientX - lastDragInputX) >= INPUT_JUMP_PX;
-  lastDragInputX = event.clientX;
-
-  if (inputJump) {
-    cancelMoveFrame();
-    startInputCatchUp();
-    return;
-  }
-  if (inputCatchUpFrame) return;
-
-  if (immediate) {
-    cancelMoveFrame();
-    paintCurtain(pendingProgress, { ghostX: pendingGhostX });
-    dragVisualGhostX = pendingGhostX;
-    return;
-  }
-  if (moveFrame) return;
-  moveFrame = requestAnimationFrame(() => {
-    moveFrame = 0;
-    paintCurtain(pendingProgress, { ghostX: pendingGhostX });
-    dragVisualGhostX = pendingGhostX;
-  });
+  paintCurtain(pendingProgress, { ghostX: pendingGhostX });
 }
 
 function isActiveDragEvent(event) {
@@ -513,14 +412,13 @@ function moveDrag(event) {
         showCurtain(dragTarget);
       }
       recordPointerSamples(event);
-      queueDragPosition(event, { immediate: firstPreview });
+      queueDragPosition(event);
       queuedPreview = true;
     }
 
     if (horizontalDistance < DRAG_START_PX && verticalDistance < DRAG_START_PX) return;
     if (verticalDistance > horizontalDistance) {
-      cancelMoveFrame();
-      paintCurtain(activeLang === 'en' ? 1 : 0);
+          paintCurtain(activeLang === 'en' ? 1 : 0);
       cleanupCurtain();
       suppressOneClick();
       return;
@@ -532,7 +430,7 @@ function moveDrag(event) {
     }
     if (!queuedPreview) {
       recordPointerSamples(event);
-      queueDragPosition(event, { immediate: true });
+      queueDragPosition(event);
     }
     event.preventDefault();
     return;
@@ -564,21 +462,19 @@ function endPointerSession(event) {
   if (!isActiveDragEvent(event)) return;
   recoverTerminalDrag(event);
   if (!dragMoved) {
-    cancelMoveFrame();
-    finishPointerSession();
+      finishPointerSession();
     paintCurtain(activeLang === 'en' ? 1 : 0);
     hideCurtain();
     dragTarget = null;
     return;
   }
 
-  const wasCatchingUp = Boolean(inputCatchUpFrame);
   recordPointerSamples(event);
-  if (!wasCatchingUp) queueDragPosition(event, { immediate: true });
+  queueDragPosition(event);
   const velocity = currentVelocity();
   const travelled = Math.abs(event.clientX - dragOriginX);
   const target = snapProgress({
-    progress: wasCatchingUp ? pendingProgress : progress,
+    progress: pendingProgress,
     targetLang: dragTarget,
     velocity,
     travelled,
@@ -599,7 +495,6 @@ function endMouseSession(event) {
 
 function cancelDrag(event) {
   if (!dragging || (event && event.pointerId !== pointerId)) return;
-  cancelMoveFrame({ flush: true });
   finishPointerSession();
   animateTo(activeLang === 'en' ? 1 : 0);
 }
@@ -660,8 +555,7 @@ window.addEventListener('resize', () => {
   if (Math.abs(viewportWidth - lastViewportWidth) < 1) return;
   lastViewportWidth = viewportWidth;
   if (dragging || settleFrame) {
-    cancelMoveFrame();
-    cancelAnimationFrame(settleFrame);
+      cancelAnimationFrame(settleFrame);
     settleFrame = 0;
     finishPointerSession();
     paintCurtain(activeLang === 'en' ? 1 : 0);
