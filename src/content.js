@@ -88,7 +88,7 @@ export const siteContent = {
           id: "zolotoy-dev",
           number: "02",
           name: "zolotoy.dev",
-          description: "Инженерный проект с архитектурой четырёх Go-сервисов: Order, Auth, Notification и URL Shortener. Интерактивный веб-интерфейс демонстрирует сценарии каждого сервиса.",
+          description: "Go-платформа с четырьмя сервисами, REST API и интерактивным демо.",
           highlights: [
             "Order — заказы, оплаты, состояния, идемпотентность и outbox.",
             "Auth — пользователи, сессии, refresh rotation и RBAC.",
@@ -195,7 +195,7 @@ export const siteContent = {
           id: "zolotoy-dev",
           number: "02",
           name: "zolotoy.dev",
-          description: "An engineering project with four Go backend services: Order, Auth, Notification and URL Shortener. An interactive web interface demonstrates each service’s scenarios.",
+          description: "Go platform with four services, REST APIs and an interactive demo.",
           highlights: [
             "Order — orders, payments, state transitions, idempotency and outbox.",
             "Auth — users, sessions, refresh rotation and RBAC.",
