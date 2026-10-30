@@ -8,7 +8,7 @@ const browser = await chromium.launch({
   args: ['--no-sandbox', '--disable-dev-shm-usage'],
 });
 const base = process.env.BASE_URL || 'http://127.0.0.1:4173';
-const widths = [320, 340, 360, 375, 390, 414, 430, 480, 560, 561, 585, 700, 768, 860, 861, 1024, 1199, 1200, 1440, 1920];
+const widths = [320, 333, 334, 340, 360, 375, 390, 414, 430, 480, 560, 561, 585, 700, 768, 860, 861, 1024, 1199, 1200, 1440, 1920];
 const selector = [
   'main > section', '.hero__lead', '.hero__visual',
   '.section h2', '.section__body', '.section__body > p',
@@ -92,6 +92,18 @@ try {
       for (const dx of [...alignmentDiffs, ...rowEdgeDiffs]) {
         assert.ok(Math.abs(dx) <= 1, JSON.stringify({width,lang,dx,alignmentDiffs,rowEdgeDiffs}));
       }
+      const geometry = await page.evaluate(() => {
+        const x = selector => document.querySelector(selector).getBoundingClientRect().left;
+        const code = document.querySelector('.hero__visual-code-content');
+        return {
+          about: x('[id^="about-"] .section__head h2') - x('[id^="about-"] .section__body'),
+          contacts: x('[id^="contacts-"] .section__head h2') - x('.contacts__links'),
+          codeOverflow: code.scrollWidth - code.clientWidth,
+        };
+      });
+      assert.ok(Math.abs(geometry.about) <= 1, JSON.stringify({width,lang,geometry}));
+      assert.ok(Math.abs(geometry.contacts) <= 1, JSON.stringify({width,lang,geometry}));
+      assert.ok(geometry.codeOverflow <= 1, JSON.stringify({width,lang,geometry}));
       const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
       assert.ok(overflow <= 1, JSON.stringify({width,lang,overflow}));
       results.push(metrics);
