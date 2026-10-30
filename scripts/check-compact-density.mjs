@@ -54,12 +54,22 @@ try {
       const stack = await page.evaluate(() => {
         const section = document.querySelector('[id^="stack-"]');
         const rows = [...section.querySelectorAll('.stack-group')];
+        const projectContentX = document.querySelector('[id^="projects-"] .project-card__content').getBoundingClientRect().left;
+        const projectRowX = document.querySelector('[id^="projects-"] .project-card').getBoundingClientRect().left;
+        const alignmentDiffs = rows.flatMap(row => [
+          row.querySelector('h3'),
+          row.querySelector('.stack-group__content'),
+          row.querySelector('.chips'),
+          row.querySelector('.chip')
+        ].map(el => el.getBoundingClientRect().left - projectContentX));
+        const rowEdgeDiffs = rows.map(row => row.getBoundingClientRect().left - projectRowX);
         const border = (el, side) => getComputedStyle(el)[side];
         return {
           count: rows.length,
           numbering: section.querySelectorAll('.stack-group__num').length,
           headings: rows.map(el => el.querySelector('h3').textContent),
           chipCounts: rows.map(el => el.querySelectorAll('.chip').length),
+          alignmentDiffs, rowEdgeDiffs,
           topSection: border(section,'borderTopWidth'),
           firstTop: border(rows[0],'borderTopWidth'),
           secondTop: border(rows[1],'borderTopWidth'),
@@ -70,7 +80,8 @@ try {
             chip.getBoundingClientRect().right > document.documentElement.clientWidth + 1))
         };
       });
-      assert.deepEqual(stack, {
+      const { alignmentDiffs, rowEdgeDiffs, ...stackStructure } = stack;
+      assert.deepEqual(stackStructure, {
         count:2,
         numbering:0,
         headings:['Backend & Data','Infrastructure & DevOps'],
@@ -78,6 +89,9 @@ try {
         topSection:'1px',firstTop:'0px',secondTop:'1px',lastBottom:'0px',
         projectSectionTop:'1px',horizontalOverflow:false,chipOverflow:false
       }, JSON.stringify({width,lang,stack}));
+      for (const dx of [...alignmentDiffs, ...rowEdgeDiffs]) {
+        assert.ok(Math.abs(dx) <= 1, JSON.stringify({width,lang,dx,alignmentDiffs,rowEdgeDiffs}));
+      }
       const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
       assert.ok(overflow <= 1, JSON.stringify({width,lang,overflow}));
       results.push(metrics);
