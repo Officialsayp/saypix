@@ -8,7 +8,7 @@ const browser = await pw[engine].launch({
   ...(engine === 'chromium' ? { args:['--no-sandbox','--disable-dev-shm-usage'] } : {}),
 });
 const base = process.env.BASE_URL || 'http://127.0.0.1:4173';
-const widths = [320, 340, 375, 390, 560, 561, 768, 860, 861, 1024, 1200, 1440, 1920];
+const widths = [320, 333, 334, 340, 375, 390, 560, 561, 768, 860, 861, 1024, 1200, 1440, 1920];
 
 try {
   for (const width of widths) {
@@ -48,11 +48,20 @@ try {
           stackTop: getComputedStyle(section).borderTopWidth,
           projectTop: getComputedStyle(document.querySelector('[id^="projects-"]')).borderTopWidth,
           overflow: document.documentElement.scrollWidth-document.documentElement.clientWidth,
+          aboutAxis: document.querySelector('[id^="about-"] .section__head h2').getBoundingClientRect().left
+            - document.querySelector('[id^="about-"] .section__body').getBoundingClientRect().left,
+          contactsAxis: document.querySelector('[id^="contacts-"] .section__head h2').getBoundingClientRect().left
+            - document.querySelector('.contacts__links').getBoundingClientRect().left,
+          codeOverflow: document.querySelector('.hero__visual-code-content').scrollWidth
+            - document.querySelector('.hero__visual-code-content').clientWidth,
         };
       });
       assert.deepEqual(data.groups.map(g=>g.title),['Backend & Data','Infrastructure & DevOps']);
       assert.deepEqual(data.groups.map(g=>g.count),[6,7]);
       assert.equal(data.numbering,0,'Stack group numbering must be absent');
+      assert.ok(Math.abs(data.aboutAxis) <= 1, JSON.stringify({engine,width,lang,aboutAxis:data.aboutAxis}));
+      assert.ok(Math.abs(data.contactsAxis) <= 1, JSON.stringify({engine,width,lang,contactsAxis:data.contactsAxis}));
+      assert.ok(data.codeOverflow <= 1, JSON.stringify({engine,width,lang,codeOverflow:data.codeOverflow}));
       assert.equal(data.stackTop,'1px');
       assert.equal(data.projectTop,'1px');
       assert.deepEqual(data.groups.map(g=>g.topBorder),['0px','1px']);
