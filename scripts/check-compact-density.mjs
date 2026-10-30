@@ -15,7 +15,7 @@ const selector = [
   '.project-card', '.project-card h3', '.project-card p',
   '.project-card__highlights li', '.project-card__tags',
   '.project-card__meta', '.project-card__status', '.project-card__link',
-  '.chips', '.contacts__links'
+  '.chips', '.stack-list', '.stack-group', '.stack-group h3', '.stack-group__content', '.stack-group .chip', '.contacts__links'
 ].join(',');
 const coords = els => els.map(el => {
   const r = el.getBoundingClientRect();
@@ -51,6 +51,31 @@ try {
         count:2, sectionTop:'1px', firstTop:'0px', middleTop:'1px',
         firstBottom:'0px', lastBottom:'0px', nextSectionTop:'1px'
       }, JSON.stringify({width,lang,borders}));
+      const stack = await page.evaluate(() => {
+        const section = document.querySelector('[id^="stack-"]');
+        const rows = [...section.querySelectorAll('.stack-group')];
+        const border = (el, side) => getComputedStyle(el)[side];
+        return {
+          count: rows.length,
+          headings: rows.map(el => el.querySelector('h3').textContent),
+          chipCounts: rows.map(el => el.querySelectorAll('.chip').length),
+          topSection: border(section,'borderTopWidth'),
+          firstTop: border(rows[0],'borderTopWidth'),
+          secondTop: border(rows[1],'borderTopWidth'),
+          lastBottom: border(rows[1],'borderBottomWidth'),
+          projectSectionTop: border(document.querySelector('[id^="projects-"]'),'borderTopWidth'),
+          horizontalOverflow: rows.some(el => el.getBoundingClientRect().right > document.documentElement.clientWidth + 1),
+          chipOverflow: rows.some(el => [...el.querySelectorAll('.chip')].some(chip =>
+            chip.getBoundingClientRect().right > document.documentElement.clientWidth + 1))
+        };
+      });
+      assert.deepEqual(stack, {
+        count:2,
+        headings:['Backend & Data','Infrastructure & DevOps'],
+        chipCounts:[6,7],
+        topSection:'1px',firstTop:'0px',secondTop:'1px',lastBottom:'0px',
+        projectSectionTop:'1px',horizontalOverflow:false,chipOverflow:false
+      }, JSON.stringify({width,lang,stack}));
       const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
       assert.ok(overflow <= 1, JSON.stringify({width,lang,overflow}));
       results.push(metrics);
