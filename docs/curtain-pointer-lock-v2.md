@@ -1,10 +1,10 @@
-# Curtain V2 — pointer-locked drag (experimental)
+# Curtain V2 — pointer-locked drag (implemented)
 
 ## Status
-- Independent branch only. **Never deploy this experiment automatically**.
-- Production baseline at branch creation: `fed7d9e4c23d6c4887e99072adf62d3c55604497`.
-- This experiment keeps the two RU/EN layers, semantic links, scroll persistence,
-  snap/fling on release, keyboard navigation and reduced-motion behavior.
+- **Integrated into `main`:** PR [#36](https://github.com/Officialsayp/saypix/pull/36) was merged on 2026-10-29 (merge commit `143bd110a91ec80b44e985f78e302855e2c8bd23`). The `codex/curtain-pointer-lock-v2` branch was the original experiment, **not** an active release prerequisite.
+- Production baseline at experiment creation: `fed7d9e4c23d6c4887e99072adf62d3c55604497`; historical measurement results below belong to that experiment and its follow-ups.
+- The implementation preserves both RU/EN layers, semantic links, scroll restoration, snap/fling, keyboard navigation and reduced-motion behavior.
+- Live Safari/trackpad physical pointer-to-display latency remains **unverified** by CI; do not reinterpret synthetic 0–0.75px DOM measurements as real-device latency results.
 
 ## Verified causes in V1
 1. The divider starts at the inner edge of the language control, while grabbing
@@ -99,7 +99,7 @@ remains unchanged: no new smoothing, scheduling, or layout reads during movement
   justified by these measurements. Owner Safari/trackpad testing remains a release gate.
 
 ## Acceptance test on real Mac
-1. Clone / switch to `codex/curtain-pointer-lock-v2`. Run
+1. Check out the current `main` (the experiment is merged). Run
    `npm ci && npm run preview`, open `http://127.0.0.1:4173/ru/` in Safari.
 2. Compare **the same physical Mac** against production, in separate tabs:
    - drag EN → left in RU page; drag RU → right in EN page.
@@ -135,7 +135,10 @@ remains unchanged: no new smoothing, scheduling, or layout reads during movement
 4. Do not depend on `pointerrawupdate` for Safari: browser support is limited;
    it can be an optional benchmark in Chromium, never a Safari requirement.
 
-## Release process
-Review experiment in local Safari -> collect owner feedback -> refine -> 
-standard PR with permanent regression checks -> approve -> merge -> 
-Selectel atomic deploy -> production smoke tests -> keep old release for rollback.
+## Release history and future changes
+The original experiment was reviewed and merged as PR #36 on 2026-10-29.
+Future changes to curtain input, timing or visual geometry must follow the normal
+PR workflow: reproduce on actual hardware when latency is the concern, preserve
+permanent Chromium/WebKit regression checks, review, merge, atomic deploy and
+production smoke-test. Do not redeploy the historical experiment branch as if it
+were a newer version of `main`.
