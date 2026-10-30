@@ -1,11 +1,20 @@
 # Resilience plan for Russian networks and direct-origin deployment
 
+> **HISTORICAL INVESTIGATION / MIGRATION PLAN.** This document preserves the original Cloudflare Workers diagnosis and Caddy-based cutover proposal. The cutover subsequently completed. As of 2026-10-31, the site is served directly from Selectel using the Nginx production profile in [`deploy/nginx/`](../deploy/nginx/README.md); Cloudflare is authoritative DNS only. For current operating commands and recovery, use the [recovery runbook](recovery-runbook.md). Do **not** execute the Caddy setup/cutover steps below on a live Nginx host. The on-host TLS and certificate renewal state require direct VPS inspection.
+
 ## Scope and diagnosis
 
-The production site is static. Its current request path is:
+The production site is static. **During the original failure investigation**, the request path was:
 
 ```text
 GitHub main -> Cloudflare build -> dist/ -> Workers Static Assets -> Cloudflare proxy -> visitor
+```
+
+**After the completed migration**, the operating path is:
+
+```text
+GitHub main -> GitHub Actions -> Selectel releases/current -> Nginx -> visitor
+Cloudflare -> DNS only (no web proxy)
 ```
 
 Repository and production checks do not show a slow Worker, backend, DNS, TCP,
@@ -139,7 +148,7 @@ the Russian ISP failure.
 
 ## Direct-origin files
 
-The repository contains two plain-Caddy profiles:
+The original migration plan used these plain-Caddy profiles (now historical/reference-only):
 
 - `deploy/caddy/Caddyfile.origin` for `origin.maxzolotoy.com`;
 - `deploy/caddy/Caddyfile.production` for the final apex/www cutover;
@@ -159,7 +168,7 @@ Both profiles:
 The origin profile also sends `X-Robots-Tag: noindex, nofollow` so the diagnostic
 hostname cannot compete with the production canonical pages.
 
-## VPS provisioning
+## VPS provisioning (historical Caddy plan — do not run on current Nginx production)
 
 Use a current supported Debian or Ubuntu release. Commands below describe the
 required state; adjust package commands to the chosen distribution.
@@ -194,7 +203,7 @@ runs without application secrets and without a Node production server.
 With key-only SSH and a restricted firewall, fail2ban is optional rather than a
 prerequisite. Re-evaluate it if logs show sustained authentication attacks.
 
-## Staging DNS and GitHub Actions
+## Staging DNS and GitHub Actions (historical pre-cutover steps)
 
 Before any apex change, create:
 
@@ -252,7 +261,7 @@ Cloudflare HTTP/3 may be temporarily turned off during comparison to remove one
 variable, but the known failure also occurs over HTTP/2. Do not treat HTTP/3 as
 the sole cause or promise that disabling it fixes the issue.
 
-## Safe production cutover
+## Safe production cutover (completed; historical instructions only)
 
 Proceed only after the origin comparison passes.
 
@@ -272,10 +281,11 @@ Proceed only after the origin comparison passes.
 10. Keep the previous Cloudflare Workers deployment available during the
     observation window.
 
-Root language selection remains a fixed `/` -> `/en/` default. `/ru/` and `/en/`
-are never geo-forced. Do not add an external GeoIP API to the request path. A
-future geo-aware root may use `Accept-Language` or a local GeoIP database, with a
-deterministic fallback.
+The original plan used a fixed `/` -> `/en/` default. The current Nginx
+`deploy/nginx/http-maps.conf` selects `/ru/` only when `Accept-Language` starts
+with `ru` (including its normal regional/quality forms); otherwise it selects
+`/en/`. Explicit `/ru/` and `/en/` URLs are never geo-forced. No external
+GeoIP API belongs in the request path.
 
 ## Rollback
 
@@ -301,7 +311,9 @@ DNS cutover rollback:
 DNS caches can make rollback non-instantaneous; this is why TTL is lowered and
 both origins remain healthy through the observation period.
 
-## Remaining external work
+## Remaining external work (at the time of the original migration plan)
+
+These were the boundaries of the original plan, **not an assertion that cutover is still pending**. Live operations still require host access for TLS, service processes and external network checks.
 
 Repository work cannot by itself:
 
