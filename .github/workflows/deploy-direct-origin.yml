@@ -25,10 +25,12 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm test
-      - name: Validate Caddy deployment profiles
+      - name: Install Nginx for isolated profile verification
         run: |
-          docker run --rm -v "$PWD/deploy/caddy:/etc/caddy:ro" caddy:2-alpine caddy validate --config /etc/caddy/Caddyfile.origin --adapter caddyfile
-          docker run --rm -v "$PWD/deploy/caddy:/etc/caddy:ro" caddy:2-alpine caddy validate --config /etc/caddy/Caddyfile.production --adapter caddyfile
+          sudo apt-get update
+          sudo apt-get install --yes nginx libnginx-mod-http-headers-more-filter
+      - name: Validate Nginx configuration and static-site behavior
+        run: npm run check:nginx
 
   deploy:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main' && vars.DIRECT_ORIGIN_DEPLOY_ENABLED == 'true'
