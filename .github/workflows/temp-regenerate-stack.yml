@@ -1,0 +1,30 @@
+name: Temporary regenerate Stack assets
+on:
+  push:
+    branches: [codex/stack-remove-row-numbers]
+permissions:
+  contents: write
+jobs:
+  regenerate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: codex/stack-remove-row-numbers
+          persist-credentials: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Validate and build
+        run: npm test
+      - name: Regenerate and commit dist
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A dist
+          if ! git diff --cached --quiet; then
+            git commit -m "build: update fingerprinted Stack assets"
+            git push origin HEAD:codex/stack-remove-row-numbers
+          fi
