@@ -88,7 +88,7 @@ export const siteContent = {
           id: "zolotoy-dev",
           number: "02",
           name: "zolotoy.dev",
-          description: "Backend-проект на Go из четырёх сервисов. Order уже развивается в коде, остальные сервисы последовательно добавляются по мере реализации архитектуры.",
+          description: "Инженерный проект с архитектурой четырёх Go-сервисов: Order, Auth, Notification и URL Shortener. Интерактивный веб-интерфейс демонстрирует сценарии каждого сервиса.",
           highlights: [
             "Order — заказы, оплаты, состояния, идемпотентность и outbox.",
             "Auth — пользователи, сессии, refresh rotation и RBAC.",
@@ -107,7 +107,7 @@ export const siteContent = {
             "Docker",
             "DDD"
           ],
-          status: "В разработке · целевой backend-стек",
+          status: "Портфолио-проект",
           url: projectLinks.zolotoyDev,
           linkLabel: "Открыть zolotoy.dev",
           codeRepository: projectLinks.zolotoyDevBackend,
@@ -195,7 +195,7 @@ export const siteContent = {
           id: "zolotoy-dev",
           number: "02",
           name: "zolotoy.dev",
-          description: "A Go backend project built around four services. Order is currently being implemented, with the remaining services added as the architecture evolves.",
+          description: "An engineering project with four Go backend services: Order, Auth, Notification and URL Shortener. An interactive web interface demonstrates each service’s scenarios.",
           highlights: [
             "Order — orders, payments, state transitions, idempotency and outbox.",
             "Auth — users, sessions, refresh rotation and RBAC.",
@@ -214,7 +214,7 @@ export const siteContent = {
             "Docker",
             "DDD"
           ],
-          status: "In development · target backend stack",
+          status: "Portfolio project",
           url: projectLinks.zolotoyDev,
           linkLabel: "Open zolotoy.dev",
           codeRepository: projectLinks.zolotoyDevBackend,
