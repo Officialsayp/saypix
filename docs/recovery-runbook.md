@@ -1,6 +1,10 @@
 # Recovery Runbook — maxzolotoy.com
 
-Актуально: **2026-09-01**
+Первоначальная версия: **2026-09-01**. Актуализация документа по GitHub и истории миграции: **2026-10-31**.
+
+> **Состояние:** действующая схема использует **Nginx** на Selectel VPS и Cloudflare как авторитетный DNS. Профиль Caddy сохранён в Git для истории/отката. Продакшен-деплой `ac8a30af87caffb898b3f7c1425077d62be7ca46` прошёл GitHub Actions с успешным origin smoke-test; это **не** подтверждает фактические пути конфигурации Nginx, метод продления TLS или состав последнего server-side backup. Перед восстановлением обязательно сверить их по SSH. Значения ниже, зафиксированные в 2026-09-01, считать историческими до повторной проверки.
+
+> **Приоритет инструкций:** для текущей системы применяйте разделы о Nginx, deploy, release-lock, TLS и DNS; раздел 4 содержит хронологию Cloudflare/Caddy и не предписывает возвращать Caddy в production. Nginx-фрагменты и правила проверки: [`deploy/nginx/README.md`](../deploy/nginx/README.md).
 
 Документ предназначен для восстановления production-инфраструктуры `maxzolotoy.com` после потери VPS, повреждения конфигурации, неудачного деплоя или переноса на новый сервер.
 
@@ -18,7 +22,7 @@ GitHub Actions
 Selectel VDS — 135.106.186.27
 Ubuntu 24.04 LTS
         │
-        ├─ Caddy
+        ├─ Nginx (активный профиль)
         ├─ /var/www/maxzolotoy/releases/<commit>
         └─ /var/www/maxzolotoy/current -> active release
         │
@@ -182,7 +186,7 @@ www.maxzolotoy.com/* → https://maxzolotoy.com/<тот же path/query>
 
 Path и query string сохранялись.
 
-После перехода на Selectel этот redirect больше не нужен: `www` приходит напрямую на Caddy, который сам перенаправляет на apex.
+После перехода на Selectel этот redirect больше не нужен: `www` приходит напрямую на веб-сервер Selectel (сейчас Nginx), который перенаправляет на apex.
 
 ### 4.4. Языковая логика, которую пробовали на Cloudflare
 
@@ -202,7 +206,7 @@ RU / BY / KZ → русская версия
 /en/ не должен принудительно переводиться на /ru/
 ```
 
-После Selectel geo-IP routing больше не нужен. Сейчас `/` выбирает язык на Caddy по `Accept-Language` браузера.
+После Selectel geo-IP routing больше не нужен. Сейчас `/` выбирает язык на Nginx по началу заголовка `Accept-Language` через `deploy/nginx/http-maps.conf` (`ru` → `/ru/`, иначе `/en/`).
 
 ### 4.5. Почему Cloudflare proxy был отключён
 
@@ -413,15 +417,10 @@ curl -I https://maxzolotoy.com/ru/ | grep -Ei 'server|cf-ray'
 Нужно:
 
 ```text
-server: Caddy
+server: nginx (если заголовок Server публикуется)
 ```
 
-Не должно быть:
-
-```text
-server: cloudflare
-cf-ray:
-```
+Не должно быть признаков Cloudflare-проксирования (`server: cloudflare`, `cf-ray`). Не полагаться только на `Server`: он может быть скрыт/переопределён, проверяйте DNS-only и фактический HTTPS ответ.
 
 ### 4.10. Что не включать обратно
 
@@ -575,40 +574,28 @@ ufw status verbose
 
 Ожидаемо: `Status: active`, incoming по умолчанию запрещён.
 
-## 7. Caddy
+## 7. Nginx — действующий веб-сервер
 
-Server-side:
-
-```text
-/etc/caddy/Caddyfile
-/etc/caddy/site.caddy
-```
-
-В Git:
+Git содержит **фрагменты**, а не полный конфиг production-хоста:
 
 ```text
-deploy/caddy/Caddyfile.production
-deploy/caddy/Caddyfile.origin
-deploy/caddy/site.caddy
+deploy/nginx/http-maps.conf  # включить один раз внутри http {}
+deploy/nginx/site.conf       # внутри server {} для apex и origin
 ```
 
-Проверить:
+TLS-сертификаты, renew hooks, listen, apex/www redirects и ACME webroot управляются на VPS отдельно; их **реальные пути и способ продления неизвестны** из репозитория. Перед вмешательством получите и проверьте фактическую конфигурацию по SSH (вывод `nginx -T` может содержать чувствительные сведения — не публикуйте его без очистки):
 
 ```bash
-caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile
+sudo nginx -t
+systemctl status nginx --no-pager
+systemctl is-active caddy || true
+ss -lntp | grep -E ':80|:443'
+systemctl list-timers --all | grep -Ei 'certbot|acme|letsencrypt|certificate|nginx' || true
 ```
 
-Reload:
+Перед изменением или восстановлением сохраните копию реально используемых host-конфигов и TLS-материалов в защищённое хранилище. **Не заменяйте host-конфиг только фрагментами из репозитория**: в них нет TLS/listener/renewal. Для нового сервера подготовьте полную конфигурацию с существующим способом управления сертификатами; проверьте `nginx -t` до `systemctl reload nginx`. Первичный запуск/reload выполнять только при валидной конфигурации и доступных сертификатах. Проверяйте `/_health`, обе локали, HTTPS и заголовок `X-Robots-Tag` на origin.
 
-```bash
-systemctl reload caddy
-```
-
-Статус:
-
-```bash
-systemctl status caddy --no-pager
-```
+Caddy в `deploy/caddy/` — **исторический/резервный профиль**. Не запускать `systemctl enable caddy` и не применять старые Caddy-файлы к действующему Nginx без отдельного утверждённого плана миграции.
 
 ## 8. Языковая маршрутизация
 
@@ -677,7 +664,6 @@ curl -i https://origin.maxzolotoy.com/_health
 
 ```text
 HTTP/2 200
-server: Caddy
 
 ok
 ```
@@ -724,6 +710,9 @@ ls -lt /var/www/maxzolotoy/releases
 
 ## 12. GitHub Actions deploy
 
+Workflow для `main` проходит `npm test` и `npm run check:nginx` (после установки Nginx/headers-more в CI); далее архивирует `dist`, загружает его по SSH, переключает `current` под `flock` и проверяет origin. Это проверка конфигурационного профиля и ответов origin; она не подтверждает полноту server-side backup и сертификатного renewal.
+
+
 Workflow:
 
 ```text
@@ -769,6 +758,7 @@ push main
 → npm run build
 → SCP dist
 → /var/www/maxzolotoy/releases/<GITHUB_SHA>
+→ flock on releases/.deploy-maxzolotoy.lock
 → atomic current symlink switch
 → smoke test origin
 ```
