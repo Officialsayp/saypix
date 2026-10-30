@@ -91,3 +91,53 @@ jobs:
           PLAYWRIGHT_MODULE=playwright BROWSER_ENGINE=webkit node scripts/check-hero-hitbox.mjs
           PLAYWRIGHT_MODULE=playwright BROWSER_ENGINE=webkit node scripts/check-curtain-lifecycle.mjs
           PLAYWRIGHT_MODULE=playwright BROWSER_ENGINE=webkit node scripts/check-stack-browser.mjs
+
+  geometry-audit-chrome:
+    name: Read-only geometry audit (Chromium)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci && npm run build
+      - name: Audit all alignments at 24 widths (Chromium)
+        run: |
+          npm install --no-save --package-lock=false playwright-core@1.56.1
+          python3 -m http.server 4173 --bind 127.0.0.1 --directory dist >/tmp/geometry-chrome.log 2>&1 &
+          sleep 2
+          PLAYWRIGHT_MODULE=playwright-core BROWSER_EXECUTABLE="$(command -v google-chrome)" node scripts/audit-geometry.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: geometry-audit-chromium
+          path: geometry-audit/
+          if-no-files-found: warn
+
+  geometry-audit-webkit:
+    name: Read-only geometry audit (WebKit)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    container:
+      image: mcr.microsoft.com/playwright:v1.56.1-noble
+      options: --user 1001
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci && npm run build
+      - run: npm install --no-save --package-lock=false playwright@1.56.1
+      - name: Audit all alignments at 24 widths (WebKit)
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 --directory dist >/tmp/geometry-webkit.log 2>&1 &
+          sleep 2
+          PLAYWRIGHT_MODULE=playwright BROWSER_ENGINE=webkit node scripts/audit-geometry.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: geometry-audit-webkit
+          path: geometry-audit/
+          if-no-files-found: warn
