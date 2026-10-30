@@ -102,6 +102,12 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci && npm run build
+      - name: Export generated dist for consistent source/asset commit
+        uses: actions/upload-artifact@v4
+        with:
+          name: generated-dist-for-geometry-fix
+          path: dist/
+          if-no-files-found: error
       - name: Audit all alignments at 24 widths (Chromium)
         run: |
           npm install --no-save --package-lock=false playwright-core@1.56.1
