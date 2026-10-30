@@ -19,6 +19,8 @@ try {
       const data = await page.evaluate(() => {
         const section = document.querySelector('[id^="stack-"]');
         const groups = [...section.querySelectorAll('.stack-group')];
+        const projectContentX = document.querySelector('[id^="projects-"] .project-card__content').getBoundingClientRect().left;
+        const projectRowX = document.querySelector('[id^="projects-"] .project-card').getBoundingClientRect().left;
         const coords = e => {
           const r=e.getBoundingClientRect();
           return { top:r.top, height:r.height, right:r.right };
@@ -29,7 +31,16 @@ try {
             count: group.querySelectorAll('.chip').length,
             box: coords(group),
             heading: coords(group.querySelector('h3')),
+            content: coords(group.querySelector('.stack-group__content')),
+            chipsContainer: coords(group.querySelector('.chips')),
             chips: [...group.querySelectorAll('.chip')].map(coords),
+            alignment: [
+              group.querySelector('h3'),
+              group.querySelector('.chips'),
+              group.querySelector('.chip'),
+              group.querySelector('.stack-group__content')
+            ].map(el => el.getBoundingClientRect().left - projectContentX),
+            dividerLeftError: group.getBoundingClientRect().left - projectRowX,
             topBorder: getComputedStyle(group).borderTopWidth,
             bottomBorder: getComputedStyle(group).borderBottomWidth,
           })),
@@ -51,6 +62,10 @@ try {
         assert.ok(group.box.right<=width+1,JSON.stringify({engine,width,lang,group}));
         for(const chip of group.chips)
           assert.ok(chip.right<=width+1,JSON.stringify({engine,width,lang,chip}));
+        for (const dx of group.alignment)
+          assert.ok(Math.abs(dx)<=1,JSON.stringify({engine,width,lang,alignTo:'project content',dx,group}));
+        assert.ok(Math.abs(group.dividerLeftError)<=1,
+          JSON.stringify({engine,width,lang,alignTo:'project full-width row',group}));
       }
       geometries.push(data.groups.map(g=>({top:g.box.top,height:g.box.height,headingTop:g.heading.top,headingHeight:g.heading.height})));
       await page.close();
