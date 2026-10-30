@@ -73,7 +73,9 @@ export const siteContent = {
             "JavaScript",
             "Accessibility",
             "Technical SEO",
-            "Cloudflare"
+            "Nginx",
+            "GitHub Actions",
+            "Cloudflare DNS"
           ],
           status: "Опубликован",
           url: projectLinks.maxzolotoyLive,
@@ -86,7 +88,7 @@ export const siteContent = {
           id: "zolotoy-dev",
           number: "02",
           name: "zolotoy.dev",
-          description: "Backend-проект на Go из четырёх сервисов. Order уже развивается в коде, остальные сервисы последовательно добавляются по мере реализации архитектуры.",
+          description: "Go-платформа с четырьмя сервисами, REST API и интерактивным демо.",
           highlights: [
             "Order — заказы, оплаты, состояния, идемпотентность и outbox.",
             "Auth — пользователи, сессии, refresh rotation и RBAC.",
@@ -96,14 +98,16 @@ export const siteContent = {
           tags: [
             "Go",
             "REST API",
+            "Vue 3",
+            "TypeScript",
+            "MSW",
             "PostgreSQL",
-            "SQL",
             "Redis",
             "Kafka",
             "Docker",
             "DDD"
           ],
-          status: "В разработке · целевой backend-стек",
+          status: "Портфолио-проект",
           url: projectLinks.zolotoyDev,
           linkLabel: "Открыть zolotoy.dev",
           codeRepository: projectLinks.zolotoyDevBackend,
@@ -176,7 +180,9 @@ export const siteContent = {
             "JavaScript",
             "Accessibility",
             "Technical SEO",
-            "Cloudflare"
+            "Nginx",
+            "GitHub Actions",
+            "Cloudflare DNS"
           ],
           status: "Published",
           url: projectLinks.maxzolotoyLive,
@@ -189,7 +195,7 @@ export const siteContent = {
           id: "zolotoy-dev",
           number: "02",
           name: "zolotoy.dev",
-          description: "A Go backend project built around four services. Order is currently being implemented, with the remaining services added as the architecture evolves.",
+          description: "Go platform with four services, REST APIs and an interactive demo.",
           highlights: [
             "Order — orders, payments, state transitions, idempotency and outbox.",
             "Auth — users, sessions, refresh rotation and RBAC.",
@@ -199,14 +205,16 @@ export const siteContent = {
           tags: [
             "Go",
             "REST API",
+            "Vue 3",
+            "TypeScript",
+            "MSW",
             "PostgreSQL",
-            "SQL",
             "Redis",
             "Kafka",
             "Docker",
             "DDD"
           ],
-          status: "In development · target backend stack",
+          status: "Portfolio project",
           url: projectLinks.zolotoyDev,
           linkLabel: "Open zolotoy.dev",
           codeRepository: projectLinks.zolotoyDevBackend,
