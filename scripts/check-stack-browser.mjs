@@ -33,6 +33,7 @@ try {
             topBorder: getComputedStyle(group).borderTopWidth,
             bottomBorder: getComputedStyle(group).borderBottomWidth,
           })),
+          numbering: section.querySelectorAll('.stack-group__num').length,
           stackTop: getComputedStyle(section).borderTopWidth,
           projectTop: getComputedStyle(document.querySelector('[id^="projects-"]')).borderTopWidth,
           overflow: document.documentElement.scrollWidth-document.documentElement.clientWidth,
@@ -40,6 +41,7 @@ try {
       });
       assert.deepEqual(data.groups.map(g=>g.title),['Backend & Data','Infrastructure & DevOps']);
       assert.deepEqual(data.groups.map(g=>g.count),[6,7]);
+      assert.equal(data.numbering,0,'Stack group numbering must be absent');
       assert.equal(data.stackTop,'1px');
       assert.equal(data.projectTop,'1px');
       assert.deepEqual(data.groups.map(g=>g.topBorder),['0px','1px']);
