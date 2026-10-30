@@ -5,7 +5,7 @@ if (!baseUrl) throw new Error('Usage: node scripts/check-remote.mjs https://orig
 const origin = new URL(baseUrl).origin;
 
 async function get(path, options = {}) {
-  const response = await fetch(`${origin}${path}`, options);
+  const response = await fetch(`${origin}${path}`, { redirect: 'manual', ...options });
   assert.ok(response.ok, `${path}: expected success, got ${response.status}`);
   return response;
 }
