@@ -113,7 +113,7 @@ function audit(s,width,lang) {
   const d=s.sectionRects[i].box.y-s.sectionRects[i-1].box.b;
   if(Math.abs(d)>1.1)warn('SECTION_VERTICAL_GAP_OR_OVERLAP',width,lang,{delta:d,note:s.sectionRects[i].id},'critical');
  }
- if(!near(s.hero.content.x,s.hero.eyebrow.x,tol)||!near(s.hero.content.x,s.hero.h1.x,tol)
+ if((s.hero.eyebrow && !near(s.hero.content.x,s.hero.eyebrow.x,tol))||!near(s.hero.content.x,s.hero.h1.x,tol)
     ||!near(s.hero.content.x,s.hero.lead.x,tol)||!near(s.hero.content.x,s.hero.actions.x,tol))
   warn('HERO_TEXT_AXIS',width,lang,{delta:s.hero.h1.x-s.hero.content.x,note:''},'critical');
  if(pairOverlap(s.hero.content,s.hero.art))
