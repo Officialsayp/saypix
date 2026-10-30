@@ -1,0 +1,51 @@
+name: Read-only comprehensive geometry audit
+on:
+  push:
+    branches: [audit/full-geometry-2026-10-31]
+
+permissions:
+  contents: read
+
+jobs:
+  chromium:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Compile and run existing static assertions
+        run: |
+          npm ci
+          npm test
+      - name: Install matching Chrome driver
+        run: npm install --no-save --package-lock=false playwright-core@1.56.1
+      - name: Audit all geometry and axes with Chrome
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 --directory dist >/tmp/audit-http.log 2>&1 &
+          sleep 2
+          PLAYWRIGHT_MODULE=playwright-core BROWSER_EXECUTABLE="$(command -v google-chrome)" node scripts/audit-geometry-readonly.mjs
+  webkit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    container:
+      image: mcr.microsoft.com/playwright:v1.56.1-noble
+      options: --user 1001
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Compile same production snapshot
+        run: |
+          npm ci
+          npm run build
+          npm install --no-save --package-lock=false playwright@1.56.1
+      - name: Audit all geometry and axes with WebKit
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 --directory dist >/tmp/audit-webkit-http.log 2>&1 &
+          sleep 2
+          PLAYWRIGHT_MODULE=playwright BROWSER_ENGINE=webkit node scripts/audit-geometry-readonly.mjs
