@@ -143,7 +143,6 @@ export function renderPage(lang, { techIconsPath } = {}) {
             <div class="stack-list">
               ${c.stack.groups.map(group => `
                 <div class="stack-group">
-                  <span class="stack-group__num" aria-hidden="true">${group.number}</span>
                   <div class="stack-group__content">
                     <h3>${group.title}</h3>
                     <div class="chips">${group.items.map(item => renderTechChip(item, techIconsPath)).join('')}</div>
