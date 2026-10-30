@@ -393,6 +393,10 @@ button { font: inherit; }
   transition-delay: 75ms,75ms,0s;
 }
 /* Prevent the code-card clipping the speech bubble on small screens. */
+/* Keep monospaced code within the card's content box on 320–334px screens. */
+@media (max-width: 334px) {
+  .hero__visual-code { padding-inline: 6px; }
+}
 @media (max-width: 380px) { .hero__visual { min-height: 350px; } }
 .visually-hidden {
   position: absolute;
@@ -428,7 +432,7 @@ button { font: inherit; }
   letter-spacing: -.045em;
 }
 .section__body {
-  margin: 40px 0 0 calc(17.5% + 33px);
+  margin: 40px 0 0 calc(17.5% + 19.8px);
   max-width: 760px;
   color: var(--muted);
   font-size: clamp(18px, 2vw, 22px);
@@ -554,7 +558,7 @@ button { font: inherit; }
   flex-wrap: wrap;
   gap: 12px;
   margin-top: 42px;
-  margin-left: calc(17.5% + 33px);
+  margin-left: calc(17.5% + 19.8px);
   max-width: calc(82.5% - 33px);
 }
 .contact-link {
