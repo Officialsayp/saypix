@@ -1,6 +1,10 @@
 # Recovery Runbook — maxzolotoy.com
 
-Актуально: **2026-09-01**
+Первоначальная версия: **2026-09-01**. Актуализация документа по GitHub и истории миграции: **2026-10-31**.
+
+> **Состояние:** действующая схема использует **Nginx** на Selectel VPS и Cloudflare как авторитетный DNS. Профиль Caddy сохранён в Git для истории/отката. Продакшен-деплой `ac8a30af87caffb898b3f7c1425077d62be7ca46` прошёл GitHub Actions с успешным origin smoke-test; это **не** подтверждает фактические пути конфигурации Nginx, метод продления TLS или состав последнего server-side backup. Перед восстановлением обязательно сверить их по SSH. Значения ниже, зафиксированные в 2026-09-01, считать историческими до повторной проверки.
+
+> **Приоритет инструкций:** для текущей системы применяйте разделы о Nginx, deploy, release-lock, TLS и DNS; раздел 4 содержит хронологию Cloudflare/Caddy и не предписывает возвращать Caddy в production. Nginx-фрагменты и правила проверки: [`deploy/nginx/README.md`](../deploy/nginx/README.md).
 
 Документ предназначен для восстановления production-инфраструктуры `maxzolotoy.com` после потери VPS, повреждения конфигурации, неудачного деплоя или переноса на новый сервер.
 
@@ -18,7 +22,7 @@ GitHub Actions
 Selectel VDS — 135.106.186.27
 Ubuntu 24.04 LTS
         │
-        ├─ Caddy
+        ├─ Nginx (активный профиль)
         ├─ /var/www/maxzolotoy/releases/<commit>
         └─ /var/www/maxzolotoy/current -> active release
         │
@@ -182,7 +186,7 @@ www.maxzolotoy.com/* → https://maxzolotoy.com/<тот же path/query>
 
 Path и query string сохранялись.
 
-После перехода на Selectel этот redirect больше не нужен: `www` приходит напрямую на Caddy, который сам перенаправляет на apex.
+После перехода на Selectel этот redirect больше не нужен: `www` приходит напрямую на веб-сервер Selectel (сейчас Nginx), который перенаправляет на apex.
 
 ### 4.4. Языковая логика, которую пробовали на Cloudflare
 
@@ -202,7 +206,7 @@ RU / BY / KZ → русская версия
 /en/ не должен принудительно переводиться на /ru/
 ```
 
-После Selectel geo-IP routing больше не нужен. Сейчас `/` выбирает язык на Caddy по `Accept-Language` браузера.
+После Selectel geo-IP routing больше не нужен. Сейчас `/` выбирает язык на Nginx по началу заголовка `Accept-Language` через `deploy/nginx/http-maps.conf` (`ru` → `/ru/`, иначе `/en/`).
 
 ### 4.5. Почему Cloudflare proxy был отключён
 
@@ -361,7 +365,7 @@ A
 DNS only
 ```
 
-Redirect теперь выполняет Caddy.
+После завершения миграции redirect сначала выполнял Caddy; в текущей production-схеме эту функцию выполняет Nginx.
 
 #### 4.8.4. `origin` оставлен прямым
 
@@ -413,15 +417,10 @@ curl -I https://maxzolotoy.com/ru/ | grep -Ei 'server|cf-ray'
 Нужно:
 
 ```text
-server: Caddy
+server: nginx (если заголовок Server публикуется)
 ```
 
-Не должно быть:
-
-```text
-server: cloudflare
-cf-ray:
-```
+Не должно быть признаков Cloudflare-проксирования (`server: cloudflare`, `cf-ray`). Не полагаться только на `Server`: он может быть скрыт/переопределён, проверяйте DNS-only и фактический HTTPS ответ.
 
 ### 4.10. Что не включать обратно
 
@@ -575,40 +574,28 @@ ufw status verbose
 
 Ожидаемо: `Status: active`, incoming по умолчанию запрещён.
 
-## 7. Caddy
+## 7. Nginx — действующий веб-сервер
 
-Server-side:
-
-```text
-/etc/caddy/Caddyfile
-/etc/caddy/site.caddy
-```
-
-В Git:
+Git содержит **фрагменты**, а не полный конфиг production-хоста:
 
 ```text
-deploy/caddy/Caddyfile.production
-deploy/caddy/Caddyfile.origin
-deploy/caddy/site.caddy
+deploy/nginx/http-maps.conf  # включить один раз внутри http {}
+deploy/nginx/site.conf       # внутри server {} для apex и origin
 ```
 
-Проверить:
+TLS-сертификаты, renew hooks, listen, apex/www redirects и ACME webroot управляются на VPS отдельно; их **реальные пути и способ продления неизвестны** из репозитория. Перед вмешательством получите и проверьте фактическую конфигурацию по SSH (вывод `nginx -T` может содержать чувствительные сведения — не публикуйте его без очистки):
 
 ```bash
-caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile
+sudo nginx -t
+systemctl status nginx --no-pager
+systemctl is-active caddy || true
+ss -lntp | grep -E ':80|:443'
+systemctl list-timers --all | grep -Ei 'certbot|acme|letsencrypt|certificate|nginx' || true
 ```
 
-Reload:
+Перед изменением или восстановлением сохраните копию реально используемых host-конфигов и TLS-материалов в защищённое хранилище. **Не заменяйте host-конфиг только фрагментами из репозитория**: в них нет TLS/listener/renewal. Для нового сервера подготовьте полную конфигурацию с существующим способом управления сертификатами; проверьте `nginx -t` до `systemctl reload nginx`. Первичный запуск/reload выполнять только при валидной конфигурации и доступных сертификатах. Проверяйте `/_health`, обе локали, HTTPS и заголовок `X-Robots-Tag` на origin.
 
-```bash
-systemctl reload caddy
-```
-
-Статус:
-
-```bash
-systemctl status caddy --no-pager
-```
+Caddy в `deploy/caddy/` — **исторический/резервный профиль**. Не запускать `systemctl enable caddy` и не применять старые Caddy-файлы к действующему Nginx без отдельного утверждённого плана миграции.
 
 ## 8. Языковая маршрутизация
 
@@ -677,7 +664,6 @@ curl -i https://origin.maxzolotoy.com/_health
 
 ```text
 HTTP/2 200
-server: Caddy
 
 ok
 ```
@@ -724,6 +710,9 @@ ls -lt /var/www/maxzolotoy/releases
 
 ## 12. GitHub Actions deploy
 
+Workflow для `main` проходит `npm test` и `npm run check:nginx` (после установки Nginx/headers-more в CI); далее архивирует `dist`, загружает его по SSH, переключает `current` под `flock` и проверяет origin. Это проверка конфигурационного профиля и ответов origin; она не подтверждает полноту server-side backup и сертификатного renewal.
+
+
 Workflow:
 
 ```text
@@ -769,6 +758,7 @@ push main
 → npm run build
 → SCP dist
 → /var/www/maxzolotoy/releases/<GITHUB_SHA>
+→ flock on releases/.deploy-maxzolotoy.lock
 → atomic current symlink switch
 → smoke test origin
 ```
@@ -789,13 +779,25 @@ git push origin main
 ls -lt /var/www/maxzolotoy/releases
 ```
 
-Переключить `current`:
+Переключить `current` **атомарно, под тем же lock, что и деплой/ротация**, от имени пользователя с правами на каталог сайта:
 
 ```bash
-ln -sfn \
-  /var/www/maxzolotoy/releases/<PREVIOUS_COMMIT_SHA> \
-  /var/www/maxzolotoy/current
+(
+  set -eu
+  base=/var/www/maxzolotoy
+  previous="$base/releases/<PREVIOUS_COMMIT_SHA>"
+  lock="$base/releases/.deploy-maxzolotoy.lock"
+  test -d "$previous" || { echo "Previous release missing" >&2; exit 1; }
+  test ! -L "$lock" || { echo "Refusing symlinked lock" >&2; exit 1; }
+  exec 9>"$lock"
+  flock -w 120 9
+  ln -sfn "$previous" "$base/current.next"
+  mv -Tf "$base/current.next" "$base/current"
+  readlink -f "$base/current"
+)  # Подоболочка завершится и освободит lock после переключения.
 ```
+
+Выполнять в отдельной SSH-сессии после проверки `<PREVIOUS_COMMIT_SHA>`, наличия корректного релиза и свободного места. **Не** переключать симлинк во время очистки релизов или параллельного деплоя; не использовать простую замену `current` вне блокировки. После переключения проверить origin и публичные URL; при необходимости возвратить указатель на ранее активный релиз под той же блокировкой.
 
 Проверить:
 
@@ -820,7 +822,7 @@ maxzolotoy-release-cleanup.service
 maxzolotoy-release-cleanup.timer
 ```
 
-Политика: текущий + 9 предыдущих релизов.
+По исходной документации политика была: текущий + 9 предыдущих релизов. Фактические параметры и работа `maxzolotoy-release-cleanup.timer` подлежат проверке на VPS. Скрипт очистки должен брать **тот же** lock `/var/www/maxzolotoy/releases/.deploy-maxzolotoy.lock`, что и GitHub Actions deploy, и защищать активный релиз; проверьте реализацию перед первым ручным запуском. Не удалять каталоги релизов вручную без согласованной политики и проверки lock.
 
 ## 15. Automatic security updates
 
@@ -876,7 +878,14 @@ LATEST=$(ls -1t /var/backups/maxzolotoy/config-*.tar.gz | head -1)
 tar -tzf "$LATEST" | head -50
 ```
 
-В backup входят Caddy, SSH config, authorized_keys, UFW, unattended-upgrades, custom systemd units и custom scripts.
+В архиве образца сентября 2026 перечислялись **Caddy**, SSH config, authorized_keys, UFW, unattended-upgrades, custom systemd units и custom scripts. **Это не доказывает, что текущие Nginx host-конфиги, TLS-сертификаты, ключи и настройки renewal уже включены в резервное копирование.** До следующего отказа сервера необходимо проверить фактический скрипт и содержимое последнего архива:
+
+```bash
+LATEST=$(ls -1t /var/backups/maxzolotoy/config-*.tar.gz | head -1)
+tar -tzf "$LATEST" | grep -Ei '(^|/)(nginx|letsencrypt|certbot|acme|ssl|systemd)/' || true
+```
+
+Если актуальные файлы отсутствуют, пересмотреть backup manifest и выполнить тест восстановления в отдельной среде. Закрытые ключи и пароль restic хранить отдельно и с соответствующими правами; **не** добавлять их в Git.
 
 Не входит:
 
@@ -1000,7 +1009,10 @@ maxzolotoy-restic-check.timer
 
 ## 21. Полная потеря VPS
 
-### 20.1 Создать новый VPS
+> Начиная с этой ревизии, шаги восстановления ориентированы на текущий Nginx-профиль. **Не** восстанавливайте без проверки Caddy-конфигурацию из старого архива и **не** меняйте production DNS до тестирования нового origin. Все ссылки на реальные host-конфиги/TLS требуют инвентаризации сервера до аварии.
+
+
+### 21.1 Создать новый VPS
 
 Рекомендовано:
 
@@ -1015,7 +1027,7 @@ Public IPv4
 
 Добавить личный публичный SSH-ключ при создании.
 
-### 20.2 Подключиться и обновить
+### 21.2 Подключиться и обновить
 
 ```bash
 ssh -i ~/.ssh/id_ed25519 root@<NEW_IP>
@@ -1024,15 +1036,15 @@ apt update
 apt full-upgrade -y
 ```
 
-### 20.3 Установить базовые компоненты
+### 21.3 Установить базовые компоненты
 
 ```bash
-apt install -y curl git ufw unattended-upgrades restic
+apt install -y curl git ufw unattended-upgrades restic nginx libnginx-mod-http-headers-more-filter
 ```
 
-Установить Caddy из официального репозитория Caddy.
+Установленный Nginx необходимо дополнить **реальным host-конфигом** (слушающие сокеты, сертификаты, HTTP→HTTPS, www→apex, ACME/renewal) из проверенного резервного источника. Файлы `deploy/nginx/http-maps.conf` и `deploy/nginx/site.conf` — лишь фрагменты и не заменяют полный конфиг. Не запускать Caddy как «восстановление по умолчанию».
 
-### 20.4 Firewall
+### 21.4 Firewall
 
 ```bash
 ufw allow OpenSSH
@@ -1041,7 +1053,7 @@ ufw allow 443/tcp
 ufw --force enable
 ```
 
-### 20.5 Deploy user
+### 21.5 Deploy user
 
 ```bash
 adduser --disabled-password --gecos "" deploy
@@ -1049,7 +1061,7 @@ adduser --disabled-password --gecos "" deploy
 install -d -m 0700 -o deploy -g deploy /home/deploy/.ssh
 ```
 
-Восстановить GitHub Actions public key в:
+Восстановить **проверенный** GitHub Actions public key в:
 
 ```text
 /home/deploy/.ssh/authorized_keys
@@ -1069,7 +1081,7 @@ install -d -m 0755 -o deploy -g deploy /var/www/maxzolotoy
 install -d -m 0755 -o deploy -g deploy /var/www/maxzolotoy/releases
 ```
 
-### 20.6 Восстановить restic credentials
+### 21.6 Восстановить restic credentials
 
 ```bash
 install -d -m 0700 /root/.config/restic
@@ -1107,7 +1119,7 @@ restic \
   snapshots
 ```
 
-### 20.7 Restore config backup
+### 21.7 Restore config backup
 
 ```bash
 mkdir -p /tmp/maxzolotoy-restore
@@ -1132,14 +1144,17 @@ RESTORED_ARCHIVE="<PATH_TO_CONFIG_ARCHIVE>"
 tar -tzf "$RESTORED_ARCHIVE" | head -50
 ```
 
-Распаковать в `/`:
+**Не распаковывать старый архив вслепую в `/`**: он мог содержать конфигурацию Caddy и не включать Nginx/TLS текущей версии. Сначала извлечь в карантинный каталог, сопоставить состав с реально применяемой Nginx-схемой и **выборочно** восстановить проверенные SSH/UFW/systemd/Nginx/TLS файлы по их исходным путям:
 
 ```bash
-tar -xzf "$RESTORED_ARCHIVE" -C /
-systemctl daemon-reload
+install -d -m 0700 /tmp/maxzolotoy-config-inspect
+tar -xzf "$RESTORED_ARCHIVE" -C /tmp/maxzolotoy-config-inspect
+find /tmp/maxzolotoy-config-inspect -maxdepth 4 -type f | sort
 ```
 
-### 20.8 Проверить конфиги до reload
+После выборочного восстановления убедиться в правах закрытых ключей, наличии реальной host-конфигурации Nginx и средства обновления TLS, затем выполнить `systemctl daemon-reload`. Если backup не содержит текущие Nginx/TLS файлы, получить их из отдельного защищённого источника; не пытаться восстановить рабочий HTTPS одними фрагментами из Git.
+
+### 21.8 Проверить конфиги до reload
 
 SSH:
 
@@ -1147,18 +1162,20 @@ SSH:
 sshd -t
 ```
 
-Caddy:
+Nginx (после восстановления полного host-конфига и сертификатов):
 
 ```bash
-caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile
+nginx -t
 ```
+
+Затем проверить, что `http-maps.conf` включён в `http {}` ровно один раз, а `site.conf` — в нужные content `server {}`; проверить TLS/renewal и наличие `libnginx-mod-http-headers-more-filter`. Не запускать и не перезагружать Nginx при неуспешном `nginx -t`.
 
 Не закрывать текущую root-сессию, пока не проверен второй SSH-вход.
 
-### 20.9 Запустить timers
+### 21.9 Запустить timers
 
 ```bash
-systemctl enable --now caddy
+systemctl enable --now nginx
 
 systemctl enable --now maxzolotoy-config-backup.timer
 systemctl enable --now maxzolotoy-release-cleanup.timer
@@ -1166,7 +1183,7 @@ systemctl enable --now maxzolotoy-offsite-backup.timer
 systemctl enable --now maxzolotoy-restic-check.timer
 ```
 
-### 20.10 Обновить GitHub при новом IP
+### 21.10 Обновить GitHub при новом IP
 
 Environment: `direct-origin`.
 
@@ -1182,38 +1199,44 @@ VPS_HOST=<NEW_IP>
 ssh-keyscan -t ed25519 <NEW_IP>
 ```
 
-Обновить:
+**Сверить fingerprint с доверенным каналом/панелью VPS, а не принимать вывод `ssh-keyscan` без проверки**. Обновить:
 
 ```text
 VPS_KNOWN_HOSTS
 ```
 
-### 20.11 Сделать GitHub deploy
+### 21.11 Сначала подготовить и проверить новый origin
 
-```bash
-cd ~/maxzolotoy-card
-git commit --allow-empty -m "Restore production deploy"
-git push origin main
-```
-
-Дождаться зелёного `Deploy direct origin`.
-
-### 20.12 Сначала переключить origin
-
-Cloudflare:
+До выпуска на production отдельно убедиться в исправности Nginx и TLS. При необходимости сначала перевести **только** `origin.maxzolotoy.com` на новый VPS:
 
 ```text
 origin.maxzolotoy.com A <NEW_IP> DNS only
 ```
 
-Проверить:
+Проверить авторитетный DNS и путь к **новому** IP, а не к старому серверу:
 
 ```bash
 dig @1.1.1.1 +short origin.maxzolotoy.com A
+curl --resolve origin.maxzolotoy.com:443:<NEW_IP> \
+  -i https://origin.maxzolotoy.com/_health
+```
+
+HTTPS-проверку выполнять только после восстановления/выпуска сертификата для origin и успешного `nginx -t`; **не отключать** проверку TLS через `-k` ради формального зелёного ответа. Перед DNS-переключением production проверить новый origin по обеим локалям, заголовки, noindex, редиректы и актуальный TLS. Если на origin ещё нет корректного сертификата, сначала решить вопрос выдачи/переноса сертификата: порядок зависит от фактической ACME/renewal конфигурации VPS и не фиксируется репозиторием.
+
+### 21.12 Выполнить GitHub deploy на новый VPS
+
+Убедиться, что `VPS_HOST` и проверенный `VPS_KNOWN_HOSTS` в GitHub указывают на новый сервер, а `VPS_ORIGIN_HOST` разрешается именно в проверенный новый origin. Иначе smoke-test workflow может попасть на **старый** VPS и дать ложное подтверждение.
+
+После этого инициировать разрешённый деплой из `main` (например, через новый проверенный commit) и дождаться успешных `verify`, атомарного переключения и `Smoke test direct origin`. Затем подтвердить по SSH:
+
+```bash
+readlink -f /var/www/maxzolotoy/current
 curl -i https://origin.maxzolotoy.com/_health
 ```
 
-### 20.13 Затем production
+Убедиться, что `current` указывает на ожидаемый SHA и что публичный origin обслуживается именно новым VPS. Не менять apex/www до подтверждения.
+
+### 21.13 Затем production
 
 Только после успешного origin smoke-test:
 
@@ -1255,19 +1278,16 @@ curl -I \
 curl -I https://maxzolotoy.com/ru/ | grep -Ei 'server|cf-ray'
 ```
 
-Ожидаемо:
-
-```text
-server: Caddy
-```
+Ожидаемо: успешный HTTPS-ответ действующего origin/production через Nginx без заголовка `cf-ray`; поле `Server` необязательно и может быть отключено в host-конфигурации. Проверьте сертификат и содержимое ответа, а не только заголовок.
 
 # 23. Аварийная диагностика
 
 Сайт:
 
 ```bash
-systemctl status caddy --no-pager
-journalctl -u caddy -n 100 --no-pager
+systemctl status nginx --no-pager
+journalctl -u nginx -n 100 --no-pager
+nginx -t
 ss -lntp | grep -E ':80|:443'
 ufw status verbose
 ```
@@ -1316,7 +1336,9 @@ apt list --upgradable
 ufw status verbose
 systemctl --failed
 systemctl list-timers --all | grep maxzolotoy
-systemctl status caddy --no-pager
+systemctl status nginx --no-pager
+nginx -t
+systemctl list-timers --all | grep -Ei 'certbot|acme|letsencrypt|certificate|nginx' || true
 df -h
 readlink -f /var/www/maxzolotoy/current
 ls -lh /var/backups/maxzolotoy
@@ -1343,7 +1365,7 @@ restic \
 
 ```text
 1. Новый VPS
-2. SSH + UFW + Caddy
+2. SSH + UFW + Nginx + проверенная TLS/renewal конфигурация
 3. Restic restore
 4. GitHub deploy
 5. origin.maxzolotoy.com

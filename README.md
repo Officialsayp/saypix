@@ -31,7 +31,8 @@ HTML, CSS, and native JavaScript (ES modules) power the frontend. Node.js and es
 src/                  Content, templates, styles, and browser logic
 scripts/              Build and validation
 dist/                 Generated, versioned production assets
-deploy/caddy/         Web server configuration
+deploy/nginx/         Active Nginx web-server profile
+deploy/caddy/         Historical Caddy/rollback reference
 .github/workflows/    CI and deployment
 docs/                 Infrastructure and recovery documentation
 ```
@@ -56,13 +57,14 @@ npm run build         # Generate dist/
 npm test              # Build and run automated checks
 npm run check         # Validate an existing build
 npm run check:deploy  # Validate deployment configuration
+npm run check:nginx   # Check Nginx profile (requires nginx and headers-more)
 ```
 
 Validation covers generated HTML, SEO, curtain behavior, asset budgets, redirects, and HTTP smoke tests. GitHub Actions additionally checks layout and interactions in Chromium and WebKit.
 
 ### Deployment
 
-The production website is served by **Caddy on a Selectel VPS**; Cloudflare provides DNS only. When enabled, GitHub Actions deploys changes from `main` using an atomic release switch and verifies the origin with a smoke test.
+The production website is served by **Nginx on a Selectel VPS**; Cloudflare provides authoritative DNS only. The former Caddy profile remains for historical reference/rollback, not as the active server. The host's TLS and certificate renewal are managed separately from the repository's Nginx snippets. When enabled, GitHub Actions deploys changes from `main` using an atomic release switch and verifies the origin with a smoke test. See the [Nginx profile](deploy/nginx/README.md).
 
 Operational procedures and rollback instructions: [Recovery Runbook](docs/recovery-runbook.md).
 
@@ -92,7 +94,8 @@ Frontend построен на HTML, CSS и нативном JavaScript (ES modu
 src/                  Контент, шаблоны, стили и браузерная логика
 scripts/              Сборка и автоматические проверки
 dist/                 Сгенерированные версионированные ресурсы
-deploy/caddy/         Конфигурация веб-сервера
+deploy/nginx/         Действующий профиль Nginx
+deploy/caddy/         Историческая конфигурация Caddy / резервный вариант
 .github/workflows/    CI и развёртывание
 docs/                 Документация инфраструктуры и восстановления
 ```
@@ -117,12 +120,13 @@ npm run build         # Сформировать dist/
 npm test              # Собрать проект и выполнить проверки
 npm run check         # Проверить существующую сборку
 npm run check:deploy  # Проверить конфигурацию развёртывания
+npm run check:nginx   # Проверить Nginx (нужны nginx и headers-more)
 ```
 
 Проверки охватывают сгенерированный HTML, SEO, работу языковой шторки, ограничения размера ресурсов, перенаправления и HTTP smoke-тесты. GitHub Actions дополнительно проверяет геометрию и взаимодействия в Chromium и WebKit.
 
 ### Развёртывание
 
-Production-сайт обслуживается **Caddy на Selectel VPS**; Cloudflare используется только для DNS. При включённом деплое GitHub Actions публикует изменения из `main`, атомарно переключает релиз и проверяет сервер с помощью smoke-теста.
+Production-сайт обслуживается **Nginx на Selectel VPS**; Cloudflare используется только как авторитетный DNS. Прежний профиль Caddy сохранён для истории и отката, но не является активным веб-сервером. Настройки TLS и продления сертификатов управляются на сервере отдельно от Nginx-фрагментов в репозитории. При включённом деплое GitHub Actions публикует изменения из `main`, атомарно переключает релиз и проверяет origin с помощью smoke-теста. См. [профиль Nginx](deploy/nginx/README.md).
 
 Эксплуатация и порядок отката: [Recovery Runbook](docs/recovery-runbook.md).
