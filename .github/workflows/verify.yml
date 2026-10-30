@@ -32,6 +32,7 @@ jobs:
           python3 -m http.server 4173 --bind 127.0.0.1 --directory dist >/tmp/compact-ui-http.log 2>&1 &
           sleep 2
           PLAYWRIGHT_MODULE=playwright-core BROWSER_EXECUTABLE="$(command -v google-chrome)" node scripts/check-compact-density.mjs
+          PLAYWRIGHT_MODULE=playwright-core BROWSER_EXECUTABLE="$(command -v google-chrome)" node scripts/check-stack-browser.mjs
           PLAYWRIGHT_MODULE=playwright-core BROWSER_EXECUTABLE="$(command -v google-chrome)" node scripts/check-hero-hitbox.mjs
           PLAYWRIGHT_MODULE=playwright-core BROWSER_EXECUTABLE="$(command -v google-chrome)" node scripts/check-curtain-lifecycle.mjs
 
@@ -89,3 +90,4 @@ jobs:
           sleep 2
           PLAYWRIGHT_MODULE=playwright BROWSER_ENGINE=webkit node scripts/check-hero-hitbox.mjs
           PLAYWRIGHT_MODULE=playwright BROWSER_ENGINE=webkit node scripts/check-curtain-lifecycle.mjs
+          PLAYWRIGHT_MODULE=playwright BROWSER_ENGINE=webkit node scripts/check-stack-browser.mjs
