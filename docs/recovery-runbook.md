@@ -782,17 +782,19 @@ ls -lt /var/www/maxzolotoy/releases
 Переключить `current` **атомарно, под тем же lock, что и деплой/ротация**, от имени пользователя с правами на каталог сайта:
 
 ```bash
-set -eu
-base=/var/www/maxzolotoy
-previous="$base/releases/<PREVIOUS_COMMIT_SHA>"
-lock="$base/releases/.deploy-maxzolotoy.lock"
-test -d "$previous" || { echo "Previous release missing" >&2; exit 1; }
-test ! -L "$lock" || { echo "Refusing symlinked lock" >&2; exit 1; }
-exec 9>"$lock"
-flock -w 120 9
-ln -sfn "$previous" "$base/current.next"
-mv -Tf "$base/current.next" "$base/current"
-readlink -f "$base/current"
+(
+  set -eu
+  base=/var/www/maxzolotoy
+  previous="$base/releases/<PREVIOUS_COMMIT_SHA>"
+  lock="$base/releases/.deploy-maxzolotoy.lock"
+  test -d "$previous" || { echo "Previous release missing" >&2; exit 1; }
+  test ! -L "$lock" || { echo "Refusing symlinked lock" >&2; exit 1; }
+  exec 9>"$lock"
+  flock -w 120 9
+  ln -sfn "$previous" "$base/current.next"
+  mv -Tf "$base/current.next" "$base/current"
+  readlink -f "$base/current"
+)  # Подоболочка завершится и освободит lock после переключения.
 ```
 
 Выполнять в отдельной SSH-сессии после проверки `<PREVIOUS_COMMIT_SHA>`, наличия корректного релиза и свободного места. **Не** переключать симлинк во время очистки релизов или параллельного деплоя; не использовать простую замену `current` вне блокировки. После переключения проверить origin и публичные URL; при необходимости возвратить указатель на ранее активный релиз под той же блокировкой.
