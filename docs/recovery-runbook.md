@@ -1007,7 +1007,10 @@ maxzolotoy-restic-check.timer
 
 ## 21. Полная потеря VPS
 
-### 20.1 Создать новый VPS
+> Начиная с этой ревизии, шаги восстановления ориентированы на текущий Nginx-профиль. **Не** восстанавливайте без проверки Caddy-конфигурацию из старого архива и **не** меняйте production DNS до тестирования нового origin. Все ссылки на реальные host-конфиги/TLS требуют инвентаризации сервера до аварии.
+
+
+### 21.1 Создать новый VPS
 
 Рекомендовано:
 
@@ -1022,7 +1025,7 @@ Public IPv4
 
 Добавить личный публичный SSH-ключ при создании.
 
-### 20.2 Подключиться и обновить
+### 21.2 Подключиться и обновить
 
 ```bash
 ssh -i ~/.ssh/id_ed25519 root@<NEW_IP>
@@ -1031,7 +1034,7 @@ apt update
 apt full-upgrade -y
 ```
 
-### 20.3 Установить базовые компоненты
+### 21.3 Установить базовые компоненты
 
 ```bash
 apt install -y curl git ufw unattended-upgrades restic nginx libnginx-mod-http-headers-more-filter
@@ -1039,7 +1042,7 @@ apt install -y curl git ufw unattended-upgrades restic nginx libnginx-mod-http-h
 
 Установленный Nginx необходимо дополнить **реальным host-конфигом** (слушающие сокеты, сертификаты, HTTP→HTTPS, www→apex, ACME/renewal) из проверенного резервного источника. Файлы `deploy/nginx/http-maps.conf` и `deploy/nginx/site.conf` — лишь фрагменты и не заменяют полный конфиг. Не запускать Caddy как «восстановление по умолчанию».
 
-### 20.4 Firewall
+### 21.4 Firewall
 
 ```bash
 ufw allow OpenSSH
@@ -1048,7 +1051,7 @@ ufw allow 443/tcp
 ufw --force enable
 ```
 
-### 20.5 Deploy user
+### 21.5 Deploy user
 
 ```bash
 adduser --disabled-password --gecos "" deploy
@@ -1076,7 +1079,7 @@ install -d -m 0755 -o deploy -g deploy /var/www/maxzolotoy
 install -d -m 0755 -o deploy -g deploy /var/www/maxzolotoy/releases
 ```
 
-### 20.6 Восстановить restic credentials
+### 21.6 Восстановить restic credentials
 
 ```bash
 install -d -m 0700 /root/.config/restic
@@ -1114,7 +1117,7 @@ restic \
   snapshots
 ```
 
-### 20.7 Restore config backup
+### 21.7 Restore config backup
 
 ```bash
 mkdir -p /tmp/maxzolotoy-restore
@@ -1149,7 +1152,7 @@ find /tmp/maxzolotoy-config-inspect -maxdepth 4 -type f | sort
 
 После выборочного восстановления убедиться в правах закрытых ключей, наличии реальной host-конфигурации Nginx и средства обновления TLS, затем выполнить `systemctl daemon-reload`. Если backup не содержит текущие Nginx/TLS файлы, получить их из отдельного защищённого источника; не пытаться восстановить рабочий HTTPS одними фрагментами из Git.
 
-### 20.8 Проверить конфиги до reload
+### 21.8 Проверить конфиги до reload
 
 SSH:
 
@@ -1167,7 +1170,7 @@ nginx -t
 
 Не закрывать текущую root-сессию, пока не проверен второй SSH-вход.
 
-### 20.9 Запустить timers
+### 21.9 Запустить timers
 
 ```bash
 systemctl enable --now nginx
@@ -1178,7 +1181,7 @@ systemctl enable --now maxzolotoy-offsite-backup.timer
 systemctl enable --now maxzolotoy-restic-check.timer
 ```
 
-### 20.10 Обновить GitHub при новом IP
+### 21.10 Обновить GitHub при новом IP
 
 Environment: `direct-origin`.
 
@@ -1200,7 +1203,7 @@ ssh-keyscan -t ed25519 <NEW_IP>
 VPS_KNOWN_HOSTS
 ```
 
-### 20.11 Сначала подготовить и проверить новый origin
+### 21.11 Сначала подготовить и проверить новый origin
 
 До выпуска на production отдельно убедиться в исправности Nginx и TLS. При необходимости сначала перевести **только** `origin.maxzolotoy.com` на новый VPS:
 
@@ -1218,7 +1221,7 @@ curl --resolve origin.maxzolotoy.com:443:<NEW_IP> \
 
 HTTPS-проверку выполнять только после восстановления/выпуска сертификата для origin и успешного `nginx -t`; **не отключать** проверку TLS через `-k` ради формального зелёного ответа. Перед DNS-переключением production проверить новый origin по обеим локалям, заголовки, noindex, редиректы и актуальный TLS. Если на origin ещё нет корректного сертификата, сначала решить вопрос выдачи/переноса сертификата: порядок зависит от фактической ACME/renewal конфигурации VPS и не фиксируется репозиторием.
 
-### 20.12 Выполнить GitHub deploy на новый VPS
+### 21.12 Выполнить GitHub deploy на новый VPS
 
 Убедиться, что `VPS_HOST` и проверенный `VPS_KNOWN_HOSTS` в GitHub указывают на новый сервер, а `VPS_ORIGIN_HOST` разрешается именно в проверенный новый origin. Иначе smoke-test workflow может попасть на **старый** VPS и дать ложное подтверждение.
 
@@ -1231,7 +1234,7 @@ curl -i https://origin.maxzolotoy.com/_health
 
 Убедиться, что `current` указывает на ожидаемый SHA и что публичный origin обслуживается именно новым VPS. Не менять apex/www до подтверждения.
 
-### 20.13 Затем production
+### 21.13 Затем production
 
 Только после успешного origin smoke-test:
 
@@ -1273,19 +1276,16 @@ curl -I \
 curl -I https://maxzolotoy.com/ru/ | grep -Ei 'server|cf-ray'
 ```
 
-Ожидаемо:
-
-```text
-server: Caddy
-```
+Ожидаемо: успешный HTTPS-ответ действующего origin/production через Nginx без заголовка `cf-ray`; поле `Server` необязательно и может быть отключено в host-конфигурации. Проверьте сертификат и содержимое ответа, а не только заголовок.
 
 # 23. Аварийная диагностика
 
 Сайт:
 
 ```bash
-systemctl status caddy --no-pager
-journalctl -u caddy -n 100 --no-pager
+systemctl status nginx --no-pager
+journalctl -u nginx -n 100 --no-pager
+nginx -t
 ss -lntp | grep -E ':80|:443'
 ufw status verbose
 ```
@@ -1334,7 +1334,9 @@ apt list --upgradable
 ufw status verbose
 systemctl --failed
 systemctl list-timers --all | grep maxzolotoy
-systemctl status caddy --no-pager
+systemctl status nginx --no-pager
+nginx -t
+systemctl list-timers --all | grep -Ei 'certbot|acme|letsencrypt|certificate|nginx' || true
 df -h
 readlink -f /var/www/maxzolotoy/current
 ls -lh /var/backups/maxzolotoy
@@ -1361,7 +1363,7 @@ restic \
 
 ```text
 1. Новый VPS
-2. SSH + UFW + Caddy
+2. SSH + UFW + Nginx + проверенная TLS/renewal конфигурация
 3. Restic restore
 4. GitHub deploy
 5. origin.maxzolotoy.com
