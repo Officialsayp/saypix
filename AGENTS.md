@@ -34,13 +34,16 @@ the system/developer instructions and tool permissions.
 | Canonical URLs, social metadata, structured data | `src/metadata.js`, `src/sitemap.xml`, `src/robots.txt`, `src/og-*` |
 | Icons | `src/tech-icons.svg`, `src/favicon.svg` |
 | Build and static validation | `scripts/build.mjs`, `scripts/check-*.mjs` |
-| Redirects and caching | `src/_redirects`, `src/_headers`, `deploy/caddy/` |
-| Operations and recovery | `docs/recovery-runbook.md`, `docs/ru-network-resilience.md`, `.github/workflows/` |
+| Redirects and caching | `src/_redirects`, `src/_headers`, active `deploy/nginx/`; historical `deploy/caddy/` |
+| Operations and recovery | `docs/recovery-runbook.md`, `deploy/nginx/README.md`, historical `docs/ru-network-resilience.md`, `.github/workflows/` |
 
-`README.md` describes local development. For current deployment intent, start with
-the recovery runbook: it records direct Caddy/VPS hosting and Cloudflare DNS, while
-the README also documents the older Workers Static Assets profile. Verify live
-state before operational changes; a config file's existence does not make it active.
+`README.md` describes local development and the direct Selectel deployment. The
+active web-server profile is Nginx (`deploy/nginx/`); `deploy/caddy/` and the
+Cloudflare Workers paths are retained as historical/rollback references. For
+operations, start with `docs/recovery-runbook.md` and `deploy/nginx/README.md`.
+The host's TLS/renewal configuration is managed outside the repository; do not
+infer actual service state, file paths or backup coverage from source snippets.
+Verify the live host over SSH before operational changes.
 
 ## Architecture and behavior to preserve
 
@@ -77,6 +80,7 @@ Run commands from the repository root. Use npm and the existing
 | `npm run build` | Regenerate `dist/` and report asset sizes |
 | `npm run check` | Syntax, generated HTML/SEO, curtain math, size budgets and local HTTP smoke checks; requires a current build |
 | `npm run check:deploy` | Local assertions for deployment files; does not deploy |
+| `npm run check:nginx` | Check the Nginx profile; requires an installed Nginx and headers-more module (provisioned in CI) |
 | `npm test` | Build plus both check groups |
 | `npm run preview` | Build and serve `dist/` on port 4173; requires Python 3 |
 
@@ -87,8 +91,11 @@ Run commands from the repository root. Use npm and the existing
   `git diff --check`; do not install dependencies or rebuild unchanged assets solely
   for prose. Complete any additional checks explicitly requested by the user or CI.
 - For interaction/layout changes, inspect both languages on desktop and mobile,
-  including keyboard use, reduced motion and the no-JavaScript fallback. Automated
-  static checks alone do not prove the drag interaction or visual layout works.
+  including keyboard use, reduced motion and the no-JavaScript fallback. Existing
+  Chromium/WebKit browser scripts also guard About/Contacts heading alignment,
+  Stack/Projects axes and narrow Go-code containment; retain these assertions or
+  equivalent regression coverage. Automated static checks alone do not prove the
+  drag interaction or visual layout works.
 - Python's preview server does not apply hosting headers or redirects. Local smoke
   tests model them; production behavior requires a separate check of the actual host.
 - Add focused regression coverage for behavioral bugs. Do not add tests that only
