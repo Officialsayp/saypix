@@ -7,12 +7,10 @@ export const projectLinks = {
 
 const stackGroups = Object.freeze([
   {
-    number: "01",
     title: "Backend & Data",
     items: ["Go", "REST API", "gRPC", "PostgreSQL", "Redis", "Kafka"],
   },
   {
-    number: "02",
     title: "Infrastructure & DevOps",
     items: ["Docker", "Git", "Grafana", "Nginx", "GitHub Actions", "Linux / systemd", "Caddy"],
   },
