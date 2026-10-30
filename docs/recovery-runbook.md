@@ -365,7 +365,7 @@ A
 DNS only
 ```
 
-Redirect теперь выполняет Caddy.
+После завершения миграции redirect сначала выполнял Caddy; в текущей production-схеме эту функцию выполняет Nginx.
 
 #### 4.8.4. `origin` оставлен прямым
 
@@ -1059,7 +1059,7 @@ adduser --disabled-password --gecos "" deploy
 install -d -m 0700 -o deploy -g deploy /home/deploy/.ssh
 ```
 
-Восстановить GitHub Actions public key в:
+Восстановить **проверенный** GitHub Actions public key в:
 
 ```text
 /home/deploy/.ssh/authorized_keys
