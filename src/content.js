@@ -73,7 +73,9 @@ export const siteContent = {
             "JavaScript",
             "Accessibility",
             "Technical SEO",
-            "Cloudflare"
+            "Nginx",
+            "GitHub Actions",
+            "Cloudflare DNS"
           ],
           status: "Опубликован",
           url: projectLinks.maxzolotoyLive,
@@ -96,8 +98,10 @@ export const siteContent = {
           tags: [
             "Go",
             "REST API",
+            "Vue 3",
+            "TypeScript",
+            "MSW",
             "PostgreSQL",
-            "SQL",
             "Redis",
             "Kafka",
             "Docker",
@@ -176,7 +180,9 @@ export const siteContent = {
             "JavaScript",
             "Accessibility",
             "Technical SEO",
-            "Cloudflare"
+            "Nginx",
+            "GitHub Actions",
+            "Cloudflare DNS"
           ],
           status: "Published",
           url: projectLinks.maxzolotoyLive,
@@ -199,8 +205,10 @@ export const siteContent = {
           tags: [
             "Go",
             "REST API",
+            "Vue 3",
+            "TypeScript",
+            "MSW",
             "PostgreSQL",
-            "SQL",
             "Redis",
             "Kafka",
             "Docker",
