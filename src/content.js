@@ -5,16 +5,17 @@ export const projectLinks = {
   zolotoyDevBackend: "https://github.com/Officialsayp/zolotoy-dev-backend",
 };
 
-const stackItems = Object.freeze([
-  "Go",
-  "REST API",
-  "gRPC",
-  "PostgreSQL",
-  "Redis",
-  "Kafka",
-  "Docker",
-  "Git",
-  "Grafana",
+const stackGroups = Object.freeze([
+  {
+    number: "01",
+    title: "Backend & Data",
+    items: ["Go", "REST API", "gRPC", "PostgreSQL", "Redis", "Kafka"],
+  },
+  {
+    number: "02",
+    title: "Infrastructure & DevOps",
+    items: ["Docker", "Git", "Grafana", "Nginx", "GitHub Actions", "Linux / systemd", "Caddy"],
+  },
 ]);
 
 export const siteContent = {
@@ -52,7 +53,7 @@ export const siteContent = {
     stack: {
       kicker: "СТЕК",
       title: "Технологии, с которыми работаю и которые изучаю",
-      items: stackItems
+      groups: stackGroups
     },
     projects: {
       kicker: "ПРОЕКТЫ",
@@ -155,7 +156,7 @@ export const siteContent = {
     stack: {
       kicker: "STACK",
       title: "Technologies I use and continue to study",
-      items: stackItems
+      groups: stackGroups
     },
     projects: {
       kicker: "PROJECTS",

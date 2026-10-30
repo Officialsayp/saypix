@@ -24,10 +24,11 @@ const files = {
   enFragment: path.join(assets, one(/^page-en\.[a-f0-9]{12}\.html$/, 'EN fragment')),
 };
 
-// Russian UTF-8 text and visible no-JS Stack labels make localized documents
-// slightly larger. Both stay below the 16 KiB network-risk boundary.
+// Thirteen real, readable technology labels across two semantic groups increase
+// uncompressed HTML. Keep budgets tight and account for actual compressed size.
+// The site still sends only ~3–4 KiB Brotli per HTML document.
 const budgets = {
-  ruHtml: 16 * 1024,
+  ruHtml: 18 * 1024,
   enHtml: 16 * 1024,
   // Copy feedback adds two small SVG states and accessible success/error handling.
   // Keep HTML below 16 KiB and cap the compact CSS/JS assets separately.
@@ -35,9 +36,9 @@ const budgets = {
   css: 28 * 1024,
   boot: 4 * 1024,
   curtain: 12 * 1024,
-  techIcons: 6 * 1024,
-  ruFragment: 9 * 1024,
-  enFragment: 8 * 1024,
+  techIcons: 8 * 1024,
+  ruFragment: 11 * 1024,
+  enFragment: 10 * 1024,
 };
 
 for (const [key, file] of Object.entries(files)) {

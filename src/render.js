@@ -10,6 +10,10 @@ const TECH_ICON_IDS = Object.freeze({
   Redis: 'redis',
   'REST API': 'rest-api',
   Grafana: 'grafana',
+  Nginx: 'nginx',
+  'GitHub Actions': 'github-actions',
+  'Linux / systemd': 'linux-systemd',
+  Caddy: 'caddy',
 });
 
 function renderTechChip(name, techIconsPath) {
@@ -136,7 +140,16 @@ export function renderPage(lang, { techIconsPath } = {}) {
         <section class="section" id="stack-${lang}">
           <div class="container">
             <div class="section__head"><div class="kicker">${c.stack.kicker}</div><h2>${c.stack.title}</h2></div>
-            <div class="chips">${c.stack.items.map(item => renderTechChip(item, techIconsPath)).join('')}</div>
+            <div class="stack-list">
+              ${c.stack.groups.map(group => `
+                <div class="stack-group">
+                  <span class="stack-group__num" aria-hidden="true">${group.number}</span>
+                  <div class="stack-group__content">
+                    <h3>${group.title}</h3>
+                    <div class="chips">${group.items.map(item => renderTechChip(item, techIconsPath)).join('')}</div>
+                  </div>
+                </div>`).join('')}
+            </div>
           </div>
         </section>
 
