@@ -477,7 +477,7 @@ button { font: inherit; }
 /* Match the project title/content column; keep the group divider full width. */
 .stack-group__content {
   min-width: 0;
-  padding-inline-start: calc(70px + 17px);
+  margin-inline-start: calc(70px + 17px);
 }
 .stack-group h3 {
   margin: 0;
@@ -809,7 +809,7 @@ body.is-curtain-prepared .curtain-divider { box-shadow: none; }
 @media (max-width:860px) {
  .hero__grid {gap:20px;}
  .section__head {gap:15px;}
- .stack-group__content {padding-inline-start:calc(42px + 17px);}
+ .stack-group__content {margin-inline-start:calc(42px + 17px);}
 }
 @media (max-width:560px) {
  .hero {padding:72px 0 31px;}
@@ -818,7 +818,7 @@ body.is-curtain-prepared .curtain-divider { box-shadow: none; }
  .section {padding:43px 0;}
  .section__body {margin-top:17px;}
  .stack-group {padding:16px 0;}
- .stack-group__content {padding-inline-start:calc(42px + 12px);}
+ .stack-group__content {margin-inline-start:calc(42px + 12px);}
  .project-card {padding:16px 0;gap:12px;}
 }
 /* Breakpoint-specific maximum intrinsic line counts across both languages.
