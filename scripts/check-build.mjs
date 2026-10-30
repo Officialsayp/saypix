@@ -5,17 +5,11 @@ import { contactLinks, projectLinks, siteContent } from '../src/content.js';
 
 const root = process.cwd();
 const dist = path.join(root, 'dist');
-const expectedStackItems = [
-  'Go',
-  'REST API',
-  'gRPC',
-  'PostgreSQL',
-  'Redis',
-  'Kafka',
-  'Docker',
-  'Git',
-  'Grafana',
+const expectedStackGroups = [
+  { number: '01', title: 'Backend & Data', items: ['Go', 'REST API', 'gRPC', 'PostgreSQL', 'Redis', 'Kafka'] },
+  { number: '02', title: 'Infrastructure & DevOps', items: ['Docker', 'Git', 'Grafana', 'Nginx', 'GitHub Actions', 'Linux / systemd', 'Caddy'] },
 ];
+const expectedStackItems = expectedStackGroups.flatMap(group => group.items);
 
 const expectedTechIconIds = [
   'tech-go',
@@ -27,6 +21,10 @@ const expectedTechIconIds = [
   'tech-docker',
   'tech-git',
   'tech-grafana',
+  'tech-nginx',
+  'tech-github-actions',
+  'tech-linux-systemd',
+  'tech-caddy',
 ];
 
 function occurrences(source, pattern) {
@@ -152,7 +150,15 @@ async function checkPage(file, { lang, canonicalPath }) {
       assert.ok(html.includes(`<li>${highlight}</li>`), `${file}: missing project evidence for ${project.id}`);
     }
   }
-  assert.deepEqual(siteContent[lang].stack.items, expectedStackItems, `${file}: Stack contract changed`);
+  assert.deepEqual(siteContent[lang].stack.groups, expectedStackGroups, `${file}: Stack groups contract changed`);
+  const stackRows = [...html.matchAll(/<div class="stack-group">[\s\S]*?<\/div>\s*<\/div>/g)];
+  assert.equal(stackRows.length, 2, `${file}: expected two project-style Stack rows`);
+  assert.equal((html.match(/class="stack-group__num"/g) || []).length, 2, `${file}: stack row numbers missing`);
+  for (const group of expectedStackGroups) {
+    assert.ok(html.includes(`<h3>${group.title}</h3>`), `${file}: missing Stack group ${group.title}`);
+    assert.ok(html.includes(`class="stack-group__num" aria-hidden="true">${group.number}</span>`),
+      `${file}: missing stack number ${group.number}`);
+  }
   const techIconUses = [...html.matchAll(
     /<svg class="chip__icon" viewBox="0 0 24 24" aria-hidden="true"><use href="(\/assets\/tech-icons\.[a-f0-9]{12}\.svg)#(tech-[a-z-]+)"><\/use><\/svg>([^<]+)<\/span>/g,
   )];
@@ -284,8 +290,11 @@ for (const lang of ['ru', 'en']) {
     fragment.includes(expectedHeroHeading(siteContent[lang].hero.title)),
     `${fragmentName}: missing localized curtain content`,
   );
-  for (const item of expectedStackItems) {
-    assert.ok(fragment.includes(`</svg>${item}</span>`), `${fragmentName}: missing visible Stack label ${item}`);
+  for (const group of expectedStackGroups) {
+    assert.ok(fragment.includes(`<h3>${group.title}</h3>`), `${fragmentName}: missing Stack title ${group.title}`);
+    for (const item of group.items) {
+      assert.ok(fragment.includes(`</svg>${item}</span>`), `${fragmentName}: missing visible Stack label ${item}`);
+    }
   }
   const fragmentSpritePaths = [...fragment.matchAll(/<use href="(\/assets\/tech-icons\.[a-f0-9]{12}\.svg)#tech-/g)]
     .map(match => match[1]);
