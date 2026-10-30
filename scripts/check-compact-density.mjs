@@ -57,6 +57,7 @@ try {
         const border = (el, side) => getComputedStyle(el)[side];
         return {
           count: rows.length,
+          numbering: section.querySelectorAll('.stack-group__num').length,
           headings: rows.map(el => el.querySelector('h3').textContent),
           chipCounts: rows.map(el => el.querySelectorAll('.chip').length),
           topSection: border(section,'borderTopWidth'),
@@ -71,6 +72,7 @@ try {
       });
       assert.deepEqual(stack, {
         count:2,
+        numbering:0,
         headings:['Backend & Data','Infrastructure & DevOps'],
         chipCounts:[6,7],
         topSection:'1px',firstTop:'0px',secondTop:'1px',lastBottom:'0px',
