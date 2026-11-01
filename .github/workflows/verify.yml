@@ -23,13 +23,6 @@ jobs:
 
       - run: npm test
 
-      - name: TEMP export compiled CSS for tracked build sync
-        run: |
-          echo 'BUILT_CSS_BASE64_START'
-          base64 -w0 dist/assets/styles.*.css
-          echo
-          echo 'BUILT_CSS_BASE64_END'
-
       - name: Verify generated files are committed
         run: git diff --exit-code -- dist
 
