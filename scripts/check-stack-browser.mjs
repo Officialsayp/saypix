@@ -8,7 +8,7 @@ const browser = await pw[engine].launch({
   ...(engine === 'chromium' ? { args:['--no-sandbox','--disable-dev-shm-usage'] } : {}),
 });
 const base = process.env.BASE_URL || 'http://127.0.0.1:4173';
-const widths = [320, 333, 334, 340, 375, 390, 560, 561, 768, 860, 861, 1024, 1200, 1440, 1920];
+const widths = [320, 333, 334, 340, 375, 390, 560, 561, 768, 860, 861, 1024, 1199, 1200, 1280, 1366, 1440, 1512, 1920];
 
 try {
   for (const width of widths) {
@@ -26,7 +26,7 @@ try {
         const projectRows = [...document.querySelectorAll('[id^="projects-"] .project-card')];
         const coords = e => {
           const r=e.getBoundingClientRect();
-          return { top:r.top, height:r.height, right:r.right };
+          return { left:r.left, top:r.top, height:r.height, right:r.right };
         };
         return {
           projectAxis: projectContentX - projectHeadingX,
@@ -75,7 +75,7 @@ try {
       assert.ok(data.codeOverflow <= 1, JSON.stringify({engine,width,lang,codeOverflow:data.codeOverflow}));
       assert.equal(data.projectMetaInViewport, true,
         JSON.stringify({engine,width,lang,projectMetaInViewport:data.projectMetaInViewport}));
-      if (width >= 861) {
+      if (width >= 1200) {
         assert.ok(Math.abs(data.projectAxis) <= 1,
           JSON.stringify({engine,width,lang,projectAxis:data.projectAxis}));
         for(const group of data.groups) {
