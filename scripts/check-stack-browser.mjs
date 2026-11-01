@@ -21,11 +21,22 @@ try {
         const groups = [...section.querySelectorAll('.stack-group')];
         const projectContentX = document.querySelector('[id^="projects-"] .project-card__content').getBoundingClientRect().left;
         const projectRowX = document.querySelector('[id^="projects-"] .project-card').getBoundingClientRect().left;
+        const projectHeadingX = document.querySelector('[id^="projects-"] .section__head h2').getBoundingClientRect().left;
+        const stackHeadingX = section.querySelector('.section__head h2').getBoundingClientRect().left;
+        const projectRows = [...document.querySelectorAll('[id^="projects-"] .project-card')];
         const coords = e => {
           const r=e.getBoundingClientRect();
           return { top:r.top, height:r.height, right:r.right };
         };
         return {
+          projectAxis: projectContentX - projectHeadingX,
+          projectNumberGaps: projectRows.map(row =>
+            row.querySelector('.project-card__content').getBoundingClientRect().left -
+            row.querySelector('.project-card__num').getBoundingClientRect().left),
+          projectMetaInViewport: projectRows.every(row =>
+            row.querySelector('.project-card__meta').getBoundingClientRect().right <=
+              document.documentElement.clientWidth + 1),
+          stackHeaderX: stackHeadingX,
           groups: groups.map(group => ({
             title: group.querySelector('h3').textContent,
             count: group.querySelectorAll('.chip').length,
@@ -62,6 +73,20 @@ try {
       assert.ok(Math.abs(data.aboutAxis) <= 1, JSON.stringify({engine,width,lang,aboutAxis:data.aboutAxis}));
       assert.ok(Math.abs(data.contactsAxis) <= 1, JSON.stringify({engine,width,lang,contactsAxis:data.contactsAxis}));
       assert.ok(data.codeOverflow <= 1, JSON.stringify({engine,width,lang,codeOverflow:data.codeOverflow}));
+      assert.equal(data.projectMetaInViewport, true,
+        JSON.stringify({engine,width,lang,projectMetaInViewport:data.projectMetaInViewport}));
+      if (width >= 861) {
+        assert.ok(Math.abs(data.projectAxis) <= 1,
+          JSON.stringify({engine,width,lang,projectAxis:data.projectAxis}));
+        for(const group of data.groups) {
+          const dx = group.heading.left - data.stackHeaderX;
+          assert.ok(Math.abs(dx) <= 1,
+            JSON.stringify({engine,width,lang,alignTo:'stack h2',dx}));
+        }
+        for(const gap of data.projectNumberGaps)
+          assert.ok(Math.abs(gap - 87) <= 1,
+            JSON.stringify({engine,width,lang,projectNumberGap:gap}));
+      }
       assert.equal(data.stackTop,'1px');
       assert.equal(data.projectTop,'1px');
       assert.deepEqual(data.groups.map(g=>g.topBorder),['0px','1px']);
