@@ -23,6 +23,13 @@ jobs:
 
       - run: npm test
 
+      - name: TEMP emit rebuilt CSS for fingerprinted dist synchronization
+        run: |
+          echo 'CSS_BASE64_START'
+          base64 -w0 dist/assets/styles.*.css
+          echo
+          echo 'CSS_BASE64_END'
+
       - name: Verify generated files are committed
         run: git diff --exit-code -- dist
 
@@ -31,7 +38,6 @@ jobs:
           npm install --no-save --package-lock=false playwright-core@1.56.1
           python3 -m http.server 4173 --bind 127.0.0.1 --directory dist >/tmp/compact-ui-http.log 2>&1 &
           sleep 2
-          BROWSER_EXECUTABLE="$(command -v google-chrome)" node scripts/audit-height-slots-temp.mjs
           PLAYWRIGHT_MODULE=playwright-core BROWSER_EXECUTABLE="$(command -v google-chrome)" node scripts/check-compact-density.mjs
           PLAYWRIGHT_MODULE=playwright-core BROWSER_EXECUTABLE="$(command -v google-chrome)" node scripts/check-stack-browser.mjs
           PLAYWRIGHT_MODULE=playwright-core BROWSER_EXECUTABLE="$(command -v google-chrome)" node scripts/check-hero-hitbox.mjs
