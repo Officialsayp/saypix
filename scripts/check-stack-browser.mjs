@@ -30,14 +30,10 @@ try {
         };
         return {
           projectAxis: projectContentX - projectHeadingX,
-          projectNumberGaps: projectRows.map(row =>
-            row.querySelector('.project-card__content').getBoundingClientRect().left -
-            row.querySelector('.project-card__num').getBoundingClientRect().left),
+          projectNumbersAbsent: projectRows.every(row => !row.querySelector('.project-card__num')),
           projectMetaInViewport: projectRows.every(row =>
             row.querySelector('.project-card__meta').getBoundingClientRect().right <=
               document.documentElement.clientWidth + 1),
-          projectNumbersInViewport: projectRows.every(row =>
-            row.querySelector('.project-card__num').getBoundingClientRect().left >= -1),
           metaPositions: projectRows.map(row =>
             row.querySelector('.project-card__meta').getBoundingClientRect().left -
             row.querySelector('.project-card__content').getBoundingClientRect().left),
@@ -98,17 +94,14 @@ try {
         assert.ok(Math.abs(dx) <= 1,
           JSON.stringify({engine,width,lang,alignTo:'stack h2',dx}));
       }
-      assert.equal(data.projectNumbersInViewport, true,
-        JSON.stringify({engine,width,lang,projectNumbersInViewport:data.projectNumbersInViewport}));
+      assert.equal(data.projectNumbersAbsent, true,
+        JSON.stringify({engine,width,lang,projectNumbersAbsent:data.projectNumbersAbsent}));
       for(const dx of data.textElementAxes)
         assert.ok(Math.abs(dx) <= 1,
           JSON.stringify({engine,width,lang,projectTextAxis:dx}));
       if (width <= 1199)
         assert.equal(data.actionsBelowText, true,
           JSON.stringify({engine,width,lang,actionsBelowText:data.actionsBelowText}));
-      for(const gap of data.projectNumberGaps)
-        assert.ok(Math.abs(gap - (width <= 860 ? 16 : 87)) <= 1,
-          JSON.stringify({engine,width,lang,projectNumberGap:gap}));
       if (width >= 861 && width <= 1199)
         for(const dx of data.metaPositions)
           assert.ok(Math.abs(dx) <= 1,
