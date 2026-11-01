@@ -280,6 +280,19 @@ function cleanupCurtain() {
   dragTarget = null;
 }
 
+// A rapid click on the already visible language must be able to cancel a
+// pending switch. Reset every transient state together, never leave a
+// half-painted curtain or a dimmed drag source behind.
+function cancelPendingSwitch() {
+  if (!settleFrame && !dragging) return;
+  cancelAnimationFrame(settleFrame);
+  settleFrame = 0;
+  finishPointerSession();
+  paintCurtain(activeLang === 'en' ? 1 : 0);
+  hideCurtain();
+  dragTarget = null;
+}
+
 function animateTo(target, { duration, showGhost = false } = {}) {
   cancelAnimationFrame(settleFrame);
   settleFrame = 0;
@@ -336,8 +349,17 @@ function startDrag(event, targetLang) {
   if (event.isPrimary === false) return;
   if (event.pointerType === 'mouse' && event.button !== 0) return;
   suppressNextClick = false;
-  if (targetLang === activeLang) return;
+  if (targetLang === activeLang) {
+    cancelPendingSwitch();
+    return;
+  }
   if (reducedMotion.matches) return;
+  // A second press may arrive before the prior pointerup/capture-loss event.
+  // Clear both control classes before replacing dragSource and pointerId.
+  if (dragging) cancelPendingSwitch();
+  // Repeated clicks on the same in-flight language must not interrupt and
+  // restart its animation from the opposite control's edge.
+  if (settleFrame && dragTarget === targetLang) return;
   cancelAnimationFrame(settleFrame);
   settleFrame = 0;
   hideCurtain();
@@ -520,7 +542,17 @@ function suppressOneClick() {
 }
 
 function switchByClick(targetLang) {
-  if (targetLang === activeLang || dragging) return;
+  if (targetLang === activeLang) {
+    cancelPendingSwitch();
+    return;
+  }
+  // A click is the terminal event of a press. If pointerup was lost while
+  // the user made a short tap, do not strand the control in drag state.
+  if (dragging) {
+    if (dragMoved) return;
+    cancelPendingSwitch();
+  }
+  if (settleFrame && dragTarget === targetLang) return;
   dragTarget = targetLang;
   animateTo(targetLang === 'en' ? 1 : 0);
 }
@@ -546,6 +578,7 @@ for (const button of [ruButton, enButton]) {
     if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
     if (targetLang === activeLang) {
       event.preventDefault();
+      cancelPendingSwitch();
       return;
     }
     // With reduced motion the semantic link is already the ideal fallback:
