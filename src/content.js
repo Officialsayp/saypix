@@ -59,7 +59,6 @@ export const siteContent = {
       cards: [
         {
           id: "maxzolotoy",
-          number: "01",
           name: "maxzolotoy.com",
           description: "Персональный двуязычный сайт и портфолио с разделами обо мне, стеком, проектами и прямыми контактами.",
           highlights: [
@@ -86,7 +85,6 @@ export const siteContent = {
         },
         {
           id: "zolotoy-dev",
-          number: "02",
           name: "zolotoy.dev",
           description: "Go-платформа с четырьмя сервисами, REST API и интерактивным демо.",
           highlights: [
@@ -166,7 +164,6 @@ export const siteContent = {
       cards: [
         {
           id: "maxzolotoy",
-          number: "01",
           name: "maxzolotoy.com",
           description: "A bilingual personal website and portfolio covering my profile, stack, projects and direct contacts.",
           highlights: [
@@ -193,7 +190,6 @@ export const siteContent = {
         },
         {
           id: "zolotoy-dev",
-          number: "02",
           name: "zolotoy.dev",
           description: "Go platform with four services, REST APIs and an interactive demo.",
           highlights: [
