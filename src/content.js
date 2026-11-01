@@ -59,7 +59,6 @@ export const siteContent = {
       cards: [
         {
           id: "maxzolotoy",
-          number: "01",
           name: "maxzolotoy.com",
           description: "Персональный двуязычный сайт и портфолио с разделами обо мне, стеком, проектами и прямыми контактами.",
           highlights: [
@@ -77,7 +76,7 @@ export const siteContent = {
             "GitHub Actions",
             "Cloudflare DNS"
           ],
-          status: "Опубликован",
+          status: "Реализован",
           url: projectLinks.maxzolotoyLive,
           linkLabel: "Открыть сайт",
           codeRepository: projectLinks.maxzolotoy,
@@ -86,7 +85,6 @@ export const siteContent = {
         },
         {
           id: "zolotoy-dev",
-          number: "02",
           name: "zolotoy.dev",
           description: "Go-платформа с четырьмя сервисами, REST API и интерактивным демо.",
           highlights: [
@@ -107,7 +105,7 @@ export const siteContent = {
             "Docker",
             "DDD"
           ],
-          status: "Портфолио-проект",
+          status: "В разработке",
           url: projectLinks.zolotoyDev,
           linkLabel: "Открыть zolotoy.dev",
           codeRepository: projectLinks.zolotoyDevBackend,
@@ -166,7 +164,6 @@ export const siteContent = {
       cards: [
         {
           id: "maxzolotoy",
-          number: "01",
           name: "maxzolotoy.com",
           description: "A bilingual personal website and portfolio covering my profile, stack, projects and direct contacts.",
           highlights: [
@@ -184,7 +181,7 @@ export const siteContent = {
             "GitHub Actions",
             "Cloudflare DNS"
           ],
-          status: "Published",
+          status: "Implemented",
           url: projectLinks.maxzolotoyLive,
           linkLabel: "Open website",
           codeRepository: projectLinks.maxzolotoy,
@@ -193,7 +190,6 @@ export const siteContent = {
         },
         {
           id: "zolotoy-dev",
-          number: "02",
           name: "zolotoy.dev",
           description: "Go platform with four services, REST APIs and an interactive demo.",
           highlights: [
@@ -214,7 +210,7 @@ export const siteContent = {
             "Docker",
             "DDD"
           ],
-          status: "Portfolio project",
+          status: "In development",
           url: projectLinks.zolotoyDev,
           linkLabel: "Open zolotoy.dev",
           codeRepository: projectLinks.zolotoyDevBackend,

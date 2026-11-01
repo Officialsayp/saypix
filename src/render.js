@@ -79,7 +79,6 @@ export function renderPage(lang, { techIconsPath } = {}) {
 
   const projects = c.projects.cards.map(card => `
     <article class="project-card">
-      <div class="project-card__num">${card.number}</div>
       <div class="project-card__content">
         <h3>${card.name}</h3>
         <p>${card.description}</p>
