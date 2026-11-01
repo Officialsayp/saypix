@@ -23,13 +23,6 @@ jobs:
 
       - run: npm test
 
-      - name: TEMP export rebuilt CSS for fingerprinted dist update
-        run: |
-          echo 'BUILT_STYLES_BASE64_START'
-          base64 -w0 dist/assets/styles.*.css
-          echo
-          echo 'BUILT_STYLES_BASE64_END'
-
       - name: Verify generated files are committed
         run: git diff --exit-code -- dist
 
