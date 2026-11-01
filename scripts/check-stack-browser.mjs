@@ -8,7 +8,7 @@ const browser = await pw[engine].launch({
   ...(engine === 'chromium' ? { args:['--no-sandbox','--disable-dev-shm-usage'] } : {}),
 });
 const base = process.env.BASE_URL || 'http://127.0.0.1:4173';
-const widths = [320, 321, 333, 334, 340, 375, 390, 559, 560, 561, 562, 768, 859, 860, 861, 862, 900, 960, 1024, 1100, 1150, 1180, 1198, 1199, 1200, 1201, 1280, 1366, 1440, 1512, 1536, 1920, 2560];
+const widths = [320, 321, 333, 334, 340, 375, 390, 393, 559, 560, 561, 562, 768, 859, 860, 861, 862, 900, 960, 1024, 1100, 1150, 1180, 1198, 1199, 1200, 1201, 1280, 1366, 1440, 1512, 1536, 1920, 2560];
 
 try {
   for (const width of widths) {
@@ -56,6 +56,8 @@ try {
             heading: coords(group.querySelector('h3')),
             content: coords(group.querySelector('.stack-group__content')),
             chipsContainer: coords(group.querySelector('.chips')),
+            chipsRightError: group.querySelector('.chips').getBoundingClientRect().right -
+              section.querySelector('.container').getBoundingClientRect().right,
             chips: [...group.querySelectorAll('.chip')].map(coords),
             alignment: [
               group.querySelector('h3'),
@@ -120,6 +122,9 @@ try {
         assert.ok(group.box.right<=width+1,JSON.stringify({engine,width,lang,group}));
         for(const chip of group.chips)
           assert.ok(chip.right<=width+1,JSON.stringify({engine,width,lang,chip}));
+        if (width <= 860)
+          assert.ok(Math.abs(group.chipsRightError) <= 1,
+            JSON.stringify({engine,width,lang,techChipsUseFullWidth:group.chipsRightError}));
         for (const dx of group.alignment)
           assert.ok(Math.abs(dx)<=1,JSON.stringify({engine,width,lang,alignTo:'project content',dx,group}));
         assert.ok(Math.abs(group.dividerLeftError)<=1,
