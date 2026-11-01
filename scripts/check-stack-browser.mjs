@@ -8,7 +8,7 @@ const browser = await pw[engine].launch({
   ...(engine === 'chromium' ? { args:['--no-sandbox','--disable-dev-shm-usage'] } : {}),
 });
 const base = process.env.BASE_URL || 'http://127.0.0.1:4173';
-const widths = [320, 333, 334, 340, 375, 390, 560, 561, 768, 860, 861, 1024, 1199, 1200, 1280, 1366, 1440, 1512, 1920];
+const widths = [320, 333, 334, 340, 375, 390, 560, 561, 768, 860, 861, 900, 960, 1024, 1100, 1150, 1180, 1199, 1200, 1280, 1366, 1440, 1512, 1920];
 
 try {
   for (const width of widths) {
@@ -36,6 +36,11 @@ try {
           projectMetaInViewport: projectRows.every(row =>
             row.querySelector('.project-card__meta').getBoundingClientRect().right <=
               document.documentElement.clientWidth + 1),
+          projectNumbersInViewport: projectRows.every(row =>
+            row.querySelector('.project-card__num').getBoundingClientRect().left >= -1),
+          metaPositions: projectRows.map(row =>
+            row.querySelector('.project-card__meta').getBoundingClientRect().left -
+            row.querySelector('.project-card__content').getBoundingClientRect().left),
           stackHeaderX: stackHeadingX,
           groups: groups.map(group => ({
             title: group.querySelector('h3').textContent,
@@ -75,18 +80,24 @@ try {
       assert.ok(data.codeOverflow <= 1, JSON.stringify({engine,width,lang,codeOverflow:data.codeOverflow}));
       assert.equal(data.projectMetaInViewport, true,
         JSON.stringify({engine,width,lang,projectMetaInViewport:data.projectMetaInViewport}));
-      if (width >= 1200) {
-        assert.ok(Math.abs(data.projectAxis) <= 1,
-          JSON.stringify({engine,width,lang,projectAxis:data.projectAxis}));
-        for(const group of data.groups) {
-          const dx = group.heading.left - data.stackHeaderX;
-          assert.ok(Math.abs(dx) <= 1,
-            JSON.stringify({engine,width,lang,alignTo:'stack h2',dx}));
-        }
-        for(const gap of data.projectNumberGaps)
-          assert.ok(Math.abs(gap - 87) <= 1,
-            JSON.stringify({engine,width,lang,projectNumberGap:gap}));
+      // The user-facing content must start at the large section heading
+      // across mobile, tablet, laptop and desktop — not just at >=1200px.
+      assert.ok(Math.abs(data.projectAxis) <= 1,
+        JSON.stringify({engine,width,lang,projectAxis:data.projectAxis}));
+      for(const group of data.groups) {
+        const dx = group.heading.left - data.stackHeaderX;
+        assert.ok(Math.abs(dx) <= 1,
+          JSON.stringify({engine,width,lang,alignTo:'stack h2',dx}));
       }
+      assert.equal(data.projectNumbersInViewport, true,
+        JSON.stringify({engine,width,lang,projectNumbersInViewport:data.projectNumbersInViewport}));
+      for(const gap of data.projectNumberGaps)
+        assert.ok(Math.abs(gap - (width <= 860 ? 16 : 87)) <= 1,
+          JSON.stringify({engine,width,lang,projectNumberGap:gap}));
+      if (width >= 861 && width <= 1199)
+        for(const dx of data.metaPositions)
+          assert.ok(Math.abs(dx) <= 1,
+            JSON.stringify({engine,width,lang,metaAlignTo:'project content',dx}));
       assert.equal(data.stackTop,'1px');
       assert.equal(data.projectTop,'1px');
       assert.deepEqual(data.groups.map(g=>g.topBorder),['0px','1px']);
