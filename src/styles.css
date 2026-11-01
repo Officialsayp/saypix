@@ -492,14 +492,13 @@ button { font: inherit; }
 .project-list { margin-top: 54px; }
 .project-card {
   display: grid;
-  grid-template-columns: 70px minmax(0, 1fr) 220px;
+  grid-template-columns: minmax(0, 1fr) 220px;
   gap: 28px;
   padding: 34px 0;
   align-items: start;
 }
 /* Draw lines only between projects; outer section boundaries stay full width. */
 .project-card + .project-card { border-top: 1px solid var(--line); }
-.project-card__num { color: #788093; font: 12px/1 ui-monospace, monospace; padding-top: 8px; }
 .project-card h3 { margin: 0 0 10px; font-size: clamp(26px, 3vw, 38px); letter-spacing: -.035em; }
 .project-card p { margin: 0; max-width: 820px; color: var(--muted); line-height: 1.65; }
 .project-card__highlights {
@@ -735,8 +734,8 @@ body.is-curtain-prepared .curtain-divider { box-shadow: none; }
   .section__body { margin-left: 0; }
   .chips { margin-left: 0; max-width: none; }
   .contacts__links { margin-left: 0; max-width: none; }
-  .project-card { grid-template-columns: 42px 1fr; }
-  .project-card__meta { grid-column: 2; justify-items: start; min-width: 0; padding-top: 0; text-align: left; }
+  .project-card { grid-template-columns: minmax(0, 1fr); }
+  .project-card__meta { grid-column: 1; justify-items: start; min-width: 0; padding-top: 0; text-align: left; }
   .project-card__link { max-width: none; }
 }
 
@@ -820,33 +819,16 @@ body.is-curtain-prepared .curtain-divider { box-shadow: none; }
  .stack-group {padding:16px 0;}
  .project-card {padding:16px 0;gap:12px;}
 }
-/* Stack and Projects share the exact h2 axis at EVERY viewport width.
-   Preserve full-width section/card separators; only content is indented.
-   At <=860px the h2 is already flush with its container, so the two-digit
-   project index sits in a small left-side gutter rather than stealing space
-   from the translated card content. */
+/* Keep Stack titles, chips and Projects content under their section h2 axis
+   at every width, while all card divider lines remain full-width. */
 @media (max-width: 860px) {
   .stack-group__content { margin-inline-start: 0; }
-  .project-card {
-    position: relative;
-    grid-template-columns: minmax(0, 1fr);
-  }
-  .project-card__num {
-    position: absolute;
-    left: -16px;
-    top: 19px;
-    padding-top: 0;
-  }
   .project-card__content,
   .project-card__meta { grid-column: 1; }
 }
-
-/* The heading's second track begins at 17.5% of the container plus 19.8px
-   with its compact 24px gap. Reuse this axis rather than a magic pixel
-   offset. The 87px number gutter is the desktop 70px track + 17px gap. */
 @media (min-width: 861px) {
   .stack-group__content { margin-inline-start: calc(17.5% + 19.8px); }
-  .project-card { padding-inline-start: calc(17.5% + 19.8px - 87px); }
+  .project-card { padding-inline-start: calc(17.5% + 19.8px); }
 }
 
 /* Laptop / small-desktop: keep the content under the heading WITHOUT
@@ -854,9 +836,9 @@ body.is-curtain-prepared .curtain-divider { box-shadow: none; }
    and actions under the text, where they remain real, keyboard-usable links.
    >=1200px keeps the original right-aligned link column unchanged. */
 @media (min-width: 861px) and (max-width: 1199px) {
-  .project-card { grid-template-columns: 70px minmax(0, 1fr); }
+  .project-card { grid-template-columns: minmax(0, 1fr); }
   .project-card__meta {
-    grid-column: 2;
+    grid-column: 1;
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-start;
