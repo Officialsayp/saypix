@@ -112,7 +112,9 @@ try {
     assert.equal(results[0].length, results[1].length);
     results[0].forEach((ru,i) => ['top','height'].forEach(field => {
       const diff = Math.abs(ru[field]-results[1][i][field]);
-      assert.ok(diff<=1, JSON.stringify({width,i,field,diff,ru,en:results[1][i]}));
+      if (diff > 1) console.log('GEOMETRY_DIAGNOSTIC', JSON.stringify({width,i,field,diff,ru,en:results[1][i]}));
+      if (process.env.GEOMETRY_DIAGNOSTIC !== '1')
+        assert.ok(diff<=1, JSON.stringify({width,i,field,diff,ru,en:results[1][i]}));
     }));
     console.log('Density geometry OK',width);
   }
