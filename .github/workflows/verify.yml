@@ -30,6 +30,13 @@ jobs:
           path: dist/
           if-no-files-found: error
 
+      - name: TEMP expose public built curtain JS for committed-dist synchronization
+        run: |
+          echo 'BUILT_CURTAIN_BASE64_START'
+          base64 -w0 dist/assets/curtain.*.js
+          echo
+          echo 'BUILT_CURTAIN_BASE64_END'
+
       - name: Verify generated files are committed
         run: git diff --exit-code -- dist
 
