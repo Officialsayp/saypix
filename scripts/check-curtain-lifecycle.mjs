@@ -252,6 +252,65 @@ try {
       }
     }
   }
+  // Regression: the most recent click wins while the language animation is
+  // pending. Clicking the visible language cancels the opposite transition.
+  for (const width of [375, 1512]) {
+    for (const lang of ['ru', 'en']) {
+      const page = await browser.newPage({ viewport: { width, height: 900 } });
+      const other = lang === 'ru' ? 'en' : 'ru';
+      const errors = [];
+      page.on('pageerror', error => errors.push(String(error)));
+      try {
+        await page.goto(`${origin}/${lang}/`);
+        await cancelTouch(page, lang, 'none'); // warm lazy curtain
+        await assertIdle(page, lang, 'rapid-toggle warm idle');
+
+        // Two clicks in the same task eliminate CI scheduling variation.
+        await page.evaluate(({ lang, other }) => {
+          const click = target => document.querySelector(`[data-lang-target="${target}"]`)
+            .dispatchEvent(new MouseEvent('click', {
+              bubbles: true, cancelable: true, button: 0, detail: 1
+            }));
+          click(other);
+          click(lang);
+        }, { lang, other });
+        await page.waitForTimeout(460);
+        await assertIdle(page, lang, 'opposite click canceled before navigation');
+
+        // The previous pointer could lose its terminal event. Starting another
+        // gesture must remove the previous drag-source class, never leave it dim.
+        await page.evaluate(({ lang, other }) => {
+          const at = target => {
+            const control = document.querySelector(`[data-lang-target="${target}"]`);
+            const box = control.getBoundingClientRect();
+            return { control, x: box.x + box.width / 2, y: box.y + box.height / 2 };
+          };
+          const first = at(other);
+          const second = at(lang);
+          first.control.dispatchEvent(new PointerEvent('pointerdown', {
+            bubbles: true, pointerId: 101, pointerType: 'touch',
+            isPrimary: true, button: 0, buttons: 1, clientX: first.x, clientY: first.y
+          }));
+          second.control.dispatchEvent(new PointerEvent('pointerdown', {
+            bubbles: true, pointerId: 102, pointerType: 'touch',
+            isPrimary: true, button: 0, buttons: 1, clientX: second.x, clientY: second.y
+          }));
+        }, { lang, other });
+        await assertIdle(page, lang, 'interrupted pointer capture cleared');
+
+        await page.locator(`[data-lang-target="${other}"]`).click();
+        await page.waitForURL(`**/${other}/`);
+        await assertLanguageControls(page, other);
+        await assertHint(page, true, 'rapid-toggle destination hint');
+        assert.equal(await page.locator('.is-drag-source').count(), 0,
+          'No language control may remain dim after navigation');
+        assert.deepEqual(errors, [], `${engine}: rapid-toggle ${width} ${lang}`);
+        console.log('RAPID_LANGUAGE_TOGGLE_OK', JSON.stringify({ engine, width, lang }));
+      } finally {
+        await page.close();
+      }
+    }
+  }
 } finally {
   await browser.close();
 }
