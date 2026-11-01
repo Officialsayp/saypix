@@ -478,11 +478,8 @@ button { font: inherit; }
   padding: 34px 0;
 }
 .stack-group + .stack-group { border-top: 1px solid var(--line); }
-/* Match the project title/content column; keep the group divider full width. */
-.stack-group__content {
-  min-width: 0;
-  margin-inline-start: calc(70px + 17px);
-}
+/* Keep the technology group divider full width. */
+.stack-group__content { min-width: 0; }
 .stack-group h3 {
   margin: 0;
   font-size: clamp(26px, 3vw, 38px);
@@ -813,7 +810,6 @@ body.is-curtain-prepared .curtain-divider { box-shadow: none; }
 @media (max-width:860px) {
  .hero__grid {gap:20px;}
  .section__head {gap:15px;}
- .stack-group__content {margin-inline-start:calc(42px + 17px);}
 }
 @media (max-width:560px) {
  .hero {padding:72px 0 31px;}
@@ -822,7 +818,6 @@ body.is-curtain-prepared .curtain-divider { box-shadow: none; }
  .section {padding:43px 0;}
  .section__body {margin-top:17px;}
  .stack-group {padding:16px 0;}
- .stack-group__content {margin-inline-start:calc(42px + 12px);}
  .project-card {padding:16px 0;gap:12px;}
 }
 /* Stack and Projects share the exact h2 axis at EVERY viewport width.
@@ -831,7 +826,6 @@ body.is-curtain-prepared .curtain-divider { box-shadow: none; }
    project index sits in a small left-side gutter rather than stealing space
    from the translated card content. */
 @media (max-width: 860px) {
-  .stack-group__content { margin-inline-start: 0; }
   .project-card {
     position: relative;
     grid-template-columns: minmax(0, 1fr);
