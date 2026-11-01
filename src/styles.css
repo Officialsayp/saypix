@@ -825,6 +825,14 @@ body.is-curtain-prepared .curtain-divider { box-shadow: none; }
  .stack-group__content {margin-inline-start:calc(42px + 12px);}
  .project-card {padding:16px 0;gap:12px;}
 }
+/* Align the two desktop content groups with their large section headings.
+   Keep the numbers 87px to the left of project names (70px column + 17px
+   compact gap), while divider rules and right-side project links stay put.
+   The existing <=860px compact layout remains unchanged. */
+@media (min-width: 861px) {
+  .stack-group__content { margin-inline-start: calc(17.5% + 19.8px); }
+  .project-card { padding-inline-start: calc(17.5% + 19.8px - 87px); }
+}
 /* Breakpoint-specific maximum intrinsic line counts across both languages.
    Keep ordered from 320px upward; validated by the geometry regression. */
 .hero__lead{min-height:1lh !important;}
