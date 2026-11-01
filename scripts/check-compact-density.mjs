@@ -67,6 +67,7 @@ try {
         return {
           count: rows.length,
           numbering: section.querySelectorAll('.stack-group__num').length,
+          projectNumbers: document.querySelectorAll('[id^="projects-"] .project-card__num').length,
           headings: rows.map(el => el.querySelector('h3').textContent),
           chipCounts: rows.map(el => el.querySelectorAll('.chip').length),
           alignmentDiffs, rowEdgeDiffs,
@@ -84,6 +85,7 @@ try {
       assert.deepEqual(stackStructure, {
         count:2,
         numbering:0,
+        projectNumbers:0,
         headings:['Backend & Data','Infrastructure & DevOps'],
         chipCounts:[6,7],
         topSection:'1px',firstTop:'0px',secondTop:'1px',lastBottom:'0px',
