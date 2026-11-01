@@ -264,6 +264,10 @@ try {
         await page.goto(`${origin}/${lang}/`);
         await cancelTouch(page, lang, 'none'); // warm lazy curtain
         await assertIdle(page, lang, 'rapid-toggle warm idle');
+        // Clear the intentional same-gesture click suppression introduced by
+        // pointercancel. The next click is a new user interaction.
+        await page.locator(`[data-lang-target="${lang}"]`).click();
+        await assertIdle(page, lang, 'rapid-toggle active click idle');
 
         // Two clicks in the same task eliminate CI scheduling variation.
         await page.evaluate(({ lang, other }) => {
@@ -272,6 +276,9 @@ try {
               bubbles: true, cancelable: true, button: 0, detail: 1
             }));
           click(other);
+          if (!document.body.classList.contains('is-curtain-moving')) {
+            throw new Error('First click must begin the opposite-language transition');
+          }
           click(lang);
         }, { lang, other });
         await page.waitForTimeout(460);
