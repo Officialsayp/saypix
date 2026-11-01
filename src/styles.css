@@ -478,11 +478,8 @@ button { font: inherit; }
   padding: 34px 0;
 }
 .stack-group + .stack-group { border-top: 1px solid var(--line); }
-/* Match the project title/content column; keep the group divider full width. */
-.stack-group__content {
-  min-width: 0;
-  margin-inline-start: calc(70px + 17px);
-}
+/* Keep the technology group divider full width. */
+.stack-group__content { min-width: 0; }
 .stack-group h3 {
   margin: 0;
   font-size: clamp(26px, 3vw, 38px);
@@ -813,7 +810,6 @@ body.is-curtain-prepared .curtain-divider { box-shadow: none; }
 @media (max-width:860px) {
  .hero__grid {gap:20px;}
  .section__head {gap:15px;}
- .stack-group__content {margin-inline-start:calc(42px + 17px);}
 }
 @media (max-width:560px) {
  .hero {padding:72px 0 31px;}
@@ -822,16 +818,54 @@ body.is-curtain-prepared .curtain-divider { box-shadow: none; }
  .section {padding:43px 0;}
  .section__body {margin-top:17px;}
  .stack-group {padding:16px 0;}
- .stack-group__content {margin-inline-start:calc(42px + 12px);}
  .project-card {padding:16px 0;gap:12px;}
 }
-/* Align both groups on wide desktop with their large section headings.
-   Keep the numbers 87px to the left of project names (70px column + 17px
-   compact gap), while divider rules and right-side project links stay put.
-   Below 1200px retain the existing shared axes and preserve RU/EN heights. */
-@media (min-width: 1200px) {
+/* Stack and Projects share the exact h2 axis at EVERY viewport width.
+   Preserve full-width section/card separators; only content is indented.
+   At <=860px the h2 is already flush with its container, so the two-digit
+   project index sits in a small left-side gutter rather than stealing space
+   from the translated card content. */
+@media (max-width: 860px) {
+  .project-card {
+    position: relative;
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .project-card__num {
+    position: absolute;
+    left: -16px;
+    top: 19px;
+    padding-top: 0;
+  }
+  .project-card__content,
+  .project-card__meta { grid-column: 1; }
+}
+
+/* The heading's second track begins at 17.5% of the container plus 19.8px
+   with its compact 24px gap. Reuse this axis rather than a magic pixel
+   offset. The 87px number gutter is the desktop 70px track + 17px gap. */
+@media (min-width: 861px) {
   .stack-group__content { margin-inline-start: calc(17.5% + 19.8px); }
   .project-card { padding-inline-start: calc(17.5% + 19.8px - 87px); }
+}
+
+/* Laptop / small-desktop: keep the content under the heading WITHOUT
+   squeezing its RU/EN copy against the 220px metadata sidebar. Move status
+   and actions under the text, where they remain real, keyboard-usable links.
+   >=1200px keeps the original right-aligned link column unchanged. */
+@media (min-width: 861px) and (max-width: 1199px) {
+  .project-card { grid-template-columns: 70px minmax(0, 1fr); }
+  .project-card__meta {
+    grid-column: 2;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: baseline;
+    gap: 12px 18px;
+    min-width: 0;
+    padding-top: 0;
+    text-align: left;
+  }
+  .project-card__link { max-width: none; }
 }
 /* Breakpoint-specific maximum intrinsic line counts across both languages.
    Keep ordered from 320px upward; validated by the geometry regression. */

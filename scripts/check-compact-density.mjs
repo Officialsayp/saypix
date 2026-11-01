@@ -8,7 +8,7 @@ const browser = await chromium.launch({
   args: ['--no-sandbox', '--disable-dev-shm-usage'],
 });
 const base = process.env.BASE_URL || 'http://127.0.0.1:4173';
-const widths = [320, 333, 334, 340, 360, 375, 390, 414, 430, 480, 560, 561, 585, 700, 768, 860, 861, 1024, 1199, 1200, 1280, 1366, 1440, 1512, 1920];
+const widths = [320, 321, 333, 334, 340, 360, 375, 390, 414, 430, 480, 559, 560, 561, 562, 585, 700, 768, 859, 860, 861, 862, 900, 960, 1024, 1100, 1150, 1180, 1198, 1199, 1200, 1201, 1280, 1366, 1440, 1512, 1536, 1920, 2560];
 const selector = [
   'main > section', '.hero__lead', '.hero__visual',
   '.section h2', '.section__body', '.section__body > p',
