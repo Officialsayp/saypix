@@ -76,7 +76,7 @@ export const siteContent = {
             "GitHub Actions",
             "Cloudflare DNS"
           ],
-          status: "Опубликован",
+          status: "Реализован",
           url: projectLinks.maxzolotoyLive,
           linkLabel: "Открыть сайт",
           codeRepository: projectLinks.maxzolotoy,
@@ -105,7 +105,7 @@ export const siteContent = {
             "Docker",
             "DDD"
           ],
-          status: "Портфолио-проект",
+          status: "В разработке",
           url: projectLinks.zolotoyDev,
           linkLabel: "Открыть zolotoy.dev",
           codeRepository: projectLinks.zolotoyDevBackend,
@@ -181,7 +181,7 @@ export const siteContent = {
             "GitHub Actions",
             "Cloudflare DNS"
           ],
-          status: "Published",
+          status: "Implemented",
           url: projectLinks.maxzolotoyLive,
           linkLabel: "Open website",
           codeRepository: projectLinks.maxzolotoy,
@@ -210,7 +210,7 @@ export const siteContent = {
             "Docker",
             "DDD"
           ],
-          status: "Portfolio project",
+          status: "In development",
           url: projectLinks.zolotoyDev,
           linkLabel: "Open zolotoy.dev",
           codeRepository: projectLinks.zolotoyDevBackend,
