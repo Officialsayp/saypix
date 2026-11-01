@@ -8,7 +8,7 @@ const browser = await pw[engine].launch({
   ...(engine === 'chromium' ? { args:['--no-sandbox','--disable-dev-shm-usage'] } : {}),
 });
 const base = process.env.BASE_URL || 'http://127.0.0.1:4173';
-const widths = [320, 333, 334, 340, 375, 390, 560, 561, 768, 860, 861, 900, 960, 1024, 1100, 1150, 1180, 1199, 1200, 1280, 1366, 1440, 1512, 1920];
+const widths = [320, 321, 333, 334, 340, 375, 390, 559, 560, 561, 562, 768, 859, 860, 861, 862, 900, 960, 1024, 1100, 1150, 1180, 1198, 1199, 1200, 1201, 1280, 1366, 1440, 1512, 1536, 1920, 2560];
 
 try {
   for (const width of widths) {
@@ -41,6 +41,13 @@ try {
           metaPositions: projectRows.map(row =>
             row.querySelector('.project-card__meta').getBoundingClientRect().left -
             row.querySelector('.project-card__content').getBoundingClientRect().left),
+          textElementAxes: projectRows.flatMap(row =>
+            ['h3','p','.project-card__highlights','.project-card__tags'].map(sel =>
+              row.querySelector('.project-card__content').querySelector(sel).getBoundingClientRect().left -
+              projectHeadingX)),
+          actionsBelowText: projectRows.every(row =>
+            row.querySelector('.project-card__meta').getBoundingClientRect().top >=
+            row.querySelector('.project-card__content').getBoundingClientRect().bottom - 1),
           stackHeaderX: stackHeadingX,
           groups: groups.map(group => ({
             title: group.querySelector('h3').textContent,
@@ -91,6 +98,12 @@ try {
       }
       assert.equal(data.projectNumbersInViewport, true,
         JSON.stringify({engine,width,lang,projectNumbersInViewport:data.projectNumbersInViewport}));
+      for(const dx of data.textElementAxes)
+        assert.ok(Math.abs(dx) <= 1,
+          JSON.stringify({engine,width,lang,projectTextAxis:dx}));
+      if (width <= 1199)
+        assert.equal(data.actionsBelowText, true,
+          JSON.stringify({engine,width,lang,actionsBelowText:data.actionsBelowText}));
       for(const gap of data.projectNumberGaps)
         assert.ok(Math.abs(gap - (width <= 860 ? 16 : 87)) <= 1,
           JSON.stringify({engine,width,lang,projectNumberGap:gap}));
