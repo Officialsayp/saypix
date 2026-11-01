@@ -826,6 +826,7 @@ body.is-curtain-prepared .curtain-divider { box-shadow: none; }
    project index sits in a small left-side gutter rather than stealing space
    from the translated card content. */
 @media (max-width: 860px) {
+  .stack-group__content { margin-inline-start: 0; }
   .project-card {
     position: relative;
     grid-template-columns: minmax(0, 1fr);
@@ -879,65 +880,53 @@ main > section:nth-of-type(2) .section__body > p:nth-child(2){min-height:3lh !im
 main > section:nth-of-type(2) .section__body > p:nth-child(3){min-height:4lh !important;}
 main > section:nth-of-type(2) .section__body > p:nth-child(4){min-height:2lh !important;}
 main > section:nth-of-type(4) .project-card:nth-child(1) h3{min-height:1lh !important;}
-main > section:nth-of-type(4) .project-card:nth-child(1) .project-card__content > p{min-height:5lh !important;}
-main > section:nth-of-type(4) .project-card:nth-child(1) .project-card__highlights li:nth-child(1){min-height:4lh !important;}
-main > section:nth-of-type(4) .project-card:nth-child(1) .project-card__highlights li:nth-child(2){min-height:4lh !important;}
-main > section:nth-of-type(4) .project-card:nth-child(1) .project-card__highlights li:nth-child(3){min-height:3lh !important;}
+
+
+
+
 main > section:nth-of-type(4) .project-card:nth-child(1) .project-card__status{min-height:1lh !important;}
 main > section:nth-of-type(4) .project-card:nth-child(1) .project-card__link:nth-of-type(1){min-height:1lh !important;}
 main > section:nth-of-type(4) .project-card:nth-child(1) .project-card__link:nth-of-type(2){min-height:1lh !important;}
 main > section:nth-of-type(4) .project-card:nth-child(2) h3{min-height:1lh !important;}
-main > section:nth-of-type(4) .project-card:nth-child(2) .project-card__content > p{min-height:7lh !important;}
-main > section:nth-of-type(4) .project-card:nth-child(2) .project-card__highlights li:nth-child(1){min-height:4lh !important;}
-main > section:nth-of-type(4) .project-card:nth-child(2) .project-card__highlights li:nth-child(2){min-height:3lh !important;}
-main > section:nth-of-type(4) .project-card:nth-child(2) .project-card__highlights li:nth-child(3){min-height:3lh !important;}
-main > section:nth-of-type(4) .project-card:nth-child(2) .project-card__highlights li:nth-child(4){min-height:4lh !important;}
+
+
+
+
+
 main > section:nth-of-type(4) .project-card:nth-child(2) .project-card__status{min-height:1lh !important;}
 main > section:nth-of-type(4) .project-card:nth-child(2) .project-card__link:nth-of-type(1){min-height:1lh !important;}
 main > section:nth-of-type(4) .project-card:nth-child(2) .project-card__link:nth-of-type(2){min-height:1lh !important;}
 @media (min-width:340px){
 main > section:nth-of-type(2) h2{min-height:4lh !important;}
 main > section:nth-of-type(3) h2{min-height:4lh !important;}
-main > section:nth-of-type(4) .project-card:nth-child(1) .project-card__content > p{min-height:4lh !important;}
-main > section:nth-of-type(4) .project-card:nth-child(1) .project-card__highlights li:nth-child(1){min-height:3lh !important;}
-main > section:nth-of-type(4) .project-card:nth-child(1) .project-card__highlights li:nth-child(3){min-height:2lh !important;}
-main > section:nth-of-type(4) .project-card:nth-child(2) .project-card__content > p{min-height:6lh !important;}
-main > section:nth-of-type(4) .project-card:nth-child(2) .project-card__highlights li:nth-child(1){min-height:3lh !important;}
-main > section:nth-of-type(4) .project-card:nth-child(2) .project-card__highlights li:nth-child(4){min-height:3lh !important;}
+
+
+
+
+
+
 }
 @media (min-width:360px){
 main > section:nth-of-type(2) .section__body > p:nth-child(2){min-height:2lh !important;}
 main > section:nth-of-type(2) .section__body > p:nth-child(3){min-height:3lh !important;}
-main > section:nth-of-type(4) .project-card:nth-child(2) .project-card__highlights li:nth-child(2){min-height:2lh !important;}
+
 }
-@media (min-width:375px){
-main > section:nth-of-type(4) .project-card:nth-child(1) .project-card__highlights li:nth-child(2){min-height:3lh !important;}
-main > section:nth-of-type(4) .project-card:nth-child(2) .project-card__content > p{min-height:5lh !important;}
-}
+
 @media (min-width:380px){
 main > section:nth-of-type(2) .section__body > p:nth-child(1){min-height:2lh !important;}
 }
 @media (min-width:390px){
 main > section:nth-of-type(3) h2{min-height:3lh !important;}
 }
-@media (min-width:400px){
-main > section:nth-of-type(4) .project-card:nth-child(2) .project-card__highlights li:nth-child(1){min-height:2lh !important;}
-main > section:nth-of-type(4) .project-card:nth-child(2) .project-card__highlights li:nth-child(3){min-height:2lh !important;}
-main > section:nth-of-type(4) .project-card:nth-child(2) .project-card__highlights li:nth-child(4){min-height:2lh !important;}
-}
+
 @media (min-width:415px){
 main > section:nth-of-type(2) h2{min-height:3lh !important;}
 }
-@media (min-width:430px){
-main > section:nth-of-type(4) .project-card:nth-child(1) .project-card__content > p{min-height:3lh !important;}
-main > section:nth-of-type(4) .project-card:nth-child(1) .project-card__highlights li:nth-child(1){min-height:2lh !important;}
-}
-@media (min-width:450px){
-main > section:nth-of-type(4) .project-card:nth-child(2) .project-card__content > p{min-height:4lh !important;}
-}
+
+
 @media (min-width:480px){
 main > section:nth-of-type(2) .section__body > p:nth-child(3){min-height:2lh !important;}
-main > section:nth-of-type(4) .project-card:nth-child(1) .project-card__highlights li:nth-child(2){min-height:2lh !important;}
+
 }
 @media (min-width:500px){
 main > section:nth-of-type(5) h2{min-height:1lh !important;}
@@ -948,65 +937,80 @@ main > section:nth-of-type(2) h2{min-height:2lh !important;}
 @media (min-width:540px){
 main > section:nth-of-type(3) h2{min-height:2lh !important;}
 main > section:nth-of-type(2) .section__body > p:nth-child(4){min-height:1lh !important;}
-main > section:nth-of-type(4) .project-card:nth-child(2) .project-card__highlights li:nth-child(2){min-height:1lh !important;}
+
 }
-@media (min-width:560px){
-main > section:nth-of-type(4) .project-card:nth-child(1) .project-card__content > p{min-height:2lh !important;}
-main > section:nth-of-type(4) .project-card:nth-child(1) .project-card__highlights li:nth-child(3){min-height:1lh !important;}
-main > section:nth-of-type(4) .project-card:nth-child(2) .project-card__content > p{min-height:3lh !important;}
-}
+
 @media (min-width:561px){
 main > section:nth-of-type(2) .section__body > p:nth-child(4){min-height:2lh !important;}
-main > section:nth-of-type(4) .project-card:nth-child(1) .project-card__content > p{min-height:3lh !important;}
-main > section:nth-of-type(4) .project-card:nth-child(2) .project-card__content > p{min-height:4lh !important;}
+
+
 }
 @media (min-width:585px){
 main > section:nth-of-type(2) .section__body > p:nth-child(4){min-height:1lh !important;}
-main > section:nth-of-type(4) .project-card:nth-child(1) .project-card__content > p{min-height:2lh !important;}
-main > section:nth-of-type(4) .project-card:nth-child(2) .project-card__content > p{min-height:3lh !important;}
+
+
 }
 @media (min-width:700px){
 main > section:nth-of-type(2) .section__body > p:nth-child(2){min-height:1lh !important;}
-main > section:nth-of-type(4) .project-card:nth-child(1) .project-card__highlights li:nth-child(1){min-height:1lh !important;}
-main > section:nth-of-type(4) .project-card:nth-child(2) .project-card__highlights li:nth-child(1){min-height:1lh !important;}
-main > section:nth-of-type(4) .project-card:nth-child(2) .project-card__highlights li:nth-child(3){min-height:1lh !important;}
-main > section:nth-of-type(4) .project-card:nth-child(2) .project-card__highlights li:nth-child(4){min-height:1lh !important;}
+
+
+
+
 }
 @media (min-width:740px){
 main > section:nth-of-type(2) .section__body > p:nth-child(1){min-height:1lh !important;}
 }
-@media (min-width:800px){
-main > section:nth-of-type(4) .project-card:nth-child(1) .project-card__highlights li:nth-child(2){min-height:1lh !important;}
-}
-@media (min-width:840px){
-main > section:nth-of-type(4) .project-card:nth-child(2) .project-card__content > p{min-height:2lh !important;}
-}
+
+
 @media (min-width:861px){
 main > section:nth-of-type(2) .section__body > p:nth-child(1){min-height:2lh !important;}
 main > section:nth-of-type(2) .section__body > p:nth-child(2){min-height:2lh !important;}
-main > section:nth-of-type(4) .project-card:nth-child(1) .project-card__highlights li:nth-child(1){min-height:2lh !important;}
-main > section:nth-of-type(4) .project-card:nth-child(1) .project-card__highlights li:nth-child(2){min-height:2lh !important;}
-main > section:nth-of-type(4) .project-card:nth-child(2) .project-card__content > p{min-height:3lh !important;}
-main > section:nth-of-type(4) .project-card:nth-child(2) .project-card__highlights li:nth-child(1){min-height:2lh !important;}
-main > section:nth-of-type(4) .project-card:nth-child(2) .project-card__highlights li:nth-child(3){min-height:2lh !important;}
-main > section:nth-of-type(4) .project-card:nth-child(2) .project-card__highlights li:nth-child(4){min-height:2lh !important;}
+
+
+
+
+
+
 main > section:nth-of-type(4) .project-card:nth-child(2) .project-card__status{min-height:2lh !important;}
 }
 @media (min-width:900px){
 main > section:nth-of-type(2) .section__body > p:nth-child(1){min-height:1lh !important;}
 main > section:nth-of-type(2) .section__body > p:nth-child(2){min-height:1lh !important;}
 }
-@media (min-width:960px){
-main > section:nth-of-type(4) .project-card:nth-child(2) .project-card__highlights li:nth-child(1){min-height:1lh !important;}
-main > section:nth-of-type(4) .project-card:nth-child(2) .project-card__highlights li:nth-child(3){min-height:1lh !important;}
-}
+
 @media (min-width:1024px){
 main > section:nth-of-type(2) .section__body > p:nth-child(1){min-height:2lh !important;}
 main > section:nth-of-type(2) .section__body > p:nth-child(2){min-height:2lh !important;}
-main > section:nth-of-type(4) .project-card:nth-child(1) .project-card__highlights li:nth-child(1){min-height:1lh !important;}
-main > section:nth-of-type(4) .project-card:nth-child(2) .project-card__highlights li:nth-child(4){min-height:1lh !important;}
+
+
 }
-@media (min-width:1100px){
-main > section:nth-of-type(4) .project-card:nth-child(1) .project-card__highlights li:nth-child(2){min-height:1lh !important;}
-main > section:nth-of-type(4) .project-card:nth-child(2) .project-card__content > p{min-height:2lh !important;}
-}
+
+/* Minimum shared RU/EN text slots measured at each responsive width.
+   Keep only necessary lines, not prior conservative blank-space reserves. */
+.project-card:nth-child(1) .project-card__content > p{min-height:4lh!important}
+.project-card:nth-child(1) .project-card__highlights li:nth-child(1){min-height:3lh!important}
+.project-card:nth-child(1) .project-card__highlights li:nth-child(2){min-height:3lh!important}
+.project-card:nth-child(1) .project-card__highlights li:nth-child(3){min-height:2lh!important}
+.project-card:nth-child(2) .project-card__content > p{min-height:3lh!important}
+.project-card:nth-child(2) .project-card__highlights li:nth-child(1){min-height:3lh!important}
+.project-card:nth-child(2) .project-card__highlights li:nth-child(2){min-height:2lh!important}
+.project-card:nth-child(2) .project-card__highlights li:nth-child(3){min-height:3lh!important}
+.project-card:nth-child(2) .project-card__highlights li:nth-child(4){min-height:3lh!important}
+@media(min-width:340px){.project-card:nth-child(2) .project-card__content > p{min-height:2lh!important}
+.project-card:nth-child(2) .project-card__highlights li:nth-child(1){min-height:2lh!important}
+.project-card:nth-child(2) .project-card__highlights li:nth-child(3){min-height:2lh!important}
+.project-card:nth-child(2) .project-card__highlights li:nth-child(4){min-height:2lh!important}}
+@media(min-width:360px){.project-card:nth-child(1) .project-card__content > p{min-height:3lh!important}
+.project-card:nth-child(1) .project-card__highlights li:nth-child(1){min-height:2lh!important}}
+@media(min-width:400px){.project-card:nth-child(1) .project-card__highlights li:nth-child(2){min-height:2lh!important}}
+@media(min-width:480px){.project-card:nth-child(1) .project-card__highlights li:nth-child(3){min-height:1lh!important}
+.project-card:nth-child(2) .project-card__highlights li:nth-child(2){min-height:1lh!important}}
+@media(min-width:520px){.project-card:nth-child(1) .project-card__content > p{min-height:2lh!important}}
+@media(min-width:559px){.project-card:nth-child(2) .project-card__highlights li:nth-child(1){min-height:1lh!important}}
+@media(min-width:561px){.project-card:nth-child(2) .project-card__highlights li:nth-child(1){min-height:2lh!important}}
+@media(min-width:768px){.project-card:nth-child(1) .project-card__highlights li:nth-child(1){min-height:1lh!important}
+.project-card:nth-child(1) .project-card__highlights li:nth-child(2){min-height:1lh!important}
+.project-card:nth-child(2) .project-card__content > p{min-height:1lh!important}
+.project-card:nth-child(2) .project-card__highlights li:nth-child(1){min-height:1lh!important}
+.project-card:nth-child(2) .project-card__highlights li:nth-child(3){min-height:1lh!important}
+.project-card:nth-child(2) .project-card__highlights li:nth-child(4){min-height:1lh!important}}
