@@ -31,6 +31,8 @@ try {
         return {
           projectAxis: projectContentX - projectHeadingX,
           projectNumbersAbsent: projectRows.every(row => !row.querySelector('.project-card__num')),
+          projectStatuses: projectRows.map(row =>
+            row.querySelector('.project-card__status').textContent.trim()),
           projectMetaInViewport: projectRows.every(row =>
             row.querySelector('.project-card__meta').getBoundingClientRect().right <=
               document.documentElement.clientWidth + 1),
@@ -96,6 +98,10 @@ try {
       }
       assert.equal(data.projectNumbersAbsent, true,
         JSON.stringify({engine,width,lang,projectNumbersAbsent:data.projectNumbersAbsent}));
+      assert.deepEqual(data.projectStatuses, lang === 'ru'
+        ? ['Реализован', 'В разработке']
+        : ['Implemented', 'In development'],
+        JSON.stringify({engine,width,lang,projectStatuses:data.projectStatuses}));
       for(const dx of data.textElementAxes)
         assert.ok(Math.abs(dx) <= 1,
           JSON.stringify({engine,width,lang,projectTextAxis:dx}));
